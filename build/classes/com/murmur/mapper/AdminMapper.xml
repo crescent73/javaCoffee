@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.murmur.mapper.AdminMapper">
+
+    <select id="find" resultType="com.murmur.po.Admin" parameterType="com.murmur.po.Admin">
+        select * from sys_admin
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="adminName != null">
+                and admin_name = #{adminName}
+            </if>
+           <if test="adminEmail != null">
+               and admin_email = #{adminEmail}
+           </if>
+           <if test="adminPassword != null">
+               and admin_password = #{adminPassword}
+           </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="Admin">
+        update sys_admin
+        <set>
+            <if test="adminName != null">
+                admin_name = #{adminName},
+            </if>
+            <if test="adminEmail != null">
+                admin_email = #{adminEmail},
+            </if>
+            <if test="adminPassword != null">
+                admin_password = #{adminPassword},
+            </if>
+        </set>
+        <where>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+
+    </update>
+
+    <delete id="delete" parameterType="Admin">
+        delete from sys_admin
+        <where>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+    </delete>
+
+    <insert id="insert" parameterType="Admin">
+        insert into sys_admin(admin_name, admin_email, admin_password)
+        value(#{adminName}, #{adminEmail}, #{adminPassword})
+    </insert>
+
+</mapper>

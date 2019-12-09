@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+	<title>courseNotice</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<!-- Font Awesome Icons -->
+	<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+	<!-- Theme style -->
+	<link rel="stylesheet" href="dist/css/adminlte.min.css">
+	<!-- Google Font: Source Sans Pro -->
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+	<!-- 引用vue -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body style="background-color: #f4f6f9">
+	<div class="content" id="content">
+		<!-- Content Header (Page header) -->
+		<div class="content-header">
+			<div class="container-fluid">
+				<div class="row mb-2">
+					<div class="col-sm-6">
+						<h1 class="m-0 text-dark">课程公告</h1>
+					</div><!-- /.col -->
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-right">
+							<li class="breadcrumb-item"><a href="#">主页</a></li>
+							<li class="breadcrumb-item"><a href="#">课程公告</a></li>
+							<li class="breadcrumb-item active">公告列表</li>
+						</ol>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container-fluid -->
+		</div>
+		<!-- /.content-header -->
+
+		<!-- Main content -->
+		<div class="content">
+
+			<div class="card">
+				<div class="card-body">
+					<div v-for="notice in notices" v-bind:key="notice.id" @click="click(notice,$event)" class="callout callout-info position-relative">
+						<div v-show="notice.noticeLevel === 1" class="ribbon-wrapper">
+							<div class="ribbon bg-info">
+								置顶
+							</div>
+						</div>
+						<h5 class="text-bold text-lg">
+							{{ notice.noticeTitle}}
+							<!--------------------------------------------修改公告按钮------------------------------------------------------------->
+							<button type="button" class="btn btn-tool" data-toggle="modal" data-target=".myModal">
+								<i class="fas fa-edit"></i>
+							</button>
+							<!--------------------------------------------修改公告按钮/------------------------------------------------------------->
+						</h5>
+						<span>发布者:{{ notice.publisherId }}</span><br>
+						<span>发布时间：{{notice.publishDate | formatDate}}</span>
+						<p>{{notice.noticeContent}}</p>
+						<!--------------------------------------------修改公告弹框------------------------------------------------------------->
+						<div class="modal fade myModal" id="" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h4 class="modal-title" id="myModalLabel">修改公告</h4>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									</div>
+									<div class="modal-body">
+										<div class="form-group">
+											<label>公告标题</label>
+											<input type="text" class="form-control" placeholder="公告标题" v-model="noticeForm.noticeTitle">
+										</div>
+										<div class="form-group">
+											<label>公告内容</label>
+											<textarea class="form-control" rows="3" placeholder="公告内容" v-model="noticeForm.noticeContent"></textarea>
+										</div>
+										<div class="form-group form-check">
+											<input type="checkbox" class="form-check-input" id="exampleCheck1"
+												   v-model="noticeForm.noticeLevel" v-bind:true-value="1"
+												   v-bind:false-value="2">
+											<label class="form-check-label" for="exampleCheck1">是否置顶</label>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+										<button type="button" class="btn btn-primary">保存</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--------------------------------------------修改公告弹框/------------------------------------------------------------->
+					</div>
+				</div>
+
+
+			</div>
+
+		</div><!-- /.container-fluid -->
+	</div>
+	<!-- /.content-wrapper -->
+	<!-- REQUIRED SCRIPTS -->
+
+	<!-- jQuery -->
+	<script src="plugins/jquery/jquery.min.js"></script>
+	<!-- Bootstrap 4 -->
+	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- AdminLTE App -->
+	<script src="dist/js/adminlte.min.js"></script>
+	<script  type="text/javascript">
+		var app = new Vue({
+			el: '#content',
+			data() {
+				return{
+					notices:[
+						{
+							id:1,
+							courseId:"5",
+							publisherId:"3",
+							noticeTitle:"title1",
+							noticeContent:"content1",
+							publishDate:"2019-12-06 06:01:09.0",
+							noticeLevel:1
+						},
+						{
+							id:2,
+							courseId:"5",
+							publisherId:"3",
+							noticeTitle:"title2",
+							noticeContent:"content2",
+							publishDate:"2019-12-06 06:01:09.0",
+							noticeLevel:2
+						},
+						{
+							id:3,
+							courseId:"5",
+							publisherId:"3",
+							noticeTitle:"title3",
+							noticeContent:"content3",
+							publishDate:"2019-12-06 06:01:09.0",
+							noticeLevel:1
+						}
+					],
+					noticeForm:{
+						noticeId:"",
+						courseId:"5",
+						publisherId:"",
+						noticeTitle:"",
+						noticeContent:"",
+						noticeLevel:""
+					}
+				}
+			},
+			methods:{
+				init(){
+					let that = this;
+					$.ajax({
+						type:"post",
+						url:"/blackboard/system/searchNotice",
+						data:this.noticeForm,
+						success:function(res){
+							console.log(res);
+							that.notices = res.data;
+						},
+						error:function(res){
+							console.log(res)
+						}
+					})
+				},
+				click(notice,event){
+					console.log(notice);
+					console.log(event);
+
+				}
+			},
+			filters: {
+				formatDate: function (value) {
+					let date = new Date(value);
+					let y = date.getFullYear();
+					let MM = date.getMonth() + 1;
+					MM = MM < 10 ? ('0' + MM) : MM;
+					let d = date.getDate();
+					d = d < 10 ? ('0' + d) : d;
+					let h = date.getHours();
+					h = h < 10 ? ('0' + h) : h;
+					let m = date.getMinutes();
+					m = m < 10 ? ('0' + m) : m;
+					let s = date.getSeconds();
+					s = s < 10 ? ('0' + s) : s;
+					return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+				},
+				capitalize: function (value) {
+					if (!value) return '';
+					value = value.toString();
+					return value.charAt(0).toUpperCase() + value.slice(1);
+				}
+			},
+			created(){
+			},
+			mounted(){
+				// console.log("this is mounted");
+				this.init();
+			}
+
+		})
+	</script>
+	
+</body>
+
+</html>
