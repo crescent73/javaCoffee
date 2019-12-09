@@ -79,4 +79,16 @@ public class File {
         }
     }
 
+    @Override
+    public String toString() {
+        return "File{" +
+                "id=" + id +
+                ", fileName='" + fileName + '\'' +
+                ", uploadDate=" + uploadDate +
+                ", updateDate=" + updateDate +
+                ", courseId=" + courseId +
+                ", uploaderId=" + uploaderId +
+                ", fileDescription='" + fileDescription + '\'' +
+                '}';
+    }
 }

@@ -10,7 +10,7 @@ public class ResultData {
 	
     private String code; //结果返回码
     private String msg;  //结果提示信息
-    private Object data; //结果数据信息
+    private Data data; //结果数据信息
 
 	public ResultData(){
 
@@ -29,10 +29,10 @@ public class ResultData {
 		this.msg = msg;
 	}
 	
-	public Object getData() {
+	public Data getData() {
 		return data;
 	}
-	public void setData(Object data) {
+	public void setData(Data data) {
 		this.data = data;
 	}
 	
@@ -45,6 +45,4 @@ public class ResultData {
 	public String toString() {
 		return "ResultData [code=" + code + ", msg=" + msg + ", data=" + data + "]";
 	}
-    
-
 }

@@ -49,17 +49,16 @@
 						<button type="button" class="btn btn-tool">
 							<i class="fas fa-edit"></i>
 						</button> <br>
-						这里是课程介绍
 						{{course.courseDescription}}
 					</p>
 					<h5 class="text-bold text-lg">课程教师</h5>
 					<p class="list-group-item-text">
-						教师姓名： {{course.teacherId}}<br>
+						教师姓名： {{course.teacherName}}<br>
 						教师介绍：
 						<button type="button" class="btn btn-tool">
 							<i class="fas fa-edit"></i>
 						</button> <br>
-						这里是老师介绍
+						{{course.courseTeacherDescription}}
 
 					</p>
 				</div><!-- /.card-body -->
@@ -92,7 +91,11 @@
 					"courseSemester": "2018-2019-2",
 					"courseType": 0,
 					"courseCredit": 5,
-					"teacherId": 1
+					"teacherId": 1,
+					"teacherName":"name",
+					"courseDescription":"这是一门很有意思的学科",
+					"courseTeacherDescription":"这是一个很有意思的老师",
+
 				}
 			}
 		},

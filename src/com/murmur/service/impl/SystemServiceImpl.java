@@ -2,6 +2,7 @@ package com.murmur.service.impl;
 
 import java.util.List;
 
+import com.murmur.kit.Data;
 import com.murmur.kit.ResultCodeEnum;
 import com.murmur.kit.ResultData;
 import com.murmur.mapper.*;
@@ -40,9 +41,12 @@ public class SystemServiceImpl implements SystemService {
 	@Autowired
 	private CourseScheduleMapper courseScheduleDao;
 
+	public SystemServiceImpl() {
+		resultData = new ResultData();
+	}
+
 	@Override
 	public ResultData login(String name, String password, String userType) {
-		resultData = new ResultData();
 		if(StringUtils.isNotBlank(name)&&StringUtils.isNotBlank(password)&&StringUtils.isNotBlank(userType)) {
 			List result = null;
 			switch(userType) {
@@ -74,10 +78,19 @@ public class SystemServiceImpl implements SystemService {
 				resultData.setResult(ResultCodeEnum.PARA_FORMAT_ERROR); //参数格式错误
 				return resultData;
 			}
-//			System.out.println(result);
 			//处理查询结果
 			if(result.size() == 1) {
-				resultData.setData(result);
+				Data data;
+				switch(userType) {
+					case "1": data = new Data<Admin>(); break;
+					case "2": data = new Data<Teacher>(); break;
+					case "3": data = new Data<Student>(); break;
+					default:
+						throw new IllegalStateException("Unexpected value: " + userType);
+				}
+				data.setData(result);
+				data.setLength(result.size());
+				resultData.setData(data);
 				resultData.setResult(ResultCodeEnum.LOGIN_SUCCESS);  //登陆成功
 			} else {
 				resultData.setResult(ResultCodeEnum.LOGIN_ERROR); //登陆失败
@@ -90,7 +103,6 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData logout(Long id, String userType) {
-		resultData = new ResultData();
 		switch(userType) {
 		case "1":
 			//调用adminDao
@@ -112,7 +124,6 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData modifyInfo(Long id, String password, String userType) {
-		resultData = new ResultData();
 		if(id!=null &&StringUtils.isNotBlank(password)&&StringUtils.isNotBlank(userType)) {
 			int result;
 			switch(userType) {
@@ -158,7 +169,6 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchCourse(Long studentId, Course course) {
-		resultData = new ResultData();
 		if(course == null) {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
 			return resultData;
@@ -172,7 +182,10 @@ public class SystemServiceImpl implements SystemService {
 		}
 		System.out.println(courses);
 		if(courses.size() > 0) {
-			resultData.setData(courses);
+			Data<List<CourseDetail>> data = new Data<List<CourseDetail>>();
+			data.setData(courses);
+			data.setLength(courses.size());
+			resultData.setData(data);
 			resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
 		} else {
 			resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE); //查找失败
@@ -182,7 +195,6 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchStudent(Long courseId, Student student) {
-		resultData = new ResultData();
 		if(student == null) {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
 			return resultData;
@@ -195,7 +207,9 @@ public class SystemServiceImpl implements SystemService {
 		}
 		System.out.println(students);
 		if(students.size() > 0) {
-			resultData.setData(students);
+			Data<List<Student>> data = new Data<List<Student>>();
+			data.setData(students);
+			resultData.setData(data);
 			resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
 		} else {
 			resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE); //查找失败
@@ -205,11 +219,13 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchNotice(Notice notice) {
-		resultData = new ResultData();
 		if(notice != null) {
-			List<Notice> notices = noticeDao.find(notice);
+			List<NoticeDetail> notices = noticeDao.find(notice);
 			if(notices.size()>0) {
-				resultData.setData(notices);
+				Data<List<NoticeDetail>> data = new Data<List<NoticeDetail>>();
+				data.setData(notices);
+				data.setLength(notices.size());
+				resultData.setData(data);
 				resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
 			} else {
 				resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE); //查找失败
@@ -222,11 +238,13 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchFile(File file) {
-		resultData = new ResultData();
 		if(file != null) {		
-			List<File> files = fileDao.find(file);
+			List<FileDetail> files = fileDao.find(file);
 			if(files.size() > 0) {
-				resultData.setData(files);
+				Data<List<FileDetail>> data = new Data<List<FileDetail>>();
+				data.setData(files);
+				data.setLength(files.size());
+				resultData.setData(data);
 				resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
 			} else {
 				resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE); //查找失败

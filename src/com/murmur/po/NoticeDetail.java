@@ -2,14 +2,14 @@ package com.murmur.po;
 
 public class NoticeDetail extends com.murmur.po.Notice {
 
-    private Teacher teacher;
+    private String teacherName;
 
-    public Teacher getTeacher() {
-        return teacher;
+    public String getTeacherName() {
+        return teacherName;
     }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
 
     @Override
@@ -23,8 +23,10 @@ public class NoticeDetail extends com.murmur.po.Notice {
                 ", publishDate=" + getPublishDate() +
                 ", updateDate=" + getUpdateDate() +
                 ", noticeTitle='" + getNoticeTitle() + '\'' +
-                ", teacher='" + teacher + '\'' +
+                ", teacherName=" + teacherName +
                 '}';
     }
+
+
 
 }

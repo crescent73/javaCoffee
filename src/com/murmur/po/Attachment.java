@@ -58,4 +58,15 @@ public class Attachment {
         this.updateDate = updateDate;
     }
 
+    @Override
+    public String toString() {
+        return "Attachment{" +
+                "id=" + id +
+                ", fileId=" + fileId +
+                ", attachmentName='" + attachmentName + '\'' +
+                ", attachmentPath='" + attachmentPath + '\'' +
+                ", uploadDate=" + uploadDate +
+                ", updateDate=" + updateDate +
+                '}';
+    }
 }

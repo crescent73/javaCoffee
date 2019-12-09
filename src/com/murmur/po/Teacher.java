@@ -82,6 +82,16 @@ public class Teacher {
         }
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "id=" + id +
+                ", teacherNumber='" + teacherNumber + '\'' +
+                ", teacherName='" + teacherName + '\'' +
+                ", teacherSchool=" + teacherSchool +
+                ", teacherTitle='" + teacherTitle + '\'' +
+                ", teacherEmail='" + teacherEmail + '\'' +
+                ", teacherPassword='" + teacherPassword + '\'' +
+                '}';
+    }
 }

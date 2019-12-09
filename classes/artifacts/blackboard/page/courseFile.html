@@ -57,15 +57,18 @@
 										</button>
 									</h4>
 									<p class="list-group-item-text">
-										上传者: {{file.uploaderId}} <br>
+										上传者: {{file.teacherName}} <br>
 										上传时间: {{file.uploadDate | formatDate}} <br>
-										文件描述： {{ file.fileDescription }}
+										文件描述： <br>
+										{{ file.fileDescription }}
 									</p>
 									<p>
 										附件：<br>
-										<span><span class="iconfont iconyasuobao-  mr-2"></span>  <span @click="click(file,$event)" class="text-muted">{{file.fileName}}</span></span>
+										<span v-for="attachment in file.attachmentList" v-bind:key="attachment.id">
+											<span class="iconfont iconyasuobao-  mr-2"></span>
+											<span @click="click(attachment)" class="text-muted">{{attachment.attachmentName}}</span><br>
+										</span>
 									</p>
-
 								</div>
 							</div>
 						</li>
@@ -91,20 +94,20 @@
 					{
 						"id": 1,
 						"fileName": "name1",
-						"filePath": null,
-						"uploadDate": "1575711323000",
+						"uploadDate": 1575773666000,
 						"courseId": 1,
 						"uploaderId": 1,
-						"fileDescription": "des1"
+						"fileDescription": "des1",
+						"teacherName":"name1"
 					},
 					{
 						"id": 2,
 						"fileName": "name2",
-						"filePath": null,
-						"uploadDate": "1575711323000",
+						"uploadDate": 1575773666000,
 						"courseId": 1,
 						"uploaderId": 1,
-						"fileDescription": "des2"
+						"fileDescription": "des2",
+						"teacherName":"name1"
 					}
 
 				],
@@ -132,11 +135,10 @@
 					}
 				})
 			},
-			click(file,event){
-				console.log(file);
-				console.log(event);
+			click(attachment){
+				console.log(attachment);
 
-			}
+			},
 		},
 		filters: {
 			formatDate: function (value) {

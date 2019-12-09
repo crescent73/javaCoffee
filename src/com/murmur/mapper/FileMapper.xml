@@ -3,21 +3,38 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.murmur.mapper.FileMapper">
 
-    <select id="find" resultType="FileDetail" parameterType="File">
-        select *
-        from file,teacher
+    <resultMap id="fileDetail" type="fileDetail">
+        <id property="id" column="id"></id>
+        <result property="fileName" column="file_name"></result>
+        <result property="courseId" column="course_id"></result>
+        <result property="uploaderId" column="uploader_id"></result>
+        <result property="fileDescription" column="file_description"></result>
+        <result property="uploadDate" column="upload_date"></result>
+        <result property="updateDate" column="update_date"></result>
+        <result property="teacherName" column="teacher_name"></result>
+        <collection property="attachmentList" ofType="attachment">
+            <id property="id" column="aid"></id>
+            <result property="fileId" column="file_id"></result>
+            <result property="attachmentName" column="attachment_name"></result>
+            <result property="attachmentPath" column="attachment_path"></result>
+            <result property="uploadDate" column="upload_date"></result>
+            <result property="updateDate" column="update_date"></result>
+        </collection>
+    </resultMap>
+
+    <select id="find" parameterType="File" resultMap="fileDetail">
+        select file.*,attachment.*,attachment.id as aid,teacher.teacher_name
+        from attachment,file,teacher
         <where>
-        and file.teacher_id = teacher.id
+        and attachment.file_id = file.id
+        and file.uploader_id = teacher.id
             <if test="id != null">
-                and id = #{id}
+                and file.id = #{id}
             </if>
             <if test="fileName != null">
                 <if test="fileName != '' ">
                     and filename like #{fileName}
                 </if>
-            </if>
-            <if test="filePath != null">
-                and filepath = #{filePath}
             </if>
             <if test="uploadDate != null">
                 and upload_date = #{uploadDate}
@@ -39,9 +56,6 @@
         <set>
             <if test="fileName != null">
                 filename = #{fileName},
-            </if>
-            <if test="filePath != null">
-                filepath = #{filePath},
             </if>
             <if test="uploadDate != null">
                 upload_date = #{uploadDate},
@@ -69,8 +83,8 @@
     </update>
 
     <insert id="insert" parameterType="File">
-        insert into file(fiileName, filePath, upload_date, course_id, uploader_id, file_description)
-        values(#{name}, #{type}, #{path}, #{uploadDate}, #{courseId}, #{uploaderId}, #{fileDescription})
+        insert into file(fiileName, upload_date, course_id, uploader_id, file_description)
+        values(#{name}, #{type}, #{uploadDate}, #{courseId}, #{uploaderId}, #{fileDescription})
     </insert>
 
     <delete id="delete" parameterType="File">

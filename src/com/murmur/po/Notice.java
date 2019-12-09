@@ -90,5 +90,17 @@ public class Notice {
         this.publishDate = publishDate;
     }
 
-
+    @Override
+    public String toString() {
+        return "Notice{" +
+                "id=" + id +
+                ", courseId=" + courseId +
+                ", publisherId=" + publisherId +
+                ", noticeLevel=" + noticeLevel +
+                ", noticeContent='" + noticeContent + '\'' +
+                ", publishDate=" + publishDate +
+                ", updateDate=" + updateDate +
+                ", noticeTitle='" + noticeTitle + '\'' +
+                '}';
+    }
 }

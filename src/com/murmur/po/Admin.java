@@ -56,5 +56,13 @@ public class Admin {
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "Admin{" +
+                "id=" + id +
+                ", adminName='" + adminName + '\'' +
+                ", adminEmail='" + adminEmail + '\'' +
+                ", adminPassword='" + adminPassword + '\'' +
+                '}';
+    }
 }

@@ -86,5 +86,18 @@ public class Student {
     public void setStudentPassword(String studentPassword) {
         this.studentPassword = studentPassword;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", studentName='" + studentName + '\'' +
+                ", studentNumber='" + studentNumber + '\'' +
+                ", studentEmail='" + studentEmail + '\'' +
+                ", studentClass='" + studentClass + '\'' +
+                ", studentSchool=" + studentSchool +
+                ", studentGrade='" + studentGrade + '\'' +
+                ", studentPassword='" + studentPassword + '\'' +
+                '}';
+    }
 }

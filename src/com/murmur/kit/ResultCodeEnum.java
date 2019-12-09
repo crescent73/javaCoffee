@@ -50,8 +50,10 @@ public enum ResultCodeEnum
 	NO_ENOUGH_MES("403","登录失败_账号或密码为空"),
 	LOGOUT_SUCCESS("404","退出登录成功"),
 	NO_LOGIN_USER("405","退出登录失败_用户未登录"),
-	FILE_DOWNLOAD_SUCCESS("406","文件下载成功"),
-	FILE_DOWNLOAD_FAILURE("407","文件下载失败");
+	FILE_UPLOAD_SUCCESS("406","文件上传成功"),
+	FILE_UPLOAD_FAILURE("407","文件上传失败"),
+	FILE_DOWNLOAD_SUCCESS("408","文件下载成功"),
+	FILE_DOWNLOAD_FAILURE("409","文件下载失败");
 	
 	private String code;
     private String desc;

@@ -42,4 +42,12 @@ public class CourseSchedule {
         this.courseId = courseId;
     }
 
+    @Override
+    public String toString() {
+        return "CourseSchedule{" +
+                "id=" + id +
+                ", studentId=" + studentId +
+                ", courseId=" + courseId +
+                '}';
+    }
 }

@@ -22,7 +22,7 @@
         <where>
         and course.teacher_id = teacher.id
             <if test="id != null">
-                and id = #{id}
+                and course.id = #{id}
             </if>
             <if test="courseName != null">
                 and course_name like #{courseName}

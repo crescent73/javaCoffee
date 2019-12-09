@@ -1,5 +1,6 @@
 package com.murmur.service.impl;
 
+import com.murmur.kit.Data;
 import com.murmur.kit.ResultCodeEnum;
 import com.murmur.kit.ResultData;
 import com.murmur.mapper.CourseMapper;
@@ -32,11 +33,11 @@ public class AdminServiceImpl implements AdminService {
     private StudentMapper studentDao;
 
     public AdminServiceImpl() {
+        resultData = new ResultData();
     }
 
     @Override
     public ResultData addCourse(Course course) {
-        resultData = new ResultData();
         if(course != null) {
             // 插入前进行校验工作，判断约束
             // 课程号唯一
@@ -75,7 +76,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData deleteCourse(Long id) {
-        resultData = new ResultData();
         if(id != null) { //如果id不为空
             Course course = new Course();
             course.setId(id);
@@ -94,7 +94,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData modifyCourse(Course course) {
-        resultData = new ResultData();
         if(course != null && course.getId() > 0) { //course不为空且id存在
         	// teacherId 引用的外键，要外键存在才可以插入！否则插入报错！
             if(course.getTeacherId()!= null) {
@@ -119,7 +118,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData addTeacher(Teacher teacher) {
-        resultData = new ResultData();
         if(teacher != null) {
         	//teacher设置teacherNumber唯一
         	if(teacher.getTeacherNumber()!= null) {
@@ -144,8 +142,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData deleteTeacher(Long id) {
-        resultData = new ResultData();
-//        System.out.println(id);
         //级联删除的问题！！！
         if(id != null) {
             Teacher teacher = new Teacher();
@@ -164,10 +160,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData searchTeacher(Teacher teacher) {
-        resultData = new ResultData();
         List<Teacher> teachers = teacherDao.find(teacher);
         if(teachers.size() > 0) {
-            resultData.setData(teachers);
+            Data<List<Teacher>> data = new Data<List<Teacher>>();
+            data.setData(teachers);
+            data.setLength(teachers.size());
+            resultData.setData(data);
             resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
         } else {
             resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE);  //查找失败
@@ -177,7 +175,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData addStudent(Student student) {
-        resultData = new ResultData();
         if(student != null) {
         	//学生学号唯一检验
         	if(isStudentExist(student.getStudentNumber())) {
@@ -199,7 +196,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData deleteStudent(Long id) {
-        resultData = new ResultData();
         System.out.println(id);
         if(id != null) {
             Student student = new Student();

@@ -106,4 +106,19 @@ public class Course {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", courseName='" + courseName + '\'' +
+                ", courseNumber='" + courseNumber + '\'' +
+                ", courseSchool=" + courseSchool +
+                ", courseSemester='" + courseSemester + '\'' +
+                ", courseType=" + courseType +
+                ", courseDescription='" + courseDescription + '\'' +
+                ", courseTeacherDescription='" + courseTeacherDescription + '\'' +
+                ", courseCredit=" + courseCredit +
+                ", teacherId=" + teacherId +
+                '}';
+    }
 }

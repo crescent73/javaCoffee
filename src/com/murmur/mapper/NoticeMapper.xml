@@ -3,11 +3,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.murmur.mapper.NoticeMapper">
 
-    <select id="find" parameterType="Notice" resultType="Notice">
-        select * from notice
+    <select id="find" parameterType="Notice" resultType="NoticeDetail">
+        select notice.*,teacher.teacher_name
+        from notice,teacher
         <where>
+        and notice.publisher_id = teacher.id
             <if test="id != null">
-                and id = #{id}
+                and notice.id = #{id}
             </if>
             <if test="courseId != null">
                 and course_id = #{courseId}

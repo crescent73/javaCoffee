@@ -1,7 +1,18 @@
 package com.murmur.po;
 
+import java.util.List;
+
 public class FileDetail extends File {
     private String teacherName;
+    private List<Attachment> attachmentList;
+
+    public List<Attachment> getAttachmentList() {
+        return attachmentList;
+    }
+
+    public void setAttachmentList(List<Attachment> attachmentList) {
+        this.attachmentList = attachmentList;
+    }
 
     public String getTeacherName() {
         return teacherName;
@@ -22,6 +33,7 @@ public class FileDetail extends File {
                 ", uploaderId=" + getUploaderId() +
                 ", fileDescription='" + getFileDescription() + '\'' +
                 ", teacherName=" + teacherName +
+                ", attachmentList=" + attachmentList +
                 '}';
     }
 }

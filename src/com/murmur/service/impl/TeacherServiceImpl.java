@@ -159,7 +159,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 	
 	private boolean isNoticeExist(Long noticeId) {
-		List<Notice> notices = null;
+		List<NoticeDetail> notices = null;
 		Notice notice = new Notice();
 		if(noticeId != null) {
 			notice.setId(noticeId);
