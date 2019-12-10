@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add Student</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- 引用vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body  style="background-color: #f4f6f9">
+<div class="content" id="content">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">学生管理</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="home.html">主页</a></li>
+                        <li class="breadcrumb-item active">添加学生</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">添加学生</h3>
+            </div>
+
+            <form role="form">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="student_name_input">姓名</label>
+                        <input type="text" class="form-control" id="student_name_input" placeholder="输入学生姓名">
+                    </div>
+                    <div class="form-group">
+                        <label for="student_number_input">学号</label>
+                        <input type="text" class="form-control" id="student_number_input" placeholder="输入学生学号">
+                    </div>
+                    <div class="form-group">
+                        <label for="student_grade_input">年级</label>
+                        <input type="text" class="form-control" id="student_grade_input" placeholder="输入学生年级">
+                    </div>
+                    <div class="form-group">
+                        <label for="student_class_input">班级</label>
+                        <input type="text" class="form-control" id="student_class_input" placeholder="输入学生班级">
+                    </div>
+                    <div class="form-group">
+                        <label for="student_school_input">学院</label>
+                        <input type="text" class="form-control" id="student_school_input" placeholder="输入学生学院">
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+<!-- jQuery -->
+<script src="../plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../dist/js/adminlte.min.js"></script>
+</html>
