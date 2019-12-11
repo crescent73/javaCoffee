@@ -41,11 +41,11 @@
 				<div class="card-body">
 					<div class="form-group">
 						<label>文档标题</label>
-						<input type="text" class="form-control" placeholder="文档标题">
+						<input type="text" v-model="fileForm.fileName" class="form-control" placeholder="文档标题">
 					</div>
 					<div class="form-group">
 						<label>文档描述</label>
-						<textarea class="form-control" rows="3" placeholder="文档描述"></textarea>
+						<textarea v-model="fileForm.fileDescription" class="form-control" rows="3" placeholder="文档描述"></textarea>
 					</div>
 					<div class="form-group">
 						<label>上传附件</label><br>
@@ -75,6 +75,7 @@
 					courseId:4,
 					uploaderId:2,
 					fileName:"filename",
+					fileDescription:"这是一份超厉害的文档",
 					file:null
 				}
 			}
@@ -91,6 +92,7 @@
 				formData.append("courseId",this.fileForm.courseId);
 				formData.append("uploaderId",this.fileForm.uploaderId);
 				formData.append("fileName",this.fileForm.fileName);
+				formData.append("fileDescription",this.fileForm.fileDescription);
 				for(i=0;i<this.fileForm.file.length;i++){
 					formData.append("file",this.fileForm.file[i]);
 				}

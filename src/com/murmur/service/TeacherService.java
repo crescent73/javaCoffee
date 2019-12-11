@@ -4,6 +4,9 @@ package com.murmur.service;
 import com.murmur.kit.ResultData;
 import com.murmur.po.File;
 import com.murmur.po.Notice;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface TeacherService {
 	/**
@@ -30,9 +33,11 @@ public interface TeacherService {
 	/**
 	 * 添加文件
 	 * @param file 文件信息
+	 * @param dirPath 附件寸尺地址
+	 * @param attachments 附件列表
 	 * @return
 	 */
-	public ResultData addFile(File file);
+	public ResultData addFile(File file, String dirPath, List<MultipartFile> attachments);
 	
 	/**
 	 * 删除文件

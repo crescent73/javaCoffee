@@ -82,9 +82,9 @@
 
     </update>
 
-    <insert id="insert" parameterType="File">
-        insert into file(fiileName, upload_date, course_id, uploader_id, file_description)
-        values(#{name}, #{type}, #{uploadDate}, #{courseId}, #{uploaderId}, #{fileDescription})
+    <insert id="insert" parameterType="File" useGeneratedKeys="true" keyProperty="id">
+        insert into file(file_name, course_id, uploader_id, file_description)
+        values(#{fileName}, #{courseId}, #{uploaderId}, #{fileDescription})
     </insert>
 
     <delete id="delete" parameterType="File">

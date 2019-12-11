@@ -1,5 +1,6 @@
 package com.murmur.controller;
 
+import com.murmur.kit.PageParam;
 import com.murmur.kit.ResultCodeEnum;
 import com.murmur.kit.ResultData;
 import com.murmur.po.Course;
@@ -119,10 +120,10 @@ public class AdminController {
 	
 	@RequestMapping("/searchTeacher")
 	@ResponseBody
-	public ResultData searchTeacher(Teacher teacher) {
+	public ResultData searchTeacher(Teacher teacher, PageParam pageParam) {
 		System.out.println(teacher);
 		if(teacher != null) {
-			resultData = adminService.searchTeacher(teacher);
+			resultData = adminService.searchTeacher(teacher,pageParam);
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);

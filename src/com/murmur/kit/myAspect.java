@@ -25,6 +25,8 @@ public class myAspect {
 	public void myAfterReturning(JoinPoint jp) {
 		System.out.println("myAfterReturning");
 	}
+
+
 	
 
 }

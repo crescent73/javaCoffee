@@ -1,11 +1,9 @@
 package com.murmur.service;
 
 
+import com.murmur.kit.PageParam;
 import com.murmur.kit.ResultData;
-import com.murmur.po.Course;
-import com.murmur.po.File;
-import com.murmur.po.Notice;
-import com.murmur.po.Student;
+import com.murmur.po.*;
 
 public interface SystemService {
 	
@@ -30,7 +28,6 @@ public interface SystemService {
 	/**
 	 * 修改用户信息
 	 * @param id 用户id
-	 * @param name 用户名
 	 * @param password 用户密码
 	 * @param userType 用户类型：1：管理员；2：教师；3：学生 
 	 * @return
@@ -44,7 +41,7 @@ public interface SystemService {
 	 * @param course 课程信息
 	 * @return
 	 */
-	public ResultData searchCourse(Long studentId, Course course);
+	public ResultData searchCourse(Long studentId, Course course, PageParam pageParam);
 	
 	/**
 	 * 查询学生列表
@@ -53,7 +50,7 @@ public interface SystemService {
 	 * @param student 学生信息
 	 * @return
 	 */
-	public ResultData searchStudent(Long courseId, Student student);
+	public ResultData searchStudent(Long courseId, Student student, PageParam pageParam);
 	
 	/**
 	 * 查询公告列表
@@ -61,15 +58,22 @@ public interface SystemService {
 	 * @param notice 公告信息，课程id为必须值
 	 * @return
 	 */
-	public ResultData searchNotice(Notice notice);
+	public ResultData searchNotice(Notice notice, PageParam pageParam);
 	
 	/**
 	 * 查询文件&下载文件
 	 * 为教师和学生提供查询文件地址功能
 	 * 
-	 * @param fileId file信息
+	 * @param file file信息
 	 * @return file地址
 	 */
-	public ResultData searchFile(File file);
+	public ResultData searchFile(File file, PageParam pageParam);
+
+	/**
+	 * 查询附件
+	 * @param attachment 附件信息
+	 * @return 附件信息
+	 */
+	public  ResultData searchAttachment(Attachment attachment, PageParam pageParam);
 
 }

@@ -1,5 +1,6 @@
 package com.murmur.controller;
 
+import com.murmur.po.File;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,9 +15,7 @@ import com.murmur.service.TeacherService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/teacher")
@@ -75,35 +74,28 @@ public class TeacherController {
 	
 	@RequestMapping("/addFile")
 	@ResponseBody
-	public ResultData addFile(Long courseId, Long uploaderId, String fileName ,
+	public ResultData addFile(Long courseId, Long uploaderId, String fileName , String fileDescription,
 							  @RequestParam("file") List<MultipartFile> files,
 							  HttpServletRequest req) {
 		System.out.println("courseId:"+courseId+",uploaderId:"+uploaderId+",fileName:"+fileName);
-		if(!files.isEmpty() && files.size() > 0){
-			for(MultipartFile file:files){
-				System.out.println("files:"+file.getName()+file.getOriginalFilename());
-				String originalFileName = file.getOriginalFilename();
+		if(courseId != null && uploaderId != null && StringUtils.isNotBlank(fileName)){
+			if(files.isEmpty() || files.size() > 0){
+				File file = new File();
+				file.setCourseId(courseId);
+				file.setUploaderId(uploaderId);
+				file.setFileName(fileName);
+				if(fileDescription != null)
+					file.setFileDescription(fileDescription);
 				String dirPath = req.getServletContext().getRealPath("/upload/");
-				System.out.println("dirPath: " + dirPath);
-				File filePath = new File(dirPath);
-				if(!filePath.exists()) {
-					filePath.mkdirs();
-				}
-				//使用UUID给文件重新命名（课程id+老师id+uuid+文件名）
-				String newFileName = courseId + "_" + uploaderId + "_" + UUID.randomUUID() + "_" + originalFileName;
-				System.out.println("newFileName: "+newFileName);
-				try {
-					file.transferTo(new File(dirPath + newFileName));
-				} catch (Exception e){
-					e.printStackTrace();
-					resultData.setResult(ResultCodeEnum.FILE_UPLOAD_FAILURE);
-					return resultData;
-				}
+				System.out.println("getServletContext"+req.getServletContext());
+				resultData = teacherService.addFile(file,dirPath,files);
+			} else{
+				resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);  //上传附件为空
 			}
-			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_SUCCESS);
-		} else{
-			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_FAILURE);
+		}else {
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);  //重要参数为空
 		}
+
 		return resultData;
 	}
 	

@@ -13,5 +13,24 @@
     <typeAliases>
         <package name="com.murmur.po"/>
     </typeAliases>
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageHelper">
+            <!-- 设置数据库类型Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL六种数据库-->
+            <property name="helperDialect" value="mysql"/>
+            <!--配置pageNum参数合理化-->
+            <property name="reasonable" value="true"/>
+            <!--配置pageNum参数合理化-->
+            <property name="supportMethodsArguments" value="true"/>
+<!--            <property name="properties">-->
+<!--                <value>-->
+<!--                    helperDialect=mysql-->
+<!--                    reasonable=true-->
+<!--                    supportMethodsArguments=true-->
+<!--                    params=count=countSql-->
+<!--                    autoRuntimeDialect=true-->
+<!--                </value>-->
+<!--            </property>-->
+        </plugin>
+    </plugins>
 
 </configuration>

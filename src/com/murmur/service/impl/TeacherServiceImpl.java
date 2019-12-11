@@ -2,7 +2,9 @@ package com.murmur.service.impl;
 
 
 import java.util.List;
+import java.util.UUID;
 
+import com.murmur.mapper.*;
 import com.murmur.po.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,11 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.murmur.kit.ResultCodeEnum;
 import com.murmur.kit.ResultData;
-import com.murmur.mapper.CourseMapper;
-import com.murmur.mapper.FileMapper;
-import com.murmur.mapper.NoticeMapper;
-import com.murmur.mapper.TeacherMapper;
 import com.murmur.service.TeacherService;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -34,10 +33,15 @@ public class TeacherServiceImpl implements TeacherService {
 	@Autowired
 	private TeacherMapper teacherDao;
 
+	@Autowired
+	private AttachmentMapper attachmentDao;
+
+	public TeacherServiceImpl() {
+		resultData = new ResultData();
+	}
 
 	@Override
 	public ResultData addNotice(Notice notice) {
-		resultData = new ResultData();
 		if(notice != null) {
 			//course外键校验
 			if(!isCourseExist(notice.getCourseId())) {
@@ -64,7 +68,6 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public ResultData deleteNotice(Long id) {
-		resultData = new ResultData();
 		if(id != null) {
 			Notice notice = new Notice();
 			notice.setId(id);
@@ -82,7 +85,6 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public ResultData modifyNotice(Notice notice) {
-		resultData = new ResultData();
 		if(notice != null && notice.getId() > 0) { //course不为空且id存在
 			//公告校验
 			if(!isNoticeExist(notice.getId())) {
@@ -113,35 +115,81 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public ResultData addFile(File file) {
-		resultData = new ResultData();
+	public ResultData addFile(File file,String dirPath,List<MultipartFile> attachments) {
+		boolean isSuccess = false;
+		// 处理file
 		if(file != null) {
 			//course外键校验
-			if(!isCourseExist(file.getCourseId())) {
+			if (!isCourseExist(file.getCourseId())) {
 				resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_COURSE_NOT_EXIST);//课程不存在
 				return resultData;
 			}
 			//teacher外键校验
-			if(!isTeacherExist(file.getUploaderId())) {
+			if (!isTeacherExist(file.getUploaderId())) {
 				resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_TEACHER_NOT_EXIST);//教师不存在
 				return resultData;
 			}
-			
 			int result = fileDao.insert(file);
 			if(result > 0) {
-				resultData.setResult(ResultCodeEnum.DB_ADD_SUCCESS); //添加成功
+				isSuccess = true;
+				System.out.println("fileID:"+file.getId());
 			} else {
-				resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE); //添加失败
+				isSuccess = false;
 			}
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);  //必要参数为空
+			return resultData;
+		}
+
+		// 处理attachment
+		if(!attachments.isEmpty() && attachments.size() > 0){
+			for(MultipartFile attachment : attachments){
+				Attachment myAttachment = new Attachment();
+				String originalFileName = attachment.getOriginalFilename();
+				System.out.println("atttachment:"+originalFileName);
+				System.out.println("dirPath: " + dirPath);
+				java.io.File filePath = new java.io.File(dirPath);
+				if(!filePath.exists()) {
+					filePath.mkdirs();
+				}
+				//使用UUID给附件重新命名（文件id+uuid+附件名）
+				String newFileName = file.getId() + "_" + UUID.randomUUID() + "_" + originalFileName;
+				System.out.println("newFileName: "+newFileName);
+				//将附件添加到文件夹中
+				try {
+					attachment.transferTo(new java.io.File(dirPath + newFileName));
+				} catch (Exception e){
+					e.printStackTrace();
+					resultData.setCode("407");
+					resultData.setMsg("附件："+originalFileName + "，上传失败");
+					return resultData;
+				}
+				//将附件添加到数据库中
+				myAttachment.setAttachmentName(originalFileName);
+				myAttachment.setAttachmentPath("\\blackboard\\upload\\"+newFileName);
+				System.out.println("myAttachmentPath:"+myAttachment.getAttachmentPath());
+				myAttachment.setFileId(file.getId());
+				int result = attachmentDao.insert(myAttachment);
+				if(result > 0) {
+					isSuccess = true;
+				} else {
+					isSuccess = false;
+				}
+			}
+		} else{
+			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);//上传附件为空
+			return resultData;
+		}
+		if(isSuccess){
+			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_SUCCESS);//文件上传成功
+		} else {
+			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_FAILURE);//文件上传失败
 		}
 		return resultData;
 	}
 
 	@Override
 	public ResultData deleteFile(Long id) {
-		resultData = new ResultData();
 		if(id != null) {
 			File file = new File();
 			file.setId(id);

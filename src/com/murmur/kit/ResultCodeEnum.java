@@ -52,6 +52,7 @@ public enum ResultCodeEnum
 	NO_LOGIN_USER("405","退出登录失败_用户未登录"),
 	FILE_UPLOAD_SUCCESS("406","文件上传成功"),
 	FILE_UPLOAD_FAILURE("407","文件上传失败"),
+	FILE_UPLOAD_EMPTY("407","上传附件为空"),
 	FILE_DOWNLOAD_SUCCESS("408","文件下载成功"),
 	FILE_DOWNLOAD_FAILURE("409","文件下载失败");
 	

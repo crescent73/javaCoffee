@@ -1,8 +1,12 @@
 package com.murmur.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.murmur.kit.Data;
+import com.murmur.kit.PageParam;
 import com.murmur.kit.ResultCodeEnum;
 import com.murmur.kit.ResultData;
 import com.murmur.mapper.*;
@@ -18,31 +22,34 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SystemServiceImpl implements SystemService {
 	
-	private ResultData resultData;
-	
+	private ResultData<Data> resultData;
+
 	@Autowired
 	private AdminMapper adminDao;
-	
+
 	@Autowired
 	private TeacherMapper teacherDao;
-	
+
 	@Autowired
 	private StudentMapper studentDao;
-	
+
 	@Autowired
 	private CourseMapper courseDao;
-	
+
 	@Autowired
 	private NoticeMapper noticeDao;
-	
+
 	@Autowired
 	private FileMapper fileDao;
-	
+
 	@Autowired
 	private CourseScheduleMapper courseScheduleDao;
 
+	@Autowired
+	private AttachmentMapper attachmentDao;
+
 	public SystemServiceImpl() {
-		resultData = new ResultData();
+		resultData = new ResultData<Data>();
 	}
 
 	@Override
@@ -89,7 +96,6 @@ public class SystemServiceImpl implements SystemService {
 						throw new IllegalStateException("Unexpected value: " + userType);
 				}
 				data.setData(result);
-				data.setLength(result.size());
 				resultData.setData(data);
 				resultData.setResult(ResultCodeEnum.LOGIN_SUCCESS);  //登陆成功
 			} else {
@@ -168,7 +174,7 @@ public class SystemServiceImpl implements SystemService {
 	}
 
 	@Override
-	public ResultData searchCourse(Long studentId, Course course) {
+	public ResultData searchCourse(Long studentId, Course course, PageParam pageParam) {
 		if(course == null) {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
 			return resultData;
@@ -176,15 +182,26 @@ public class SystemServiceImpl implements SystemService {
 		System.out.println("studentId:"+studentId+",course:"+course);
 		List<CourseDetail> courses;
 		if(studentId != null) {//查询学生的课程列表
+			if(pageParam != null && pageParam.isPaginate()){//是否分页
+				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
+			}
 			courses = courseScheduleDao.findCourseByStudentId((long)(studentId));
 		} else {
+			if(pageParam.isPaginate()){//是否分页
+				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
+			}
 			courses = courseDao.find(course);
 		}
 		System.out.println(courses);
 		if(courses.size() > 0) {
 			Data<List<CourseDetail>> data = new Data<List<CourseDetail>>();
-			data.setData(courses);
-			data.setLength(courses.size());
+			if(pageParam != null && pageParam.isPaginate()){
+				PageInfo<CourseDetail> pageInfo = new PageInfo<>(courses);
+				data.setData(pageInfo);
+				data.setData(pageInfo.getList());
+			} else {
+				data.setData(courses);
+			}
 			resultData.setData(data);
 			resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
 		} else {
@@ -194,21 +211,33 @@ public class SystemServiceImpl implements SystemService {
 	}
 
 	@Override
-	public ResultData searchStudent(Long courseId, Student student) {
+	public ResultData searchStudent(Long courseId, Student student, PageParam pageParam) {
 		if(student == null) {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
 			return resultData;
 		}
 		List<Student> students;
 		if(courseId != null) {//查询某课程下的学生列表
+			if(pageParam != null && pageParam.isPaginate()){//是否分页
+				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
+			}
 			students = courseScheduleDao.findStudentByCourseId(courseId);
 		} else {
+			if(pageParam != null && pageParam.isPaginate()){//是否分页
+				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
+			}
 			students = studentDao.find(student);
 		}
 		System.out.println(students);
 		if(students.size() > 0) {
 			Data<List<Student>> data = new Data<List<Student>>();
-			data.setData(students);
+			if(pageParam != null && pageParam.isPaginate()){
+				PageInfo<Student> pageInfo = new PageInfo<>(students);
+				data.setData(pageInfo);
+				data.setData(pageInfo.getList());
+			} else {
+				data.setData(students);
+			}
 			resultData.setData(data);
 			resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
 		} else {
@@ -218,13 +247,21 @@ public class SystemServiceImpl implements SystemService {
 	}
 
 	@Override
-	public ResultData searchNotice(Notice notice) {
+	public ResultData searchNotice(Notice notice, PageParam pageParam) {
 		if(notice != null) {
+			if(pageParam != null && pageParam.isPaginate()){
+				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
+			}
 			List<NoticeDetail> notices = noticeDao.find(notice);
 			if(notices.size()>0) {
 				Data<List<NoticeDetail>> data = new Data<List<NoticeDetail>>();
-				data.setData(notices);
-				data.setLength(notices.size());
+				if(pageParam != null && pageParam.isPaginate()){
+					PageInfo<NoticeDetail> pageInfo = new PageInfo<>(notices);
+					data.setData(pageInfo);
+					data.setData(pageInfo.getList());
+				} else {
+					data.setData(notices);
+				}
 				resultData.setData(data);
 				resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
 			} else {
@@ -237,19 +274,55 @@ public class SystemServiceImpl implements SystemService {
 	}
 
 	@Override
-	public ResultData searchFile(File file) {
-		if(file != null) {		
+	public ResultData searchFile(File file, PageParam pageParam) {
+		if(file != null) {
+			if(pageParam != null && pageParam.isPaginate()){
+				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
+			}
 			List<FileDetail> files = fileDao.find(file);
 			if(files.size() > 0) {
 				Data<List<FileDetail>> data = new Data<List<FileDetail>>();
-				data.setData(files);
-				data.setLength(files.size());
+				if(pageParam != null && pageParam.isPaginate()){
+					PageInfo<FileDetail> pageInfo = new PageInfo<>(files);
+					data.setData(pageInfo);
+					data.setData(pageInfo.getList());
+				} else {
+					data.setData(files);
+				}
 				resultData.setData(data);
 				resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
 			} else {
 				resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE); //查找失败
 			}
 		} else {
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);  //必要请求参数为空
+		}
+		return resultData;
+	}
+
+	@Override
+	public ResultData searchAttachment(Attachment attachment, PageParam pageParam) {
+		if(attachment != null){
+			//是否分页
+			if(pageParam != null && pageParam.isPaginate()){
+				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
+			}
+			List<Attachment> attachments = attachmentDao.find(attachment);
+			if(attachments.size() >0){
+				Data<List<Attachment>> data = new Data<List<Attachment>>();
+				if(pageParam != null && pageParam.isPaginate()){
+					PageInfo<Attachment> pageInfo = new PageInfo<>(attachments);
+					data.setData(pageInfo);
+					data.setData(pageInfo.getList());
+				} else {
+					data.setData(attachments);
+				}
+				resultData.setData(data);
+				resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
+			}else {
+				resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE); //查找失败
+			}
+		}else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);  //必要请求参数为空
 		}
 		return resultData;

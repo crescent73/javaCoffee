@@ -6,11 +6,11 @@ package com.murmur.kit;
  * msg: 结果提示信息
  * data:结果数据信息
  */
-public class ResultData {
+public class ResultData<T> {
 	
     private String code; //结果返回码
     private String msg;  //结果提示信息
-    private Data data; //结果数据信息
+    private T data; //结果数据信息
 
 	public ResultData(){
 
@@ -29,10 +29,10 @@ public class ResultData {
 		this.msg = msg;
 	}
 	
-	public Data getData() {
+	public T getData() {
 		return data;
 	}
-	public void setData(Data data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 	

@@ -1,6 +1,9 @@
 package com.murmur.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.murmur.kit.Data;
+import com.murmur.kit.PageParam;
 import com.murmur.kit.ResultCodeEnum;
 import com.murmur.kit.ResultData;
 import com.murmur.mapper.CourseMapper;
@@ -21,7 +24,7 @@ import java.util.List;
 @Service("adminService")
 @Transactional
 public class AdminServiceImpl implements AdminService {
-    private ResultData resultData;
+    private ResultData<Data> resultData;
 
     @Autowired
     private CourseMapper courseDao;
@@ -33,7 +36,7 @@ public class AdminServiceImpl implements AdminService {
     private StudentMapper studentDao;
 
     public AdminServiceImpl() {
-        resultData = new ResultData();
+        resultData = new ResultData<Data>();
     }
 
     @Override
@@ -159,12 +162,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ResultData searchTeacher(Teacher teacher) {
+    public ResultData searchTeacher(Teacher teacher, PageParam pageParam) {
+        if(pageParam != null && pageParam.isPaginate()){//是否分页
+            PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
+        }
         List<Teacher> teachers = teacherDao.find(teacher);
         if(teachers.size() > 0) {
             Data<List<Teacher>> data = new Data<List<Teacher>>();
-            data.setData(teachers);
-            data.setLength(teachers.size());
+            if(pageParam != null && pageParam.isPaginate()){
+                PageInfo<Teacher> pageInfo = new PageInfo<>(teachers);
+                data.setData(pageInfo);
+                data.setData(pageInfo.getList());
+            } else {
+                data.setData(teachers);
+            }
             resultData.setData(data);
             resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
         } else {
@@ -215,7 +226,7 @@ public class AdminServiceImpl implements AdminService {
     /**
      * 判断老师是否存在
      * 外键约束条件，若老师不存在插入修改报错
-     * @param teacherId
+     * @param teacherId 教师id
      * @return 存在 true 不存在 false
      */
     private boolean isTeacherExist(Long teacherId,String teacherNumber) {
@@ -228,10 +239,7 @@ public class AdminServiceImpl implements AdminService {
         	teacher.setTeacherNumber(teacherNumber);
         	teachers = teacherDao.find(teacher);
         }
-        if(teacher!= null && teachers.size() == 1) 
-        	return true;
-        else 
-        	return false;
+        return teachers != null && teachers.size() == 1;
     }
     
     private boolean isStudentExist(String studentNumber) {
@@ -241,11 +249,8 @@ public class AdminServiceImpl implements AdminService {
     		student.setStudentNumber(studentNumber);
     		students = studentDao.find(student);
     	}
-    	
-    	if(student != null && students.size() == 1)
-    		return true;
-    	else
-    		return false;
+
+        return students != null && students.size() == 1;
     }
     
 

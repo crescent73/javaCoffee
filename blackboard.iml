@@ -255,5 +255,6 @@
     </orderEntry>
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="commons-lang3-3.4" level="project" />
+    <orderEntry type="library" name="spring-web-4.1.3.RELEASE" level="project" />
   </component>
 </module>

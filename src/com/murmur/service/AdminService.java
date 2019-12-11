@@ -1,6 +1,7 @@
 package com.murmur.service;
 
 
+import com.murmur.kit.PageParam;
 import com.murmur.kit.ResultData;
 import com.murmur.po.Course;
 import com.murmur.po.Student;
@@ -47,7 +48,7 @@ public interface AdminService {
 	 * @param teacher
 	 * @return
 	 */
-	public ResultData searchTeacher(Teacher teacher);
+	public ResultData searchTeacher(Teacher teacher, PageParam pageParam);
 	
 	/**
 	 * 添加学生
