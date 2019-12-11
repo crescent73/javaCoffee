@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add Teacher</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- 引用vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Select2 -->
+    <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+</head>
+
+<body  style="background-color: #f4f6f9">
+<div class="content" id="content">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">教师管理</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="home.html">主页</a></li>
+                        <li class="breadcrumb-item active">添加教师</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">添加教师</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="teacher_name_input">教师名</label>
+                            <input type="text" class="form-control" id="teacher_name_input" placeholder="输入教师名">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="teacher_number_input">教师工号</label>
+                            <input type="text" class="form-control" id="teacher_number_input" placeholder="输入教师工号">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="teacher_school_select">学院</label>
+                            <select id="teacher_school_select" class="form-control select2" data-placeholder="选择教师所属学院">
+                                <option value="1">信息与安全工程学院</option>
+                                <option value="2">马克思主义学院</option>
+                                <option value="3">哲学院</option>
+                                <option value="4">经济学院</option>
+                                <option value="5">财政税务学院</option>
+                                <option value="6">金融学院</option>
+                                <option value="7">法学院</option>
+                                <option value="8">刑事司法学院</option>
+                                <option value="9">外国语学院</option>
+                                <option value="10">新闻与文化传播学院</option>
+                                <option value="11">工商管理学院</option>
+                                <option value="12">文澜学院</option>
+                                <option value="13">会计学院</option>
+                                <option value="14">统计与数学学院</option>
+                                <option value="15">中韩新媒体学院</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="teacher_title_input">教师职称</label>
+                            <textarea type="text" class="form-control" id="teacher_title_input" placeholder="输入课程描述">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+<!-- jQuery -->
+<script src="../plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../dist/js/adminlte.min.js"></script>
+
+
+<!-- Select2 -->
+<script src="../plugins/select2/js/select2.full.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#teacher_school_select").select2({
+            theme: 'bootstrap4'
+        });
+    });
+</script>
+
+</html>
