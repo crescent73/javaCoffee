@@ -14,6 +14,11 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- 引用vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
 </head>
 
 <body  style="background-color: #f4f6f9">
@@ -34,53 +39,114 @@
         </div>
     </div>
     <div class="content">
-        <div class="card card-primary">
+        <div class="card card-default">
             <div class="card-header">
                 <h3 class="card-title">添加课程</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                </div>
             </div>
 
-            <form role="form">
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="course_name_input">课程名</label>
-                        <input type="text" class="form-control" id="course_name_input" placeholder="输入课程名">
-                    </div>
-                    <div class="form-group">
-                        <label for="course_number_input">课程号</label>
-                        <input type="text" class="form-control" id="course_number_input" placeholder="输入课程号">
-                    </div>
-                    <div class="form-group">
-                        <label for="course_school_input">学院</label>
-                        <input type="text" class="form-control" id="course_school_input" placeholder="输入课程学院">
-                    </div>
-                    <div class="form-group">
-                        <label for="course_semester_input">学期</label>
-                        <input type="text" class="form-control" id="course_semester_input" placeholder="输入课程学期">
-                    </div>
-                    <div class="form-group">
-                        <label for="course_type_input">课程类型</label>
-                        <input type="text" class="form-control" id="course_type_input" placeholder="输入课程类型">
-                    </div>
-                    <div class="form-group">
-                        <label for="course_credit_input">课程学分</label>
-                        <input type="text" class="form-control" id="course_credit_input" placeholder="输入课程学分">
-                    </div>
-                    <div class="form-group">
-                        <label for="course_description_input">课程描述</label>
-                        <input type="text" class="form-control" id="course_description_input" placeholder="输入课程描述">
-                    </div>
-                    <div class="form-group">
-                        <label for="course_teacher_input">课程教师</label>
-                        <input type="text" class="form-control" id="course_teacher_input" placeholder="输入授课教师工号">
-                    </div>
+            <div class="card-body">
 
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="course_name_input">课程名</label>
+                            <input type="text" class="form-control" id="course_name_input" placeholder="输入课程名">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="course_number_input">课程号</label>
+                            <input type="text" class="form-control" id="course_number_input" placeholder="输入课程号">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="course_credit_input">课程学分</label>
+                            <input type="text" class="form-control" id="course_credit_input" placeholder="输入课程学分">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="course_school_select">学院</label>
+                            <select id="course_school_select" class="form-control select2" data-placeholder="选择课程所属学院">
+                                <option value="1">信息与安全工程学院</option>
+                                <option value="2">马克思主义学院</option>
+                                <option value="3">哲学院</option>
+                                <option value="4">经济学院</option>
+                                <option value="5">财政税务学院</option>
+                                <option value="6">金融学院</option>
+                                <option value="7">法学院</option>
+                                <option value="8">刑事司法学院</option>
+                                <option value="9">外国语学院</option>
+                                <option value="10">新闻与文化传播学院</option>
+                                <option value="11">工商管理学院</option>
+                                <option value="12">文澜学院</option>
+                                <option value="13">会计学院</option>
+                                <option value="14">统计与数学学院</option>
+                                <option value="15">中韩新媒体学院</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="course_semester_select">学期</label>
+                            <select id="course_semester_select" class="form-control select2" data-placeholder="选择课程开课学期">
+                                <option value="1">2020-1</option>
+                                <option value="2">2020-2</option>
+                                <option value="3">2021-1</option>
+                                <option value="4">2021-2</option>
+                            </select>
+                        </div>
+                    </div>
 
                 </div>
 
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="course_type_select">课程类型</label>
+                            <select id="course_type_select" class="form-control select2" data-placeholder="选择课程类型">
+                                <option value="1">必修课</option>
+                                <option value="2">选修课</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="course_teacher_select">授课教师</label>
+                            <select id="course_teacher_select" class="form-control select2" data-placeholder="选择任课教师">
+                                <option value="1">Tom</option>
+                                <option value="2">Jerry</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </form>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="course_description_input">课程描述</label>
+                            <textarea type="text" class="form-control" id="course_description_input" placeholder="输入课程描述">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
         </div>
     </div>
 
@@ -94,4 +160,23 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<!-- Select2 -->
+<script src="../plugins/select2/js/select2.full.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#course_school_select").select2({
+            theme: 'bootstrap4'
+        });
+        $("#course_semester_select").select2({
+            theme: 'bootstrap4'
+        });
+        $("#course_teacher_select").select2({
+            theme: 'bootstrap4'
+        });
+        $("#course_type_select").select2({
+            theme: 'bootstrap4'
+        });
+    });
+</script>
 </html>
