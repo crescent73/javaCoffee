@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coffee.mapper.NoticeMapper">
+
+    <select id="find" parameterType="Notice" resultType="NoticeDetail">
+        select notice.*,teacher.teacher_name
+        from notice,teacher
+        <where>
+        and notice.publisher_id = teacher.id
+            <if test="id != null">
+                and notice.id = #{id}
+            </if>
+            <if test="courseId != null">
+                and course_id = #{courseId}
+            </if>
+            <if test="publisherId != null">
+                and publisher_id = #{publisherId}
+            </if>
+            <if test="noticeLevel != null">
+                <if test="noticeLevel != '' ">
+                    and notice_level = #{noticeLevel}
+                </if>
+            </if>
+            <if test="noticeContent != null">
+                <if test="noticeContent != '' ">
+                    and notice_content like #{noticeContent}
+                </if>
+            </if>
+            <if test="publishDate != null">
+                and publish_date = #{publisDate}
+            </if>
+            <if test="noticeTitle != null ">
+                <if test="noticeTitle != '' ">
+                    and notice_tilte like #{noticeTitle}
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="Notice">
+        update notice
+        <set>
+            <if test="courseId != null">
+                course_id = #{courseId},
+            </if>
+            <if test="publisherId != null">
+                publisher_id = #{publisherId},
+            </if>
+            <if test="noticeLevel != null">
+                notice_level = #{noticeLevel},
+            </if>
+            <if test="noticeContent != null">
+                notice_content = #{noticeContent},
+            </if>
+            <if test="publishDate != null">
+                publish_date = #{publisDate},
+            </if>
+            <if test="noticeTitle != null">
+                notice_tilte = #{noticeTitle},
+            </if>
+        </set>
+
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+        </where>
+    </update>
+
+    <insert id="insert" parameterType="Notice">
+        insert into notice(course_id, publisher_id, notice_level, notice_content, publish_date, notice_title)
+        values (#{courseId}, #{publisherId}, #{noticeLevel}, #{noticeContent}, #{publishDate}, #{noticeTitle})
+    </insert>
+
+    <delete id="delete" parameterType="Notice">
+        delete from notice
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+        </where>
+    </delete>
+
+</mapper>

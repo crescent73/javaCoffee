@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coffee.mapper.AttachmentMapper">
+
+    <select id="find" resultType="Attachment" parameterType="Attachment">
+        select * from attachment
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="fileId != null">
+                and file_id = #{fileId}
+            </if>
+            <if test="attachmentName != null">
+                and attachment_name = #{attachmentName}
+            </if>
+            <if test="attachmentPath != null">
+                and attachment_path = #{attachmentPath}
+            </if>
+            <if test="uploadDate != null">
+                and upload_date = #{uploadDate}
+            </if>
+            <if test="updateDate != null">
+                and update_date = #{updateDate}
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="Attachment">
+        update attachment
+        <set>
+            <if test="fileId != null">
+                and file_id = #{fileId}
+            </if>
+            <if test="attachmentName != null">
+                and attachment_name = #{attachmentName}
+            </if>
+            <if test="attachmentPath != null">
+                and attachment_path = #{attachmentPath}
+            </if>
+        </set>
+        <where>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="Attachment">
+        delete from attachment
+        <where>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+    </delete>
+
+    <insert id="insert" parameterType="Attachment">
+        insert into attachment(file_id, attachment_name, attachment_path)
+        value(#{fileId}, #{attachmentName}, #{attachmentPath})
+    </insert>
+
+</mapper>

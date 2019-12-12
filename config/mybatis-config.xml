@@ -11,7 +11,7 @@
         <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
     <typeAliases>
-        <package name="com.murmur.po"/>
+        <package name="com.coffee.po"/>
     </typeAliases>
     <plugins>
         <plugin interceptor="com.github.pagehelper.PageHelper">

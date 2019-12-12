@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coffee.mapper.StudentMapper">
+
+    <select id="find" parameterType="Student" resultType="Student">
+        select * from student
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="studentName != null">
+                and student_name like #{studentName}
+            </if>
+            <if test="studentNumber != null">
+                and student_number like #{studentNumber}
+            </if>
+            <if test="studentEmail != null">
+                and student_email like #{studentEmail}
+            </if>
+            <if test="studentClass != null">
+                and student_class = #{studentClass}
+            </if>
+            <if test="studentSchool != null">
+                and student_school = #{studentSchool}
+            </if>
+            <if test="studentGrade != null">
+                and student_grade = #{studentGrade}
+            </if>
+            <if test="studentPassword != null">
+                and student_password = #{studentPassword}
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="Student">
+        update student
+        <set>
+            <if test="studentName != null">
+                student_name = #{studentName},
+            </if>
+            <if test="studentEmail != null">
+                student_email = #{studentEmail},
+            </if>
+            <if test="studentClass != null">
+                student_class = #{studentClass},
+            </if>
+            <if test="studentSchool != null">
+                student_school = #{studentSchool},
+            </if>
+            <if test="studentGrade != null">
+                student_grade = #{studentGrade},
+            </if>
+            <if test="studentPassword != null">
+                student_password = #{studentPassword},
+            </if>
+        </set>
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="Student">
+        delete from student
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+        </where>
+    </delete>
+
+    <insert id="insert" parameterType="Student">
+        insert into student(
+            student_name, student_number, student_class,
+            student_email, student_school, student_password,
+            student_grade)
+        values(#{studentName}, #{studentNumber}, #{studentClass},
+            #{studentEmail}, #{studentSchool}, #{studentPassword},
+            #{studentGrade}
+        )
+    </insert>
+
+</mapper>

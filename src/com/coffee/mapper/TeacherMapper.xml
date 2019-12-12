@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coffee.mapper.TeacherMapper">
+
+    <select id="find" resultType="Teacher" parameterType="Teacher">
+        select * from teacher
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="teacherNumber != null">
+                and teacher_number like #{teacherNumber}
+            </if>
+            <if test="teacherName != null">
+                and teacher_name like #{teacherName}
+            </if>
+            <if test="teacherSchool != null">
+                and teacher_school = #{teacherSchool}
+            </if>
+            <if test="teacherTitle != null">
+                and teacher_title = #{teacherTitle}
+            </if>
+            <if test="teacherEmail != null">
+                and teacher_email like #{teacherEmail}
+            </if>
+            <if test="teacherPassword != null">
+                and teacher_password = #{teacherPassword}
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="Teacher">
+        update teacher
+        <set>
+            <if test="teacherNumber != null">
+                teacher_number = #{teacher_number},
+            </if>
+            <if test="teacherName != null">
+                teacher_name = #{teacherName},
+            </if>
+            <if test="teacherSchool != null">
+                teacher_school = #{teacherSchool},
+            </if>
+            <if test="teacherTitle != null">
+                teacher_title = #{teacherTitle},
+            </if>
+            <if test="teacherEmail != null">
+                teacher_email = #{teacherEmail},
+            </if>
+            <if test="teacherPassword != null">
+                teacher_password = #{teacherPassword},
+            </if>
+        </set>
+
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="Teacher">
+        delete from teacher
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="id == null">
+                and 1 != 1
+            </if>
+        </where>
+    </delete>
+
+    <insert id="insert" parameterType="Teacher">
+        insert into teacher(teacher_name, teacher_number, teacher_school, teacher_email, teacher_password, teacher_title)
+        values (#{teacherName}, #{teacherNumber}, #{teacherSchool}, #{teacherEmail}, #{teacherPassword}, #{teacherTitle})
+    </insert>
+
+</mapper>
