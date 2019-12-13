@@ -1,6 +1,5 @@
 package com.coffee.controller;
 
-import com.coffee.constant.FileStorage;
 import com.coffee.po.File;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import com.coffee.kit.ResultData;
 import com.coffee.service.TeacherService;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -69,15 +67,13 @@ public class TeacherController {
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
-		
 		return resultData;
 	}
 	
 	@RequestMapping("/addFile")
 	@ResponseBody
 	public ResultData addFile(Long courseId, Long uploaderId, String fileName , String fileDescription,
-							  @RequestParam("file") List<MultipartFile> files,
-							  HttpServletRequest req) {
+							  @RequestParam("file") List<MultipartFile> files) {
 		System.out.println("courseId:"+courseId+",uploaderId:"+uploaderId+",fileName:"+fileName);
 		if(courseId != null && uploaderId != null && StringUtils.isNotBlank(fileName)){
 			if(files != null && files.size() > 0){
@@ -87,9 +83,7 @@ public class TeacherController {
 				file.setFileName(fileName);
 				if(fileDescription != null)
 					file.setFileDescription(fileDescription);
-				String dirPath = req.getServletContext().getRealPath(FileStorage.FILE_STORAGE_PATH);
-				System.out.print("dirPath"+dirPath);
-				resultData = teacherService.addFile(file,dirPath,files);
+				resultData = teacherService.addFile(file,files);
 			} else{
 				resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);  //上传附件为空
 			}
@@ -102,29 +96,24 @@ public class TeacherController {
 
 	@RequestMapping("/addAttachment")
 	@ResponseBody
-	public ResultData addAttachment(Long fileId, @RequestParam("file") List<MultipartFile> files,
-							  HttpServletRequest req) {
+	public ResultData addAttachment(Long fileId, @RequestParam("file") List<MultipartFile> files) {
 		if(fileId != null){
 			if(files != null && files.size() > 0){
-				String dirPath = req.getServletContext().getRealPath(FileStorage.FILE_STORAGE_PATH);
-				System.out.print("dirPath"+dirPath);
-				resultData = teacherService.addAttachment(fileId,dirPath,files);
+				resultData = teacherService.addAttachment(fileId,files);
 			} else{
 				resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);  //上传附件为空
 			}
 		}else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);  //重要参数为空
 		}
-
 		return resultData;
 	}
 	
 	@RequestMapping("/deleteFile")
 	@ResponseBody
-	public ResultData deleteFile(Long fileId,HttpServletRequest req) {
+	public ResultData deleteFile(Long fileId) {
 		if(fileId != null) {
-			String dirPath = req.getServletContext().getRealPath("\\");
-			resultData = teacherService.deleteFile(fileId,dirPath);
+			resultData = teacherService.deleteFile(fileId);
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
@@ -133,10 +122,9 @@ public class TeacherController {
 
 	@RequestMapping("/deleteAttachment")
 	@ResponseBody
-	public ResultData deleteAttachment(Long attachmentId,HttpServletRequest req) {
+	public ResultData deleteAttachment(Long attachmentId) {
 		if(attachmentId != null) {
-			String dirPath = req.getServletContext().getRealPath("\\");
-			resultData = teacherService.deleteAttachment(attachmentId, dirPath);
+			resultData = teacherService.deleteAttachment(attachmentId);
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}

@@ -17,6 +17,7 @@ public enum ResultCodeEnum
 	DB_ADD_SUCCESS("202","添加成功"),
 	DB_ADD_FAILURE("203","添加失败"),
 	DB_ADD_FAILURE_TEACHER_NOT_EXIST("203","添加失败_老师不存在"),
+	DB_ADD_FAILURE_STUDENT_NOT_EXIST("203","添加失败_学生不存在"),
 	DB_ADD_FAILURE_COURSE_NOT_EXIST("203","添加失败_课程不存在"),
 	DB_ADD_FAILURE_TEACHER_ALREADY_EXIST("203","添加失败_老师已存在"),
 	DB_ADD_FAILURE_STUDENT_ALREADY_EXIST("203","添加失败_学生已存在"),

@@ -1,11 +1,10 @@
 package com.coffee.service;
 
 
-import com.coffee.po.PageParam;
+import com.coffee.po.*;
 import com.coffee.kit.ResultData;
-import com.coffee.po.Course;
-import com.coffee.po.Student;
-import com.coffee.po.Teacher;
+
+import java.util.List;
 
 public interface AdminService {
 	/**
@@ -65,5 +64,22 @@ public interface AdminService {
 	public ResultData deleteStudent(Long id);
 
 	public ResultData searchTeacherByKey(String searchKey);
+
+	/**
+	 * 添加选课表
+	 * 支持一个学生添加多个课程
+	 * 一个课程添加多个学生
+	 * @param studentId 学生id列表
+	 * @param courseId 课程id列表
+	 * @return
+	 */
+	public ResultData addCourseSchedule(List<Long> studentId, List<Long> courseId);
+
+	/**
+	 * 删除选课
+	 * @param id 选课id
+	 * @return
+	 */
+	public ResultData deleteCourseSchedule(Long id);
 
 }

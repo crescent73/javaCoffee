@@ -2,6 +2,7 @@ package com.coffee.service.impl;
 
 import java.util.List;
 
+import com.coffee.constant.FileStorage;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.coffee.kit.Data;
@@ -301,13 +302,12 @@ public class SystemServiceImpl implements SystemService {
 
 	/**
 	 * 下载附件
-	 * @param dirPath 附件地址
 	 * @param attachmentId 附件id
 	 * @return 如果查询到了附件，则会返回AttachmentDetail
 	 *         如果没有查询到附件，则会返回null
 	 */
 	@Override
-	public AttachmentDetail downloadAttachment(String dirPath, Long attachmentId) {
+	public AttachmentDetail downloadAttachment(Long attachmentId) {
 		if(attachmentId != null){
 			Attachment attachment = new Attachment();
 			attachment.setId(attachmentId);
@@ -316,7 +316,7 @@ public class SystemServiceImpl implements SystemService {
 				AttachmentDetail attachmentDetail = new AttachmentDetail();
 				attachmentDetail.setAttachmentInfo(attachments.get(0));
 
-				java.io.File attachmentFile = new java.io.File(dirPath+attachmentDetail.getAttachmentPath());
+				java.io.File attachmentFile = new java.io.File(FileStorage.DOWNLOAD_DIRPATH+attachmentDetail.getAttachmentPath());
 				attachmentDetail.setFile(attachmentFile);
 				System.out.println("attachmentDetail"+attachmentDetail);
 				return attachmentDetail;

@@ -33,11 +33,10 @@ public interface TeacherService {
 	/**
 	 * 添加文件
 	 * @param file 文件信息
-	 * @param dirPath 附件寸尺地址
 	 * @param attachments 附件列表
 	 * @return
 	 */
-	public ResultData addFile(File file, String dirPath, List<MultipartFile> attachments);
+	public ResultData addFile(File file, List<MultipartFile> attachments);
 
 	/**
 	 * 添加附件
@@ -45,20 +44,20 @@ public interface TeacherService {
 	 * @param attachments 附件
 	 * @return
 	 */
-	public ResultData addAttachment(Long fileId, String dirPath, List<MultipartFile> attachments);
+	public ResultData addAttachment(Long fileId, List<MultipartFile> attachments);
 	
 	/**
 	 * 删除文档，包括文档下的附件
 	 * @param id 文档id
 	 * @return
 	 */
-	public ResultData deleteFile(Long id, String dirPath);
+	public ResultData deleteFile(Long id);
 
 	/**
 	 * 删除附件
 	 * @param id 附件id
 	 * @return
 	 */
-	public ResultData deleteAttachment(Long id, String dirPath);
+	public ResultData deleteAttachment(Long id);
 
 }

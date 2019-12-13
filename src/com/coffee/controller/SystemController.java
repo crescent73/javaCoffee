@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.coffee.kit.ResultCodeEnum;
 import com.coffee.kit.ResultData;
 import com.coffee.service.SystemService;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -128,11 +126,9 @@ public class SystemController {
 	
 	@RequestMapping("/downloadAttachment")
 	@ResponseBody
-	public ResponseEntity downloadAttachment(Long attachmentId, HttpServletRequest req) {
+	public ResponseEntity downloadAttachment(Long attachmentId) {
 		if (attachmentId != null) {
-			String dirPath = req.getServletContext().getRealPath("\\");
-			System.out.println(dirPath);
-			AttachmentDetail attachmentDetail = systemService.downloadAttachment(dirPath, attachmentId);
+			AttachmentDetail attachmentDetail = systemService.downloadAttachment(attachmentId);
 			System.out.println(attachmentDetail);
 			if(attachmentDetail != null) {
 				InputStreamResource resource;

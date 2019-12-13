@@ -14,10 +14,14 @@ public class Interceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object o) throws Exception {
-        if(FileStorage.DIRPATH == null){
-//            String dirPath = ;
-            FileStorage.DIRPATH = req.getServletContext().getRealPath("\\");
-            System.out.println("DIRPATH："+FileStorage.DIRPATH);
+        // 设置basePath
+        if(FileStorage.DOWNLOAD_DIRPATH == null){
+            FileStorage.DOWNLOAD_DIRPATH = req.getServletContext().getRealPath("\\");
+            System.out.println("DOWNLOAD_DIRPATH："+FileStorage.DOWNLOAD_DIRPATH);
+        }
+        if(FileStorage.UPLOAD_DIRPATH == null){
+            FileStorage.UPLOAD_DIRPATH = req.getServletContext().getRealPath(FileStorage.FILE_STORAGE_PATH);
+            System.out.println("UPLOAD_DIRPATH："+FileStorage.UPLOAD_DIRPATH);
         }
 
         //打印请求
@@ -36,12 +40,14 @@ public class Interceptor implements HandlerInterceptor {
         } else {
             //非登录请求
             //验证session
+            HttpSession session = req.getSession();
+            System.out.println("session:"+session);
             //验证token
+
             //如果验证不通过，会重定向到login界面
             System.out.println("do not login");
         }
-        HttpSession session = req.getSession();
-        System.out.println("session:"+session);
+
         return true;
     }
 

@@ -116,7 +116,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public ResultData addFile(File file,String dirPath,List<MultipartFile> attachments) {
+	public ResultData addFile(File file,List<MultipartFile> attachments) {
 		boolean isSuccess = false;
 		// 处理file
 		if(file != null) {
@@ -139,7 +139,7 @@ public class TeacherServiceImpl implements TeacherService {
 			return resultData;
 		}
 		//调用添加附件！
-		resultData = addAttachment(file.getId(),dirPath,attachments);
+		resultData = addAttachment(file.getId(),attachments);
 		if(isSuccess && resultData.getCode().equals("406")){
 			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_SUCCESS);//文件上传成功
 		} else {
@@ -149,15 +149,15 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public ResultData addAttachment(Long fileId, String dirPath, List<MultipartFile> attachments) {
+	public ResultData addAttachment(Long fileId, List<MultipartFile> attachments) {
 		// 处理attachment
 		if(attachments !=null && !attachments.isEmpty() && attachments.size() > 0){
 			for(MultipartFile attachment : attachments){
 				Attachment myAttachment = new Attachment();
 				String originalFileName = attachment.getOriginalFilename();
 //				System.out.println("atttachment:"+originalFileName);
-				System.out.println("dirPath: " + dirPath);
-				java.io.File filePath = new java.io.File(dirPath);
+				System.out.println("dirPath: " + FileStorage.UPLOAD_DIRPATH);
+				java.io.File filePath = new java.io.File(FileStorage.UPLOAD_DIRPATH);
 				if(!filePath.exists()) {
 					filePath.mkdirs();
 				}
@@ -166,7 +166,7 @@ public class TeacherServiceImpl implements TeacherService {
 				System.out.println("newFileName: "+newFileName);
 				//将附件添加到文件夹中
 				try {
-					attachment.transferTo(new java.io.File(dirPath +"\\"+ newFileName));
+					attachment.transferTo(new java.io.File(FileStorage.UPLOAD_DIRPATH +"\\"+ newFileName));
 				} catch (Exception e){
 					e.printStackTrace();
 					resultData.setCode("407");
@@ -193,14 +193,14 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public ResultData deleteFile(Long id, String dirPath) {
+	public ResultData deleteFile(Long id) {
 		if(id != null) {
 			//先删除附件
 			Attachment attachment = new Attachment();
 			attachment.setFileId(id);
 			List<Attachment> attachments = attachmentDao.find(attachment);
 			for(Attachment item : attachments){
-				resultData = deleteAttachment(item.getId(),dirPath);
+				resultData = deleteAttachment(item.getId());
 				if(!resultData.getCode().equals("204")){
 					resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE);
 					return resultData;
@@ -222,7 +222,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public ResultData deleteAttachment(Long id, String dirPath) {
+	public ResultData deleteAttachment(Long id) {
 		if(id != null) {
 			Attachment attachment = new Attachment();
 			attachment.setId(id);
@@ -231,7 +231,7 @@ public class TeacherServiceImpl implements TeacherService {
 			if(attachments.size() == 1) {
 				attachment = attachments.get(0);
 				//删除文件
-				java.io.File attachmentFile = new java.io.File(dirPath+attachment.getAttachmentPath());
+				java.io.File attachmentFile = new java.io.File(FileStorage.DOWNLOAD_DIRPATH+attachment.getAttachmentPath());
 				System.out.println(attachmentFile);
 				if (attachmentFile.exists() && attachmentFile.isFile()) {
 					if (attachmentFile.delete()) {

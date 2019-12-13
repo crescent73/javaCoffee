@@ -1,17 +1,15 @@
 package com.coffee.service.impl;
 
+import com.coffee.mapper.CourseScheduleMapper;
+import com.coffee.po.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.coffee.kit.Data;
-import com.coffee.po.PageParam;
 import com.coffee.kit.ResultCodeEnum;
 import com.coffee.kit.ResultData;
 import com.coffee.mapper.CourseMapper;
 import com.coffee.mapper.StudentMapper;
 import com.coffee.mapper.TeacherMapper;
-import com.coffee.po.Course;
-import com.coffee.po.Student;
-import com.coffee.po.Teacher;
 import com.coffee.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +32,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private StudentMapper studentDao;
+
+    @Autowired
+    private CourseScheduleMapper courseScheduleDao;
 
     public AdminServiceImpl() {
         resultData = new ResultData<Data>();
@@ -265,5 +266,113 @@ public class AdminServiceImpl implements AdminService {
             resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE);  //查找失败
         }
         return resultData;
+    }
+
+    @Override
+    public ResultData addCourseSchedule(List<Long> studentId, List<Long> courseId) {
+        if(studentId == null || courseId == null){
+            resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //重要请求参数为空
+            return resultData;
+        }
+        //判断，是为学生添加老师还是为老师添加学生
+
+        int result;
+        if(courseId.size() == 1) {
+            // 为一个课程添加多个学生
+            //课程的外键检验
+            if(!isCourseExist(courseId.get(0))){
+                resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_COURSE_NOT_EXIST);//课程不存在
+                return resultData;
+            }
+            for(Long student:studentId){
+                //学生的外键检验
+                if(!isStudentExist(student)){
+                    resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_STUDENT_NOT_EXIST);//学生不存在
+                    return resultData;
+                }
+                result = courseScheduleDao.insert(new CourseSchedule(student,courseId.get(0)));
+                if(result <= 0) {
+                    resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE);
+                    return resultData;
+                }
+            }
+            resultData.setResult(ResultCodeEnum.DB_ADD_SUCCESS);
+        } else if(studentId.size() == 1) {
+            //为一个学生添加多个课程
+            //学生的外键检验
+            if(!isStudentExist(studentId.get(0))){
+                resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_STUDENT_NOT_EXIST);//学生不存在
+                return resultData;
+            }
+            for(Long course:courseId){
+                //课程的外键检验
+                if(!isCourseExist(course)){
+                    resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_COURSE_NOT_EXIST);//课程不存在
+                    return resultData;
+                }
+                result = courseScheduleDao.insert(new CourseSchedule(studentId.get(0),course));
+                if(result <= 0) {
+                    resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE);
+                    return resultData;
+                }
+            }
+            resultData.setResult(ResultCodeEnum.DB_ADD_SUCCESS);
+        } else {
+            resultData.setResult(ResultCodeEnum.PARA_FORMAT_ERROR); //请求参数格式错误
+        }
+        return resultData;
+    }
+
+    @Override
+    public ResultData deleteCourseSchedule(Long id) {
+        if(id != null){
+            int result = courseScheduleDao.delete(new CourseSchedule(id));
+            if(result > 0) {
+                resultData.setResult(ResultCodeEnum.DB_DELETE_SUCCESS);
+            } else {
+                resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE);
+            }
+        } else {
+            resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //重要请求参数为空
+        }
+        return resultData;
+    }
+
+    /**
+     * 判断课程是否存在
+     * 外键约束条件，若课程不存在插入修改报错
+     * @param courseId
+     * @return 存在 true 不存在 false
+     */
+    private boolean isCourseExist(Long courseId) {
+        List<CourseDetail> courses = null;
+        Course course = new Course();
+        if(courseId != null) {
+            course.setId(courseId);
+            courses = courseDao.find(course);
+        }
+        if(courseId!= null && courses.size() == 1)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * 判断学生是否存在
+     * 外键约束条件
+     * @param studentId 学生id
+     * @return
+     */
+    private boolean isStudentExist(Long studentId) {
+        List<Student> students = null;
+        Student student = new Student();
+        if(studentId != null) {
+            student.setId(studentId);
+            students = studentDao.find(student);
+        }
+        if(students!= null && students.size() == 1)
+            return true;
+        else
+            return false;
     }
 }

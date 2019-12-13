@@ -71,11 +71,10 @@ public interface SystemService {
 
 	/**
 	 * 下载附件
-	 * @param dirPath 附件地址
 	 * @param attachmentId 附件id
 	 * @return 附件文件
 	 */
-	public AttachmentDetail downloadAttachment(String dirPath, Long attachmentId);
+	public AttachmentDetail downloadAttachment(Long attachmentId);
 
 	/**
 	 * 查询附件

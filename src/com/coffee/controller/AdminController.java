@@ -10,8 +10,13 @@ import com.coffee.service.AdminService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Controller
@@ -33,8 +38,6 @@ public class AdminController {
 				&& course.getCourseSchool() != null) {
 			//调用CourseService
 			resultData = adminService.addCourse(course);
-			
-			
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);//必要请求参数为空
@@ -99,8 +102,6 @@ public class AdminController {
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
-		
-		
 		return resultData;
 	}
 	
@@ -174,5 +175,47 @@ public class AdminController {
 		}
 		return resultData;
 	}
+
+	@RequestMapping("/addCourseSchedule")
+    @ResponseBody
+	public ResultData addCourseSchedule(Long courseId, Long studentId, Long[] courseList, Long[] studentList) {
+		System.out.println("courseId:"+courseId+",studentId:"+studentId+",courseList:"+courseList+",studentList:"+studentList);
+	    if(courseId != null || studentId != null) {
+	        if(courseId != null && studentList!= null) {
+	        	//为一个课程添加多个学生
+				List<Long> course = new ArrayList<>();
+				List<Long> students = new ArrayList<>();
+				course.add(courseId);
+				students.addAll(Arrays.asList(studentList));
+				resultData = adminService.addCourseSchedule(students,course);
+			} else if(studentId != null && courseList != null) {
+	        	//为一个学生添加多个课程
+				List<Long> student = new ArrayList<>();
+				List<Long> courses = new ArrayList<>();
+				courses.addAll(Arrays.asList(courseList));
+				student.add(studentId);
+				resultData = adminService.addCourseSchedule(student,courses);
+			} else {
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //重要参数为空
+			}
+        } else {
+            resultData = new ResultData();
+            resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //重要参数为空
+        }
+	    return resultData;
+    }
+
+    @RequestMapping("/deleteCourseSchedule")
+    @ResponseBody
+    public ResultData deleteCourseSchedule(Long id) {
+        if(id != null) {
+            resultData = adminService.deleteCourseSchedule(id);
+        } else {
+            resultData = new ResultData();
+            resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
+        }
+        return resultData;
+    }
 
 }

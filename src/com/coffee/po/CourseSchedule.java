@@ -7,6 +7,18 @@ public class CourseSchedule {
     private Long studentId;
     private Long courseId;
 
+    public CourseSchedule() {
+    }
+
+    public CourseSchedule(Long id) {
+        this.id = id;
+    }
+
+    public CourseSchedule(Long studentId, Long courseId) {
+        this.studentId = studentId;
+        this.courseId = courseId;
+    }
+
     public void reset() {
         Field[] fields = getClass().getDeclaredFields();
         for(Field field : fields) {
