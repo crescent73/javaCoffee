@@ -64,4 +64,6 @@ public interface AdminService {
 	 */
 	public ResultData deleteStudent(Long id);
 
+	public ResultData searchTeacherByKey(String searchKey);
+
 }

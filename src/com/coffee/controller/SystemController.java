@@ -159,5 +159,28 @@ public class SystemController {
 		}
 	}
 
+	@RequestMapping("/searchStudentByKey")
+	@ResponseBody
+	public ResultData searchStudentByKey(String key) {
+		if(StringUtils.isNotBlank(key)) {
+			resultData = systemService.searchStudentByKey(key);
+		} else {
+			resultData = new ResultData();
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
+		}
+		return resultData;
+	}
+
+	@RequestMapping("/searchCourseByKey")
+	@ResponseBody
+	public ResultData searchCourseByKey(String key) {
+		if(StringUtils.isNotBlank(key)) {
+			resultData = systemService.searchCourseByKey(key);
+		} else {
+			resultData = new ResultData();
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
+		}
+		return resultData;
+	}
 
 }

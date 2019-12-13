@@ -125,4 +125,27 @@
         where notice.course_id = #{courseId}
     </select>
 
+    <select id="search" parameterType="String" resultType="Course">
+        SELECT course.*
+        FROM
+            course
+            INNER JOIN
+            (
+                SELECT id, course_name as search_key
+                FROM course
+                WHERE course.course_name like CONCAT(CONCAT('%', #{key}), '%')
+                UNION
+                SELECT id, course_number as search_key
+                FROM course
+                WHERE course.course_number like CONCAT(CONCAT('%', #{key}), '%')
+                UNION
+                SELECT course.id, teacher.teacher_name as search_key
+                FROM course INNER JOIN teacher on course.teacher_id = teacher.id
+                WHERE teacher.teacher_name like CONCAT(CONCAT('%', #{key}), '%')
+            )
+            temp
+            ON course.id = temp.id
+        ORDER BY LENGTH (temp.search_key);
+    </select>
+
 </mapper>

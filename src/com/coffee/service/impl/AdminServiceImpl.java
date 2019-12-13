@@ -252,7 +252,18 @@ public class AdminServiceImpl implements AdminService {
 
         return students != null && students.size() == 1;
     }
-    
 
-
+    @Override
+    public ResultData searchTeacherByKey(String searchKey) {
+        List<Teacher> teachers = teacherDao.search(searchKey);
+        if(teachers.size() > 0) {
+            Data<List<Teacher>> data = new Data<>();
+            data.setData(teachers);
+            resultData.setData(data);
+            resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
+        } else {
+            resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE);  //查找失败
+        }
+        return resultData;
+    }
 }

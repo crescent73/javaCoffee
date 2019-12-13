@@ -9,4 +9,11 @@ public interface StudentMapper {
     public int update(Student student);
     public int delete(Student student);
     public int insert(Student student);
+
+    /**
+     * 搜索字段： 学生姓名 学号 班级
+     * @param key 搜索词
+     * @return 结果
+     */
+    public List<Student> search(String key);
 }

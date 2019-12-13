@@ -355,4 +355,31 @@ public class SystemServiceImpl implements SystemService {
 		return resultData;
 	}
 
+	@Override
+	public ResultData searchStudentByKey(String key) {
+		List<Student> students = studentDao.search(key);
+		if(students.size() > 0) {
+			Data<List<Student>> data = new Data<>();
+			data.setData(students);
+			resultData.setData(data);
+			resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
+		} else {
+			resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE);  //查找失败
+		}
+		return resultData;
+	}
+
+	@Override
+	public ResultData searchCourseByKey(String key) {
+		List<Course> courses = courseDao.search(key);
+		if(courses.size() > 0) {
+			Data<List<Course>> data = new Data<>();
+			data.setData(courses);
+			resultData.setData(data);
+			resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功
+		} else {
+			resultData.setResult(ResultCodeEnum.DB_FIND_FAILURE);  //查找失败
+		}
+		return resultData;
+	}
 }

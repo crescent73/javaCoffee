@@ -163,6 +163,16 @@ public class AdminController {
 	}
 	
 	
-	
+	@RequestMapping("/searchTeacherByKey")
+	@ResponseBody
+	public ResultData searchTeacherByKey(String searchKey) {
+		if(StringUtils.isNotBlank(searchKey)) {
+			resultData = adminService.searchTeacherByKey(searchKey);
+		} else {
+			resultData = new ResultData();
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
+		}
+		return resultData;
+	}
 
 }

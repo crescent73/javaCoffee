@@ -1,6 +1,6 @@
 package com.coffee.po;
 
-public class NoticeDetail extends com.coffee.po.Notice {
+public class NoticeDetail extends Notice {
 
     private String teacherName;
 

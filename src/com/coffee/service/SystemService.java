@@ -84,4 +84,9 @@ public interface SystemService {
 	 */
 	public  ResultData searchAttachment(Attachment attachment, PageParam pageParam);
 
+
+	public ResultData searchStudentByKey(String key);
+
+	public ResultData searchCourseByKey(String key);
+
 }

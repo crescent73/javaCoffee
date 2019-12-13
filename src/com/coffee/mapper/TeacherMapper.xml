@@ -80,4 +80,21 @@
         values (#{teacherName}, #{teacherNumber}, #{teacherSchool}, #{teacherEmail}, #{teacherPassword}, #{teacherTitle})
     </insert>
 
+    <select id="search" parameterType="String" resultType="Teacher">
+        SELECT teacher.*
+        FROM
+            teacher
+        inner join
+            (
+            SELECT id, teacher_name as search_key
+            FROM teacher
+            WHERE teacher.teacher_name like CONCAT(CONCAT('%', #{key}), '%')
+            UNION
+            SELECT id, teacher_number as search_key
+            FROM teacher
+            where teacher.teacher_number like CONCAT(CONCAT('%', #{key}), '%'))
+            temp
+        on teacher.id = temp.id
+        order by length(temp.search_key);
+    </select>
 </mapper>

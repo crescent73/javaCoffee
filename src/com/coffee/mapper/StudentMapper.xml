@@ -88,4 +88,26 @@
         )
     </insert>
 
+    <select id="search" parameterType="String" resultType="Student">
+        SELECT student.*
+        FROM
+            student
+        INNER JOIN
+            (
+            SELECT id, student_name as search_key
+            FROM student
+            WHERE student.student_name like CONCAT(CONCAT('%', #{key}), '%')
+            UNION
+            SELECT id, student_number as search_key
+            FROM student
+            WHERE student.student_number like CONCAT(CONCAT('%', #{key}), '%')
+            UNION
+            SELECT id, student_class as search_key
+            FROM student
+            WHERE student.student_class like CONCAT(CONCAT('%', #{key}), '%')
+            )
+            temp
+        ON student.id = temp.id
+        ORDER BY LENGTH (temp.search_key);
+    </select>
 </mapper>
