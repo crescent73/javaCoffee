@@ -99,12 +99,44 @@ public class TeacherController {
 
 		return resultData;
 	}
+
+	@RequestMapping("/addAttachment")
+	@ResponseBody
+	public ResultData addAttachment(Long fileId, @RequestParam("file") List<MultipartFile> files,
+							  HttpServletRequest req) {
+		if(fileId != null){
+			if(files != null && files.size() > 0){
+				String dirPath = req.getServletContext().getRealPath(FileStorage.FILE_STORAGE_PATH);
+				System.out.print("dirPath"+dirPath);
+				resultData = teacherService.addAttachment(fileId,dirPath,files);
+			} else{
+				resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);  //上传附件为空
+			}
+		}else {
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);  //重要参数为空
+		}
+
+		return resultData;
+	}
 	
 	@RequestMapping("/deleteFile")
 	@ResponseBody
-	public ResultData deleteFile(Long fileId) {
+	public ResultData deleteFile(Long fileId,HttpServletRequest req) {
 		if(fileId != null) {
-			resultData = teacherService.deleteFile(fileId);
+			String dirPath = req.getServletContext().getRealPath("\\");
+			resultData = teacherService.deleteFile(fileId,dirPath);
+		} else {
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
+		}
+		return resultData;
+	}
+
+	@RequestMapping("/deleteAttachment")
+	@ResponseBody
+	public ResultData deleteAttachment(Long attachmentId,HttpServletRequest req) {
+		if(attachmentId != null) {
+			String dirPath = req.getServletContext().getRealPath("\\");
+			resultData = teacherService.deleteAttachment(attachmentId, dirPath);
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}

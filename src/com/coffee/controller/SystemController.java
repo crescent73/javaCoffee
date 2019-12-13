@@ -131,6 +131,7 @@ public class SystemController {
 	public ResponseEntity downloadAttachment(Long attachmentId, HttpServletRequest req) {
 		if (attachmentId != null) {
 			String dirPath = req.getServletContext().getRealPath("\\");
+			System.out.println(dirPath);
 			AttachmentDetail attachmentDetail = systemService.downloadAttachment(dirPath, attachmentId);
 			System.out.println(attachmentDetail);
 			if(attachmentDetail != null) {
@@ -140,7 +141,7 @@ public class SystemController {
 				} catch (IOException e) {
 					e.printStackTrace();
 					resultData = new ResultData();
-					resultData.setResult(ResultCodeEnum.FILE_DOWNLOAD_FAILURE); //文件下载失败
+					resultData.setResult(ResultCodeEnum.ATTACHMENT_DOWNLOAD_FAILURE); //文件下载失败
 					return ResponseEntity.ok().body(resultData);
 				}
 				HttpHeaders headers = new HttpHeaders();
@@ -149,7 +150,7 @@ public class SystemController {
 				return ResponseEntity.ok().headers(headers).body(resource);
 			} else {
 				resultData = new ResultData();
-				resultData.setResult(ResultCodeEnum.FILE_DOWNLOAD_FAILURE); //文件下载失败
+				resultData.setResult(ResultCodeEnum.ATTACHMENT_DOWNLOAD_FAILURE); //文件下载失败
 				return ResponseEntity.ok().body(resultData);
 			}
 		} else {

@@ -53,8 +53,11 @@ public enum ResultCodeEnum
 	FILE_UPLOAD_SUCCESS("406","文件上传成功"),
 	FILE_UPLOAD_FAILURE("407","文件上传失败"),
 	FILE_UPLOAD_EMPTY("407","上传附件为空"),
-	FILE_DOWNLOAD_SUCCESS("408","文件下载成功"),
-	FILE_DOWNLOAD_FAILURE("409","文件下载失败");
+	ATTACHMENT_UPLOAD_SUCCESS("406","附件上传成功"),
+	ATTACHMENT_UPLOAD_FAILURE("407","附件上传失败"),
+	ATTACHMENT_DOWNLOAD_SUCCESS("408","附件下载成功"),
+	ATTACHMENT_DOWNLOAD_FAILURE("409","附件下载失败"),
+	FILE_EMPTY("410","附件不存在");
 	
 	private String code;
     private String desc;

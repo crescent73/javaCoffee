@@ -38,12 +38,27 @@ public interface TeacherService {
 	 * @return
 	 */
 	public ResultData addFile(File file, String dirPath, List<MultipartFile> attachments);
-	
+
 	/**
-	 * 删除文件
-	 * @param id 文件id
+	 * 添加附件
+	 * @param fileId 文档id
+	 * @param attachments 附件
 	 * @return
 	 */
-	public ResultData deleteFile(Long id);
+	public ResultData addAttachment(Long fileId, String dirPath, List<MultipartFile> attachments);
+	
+	/**
+	 * 删除文档，包括文档下的附件
+	 * @param id 文档id
+	 * @return
+	 */
+	public ResultData deleteFile(Long id, String dirPath);
+
+	/**
+	 * 删除附件
+	 * @param id 附件id
+	 * @return
+	 */
+	public ResultData deleteAttachment(Long id, String dirPath);
 
 }

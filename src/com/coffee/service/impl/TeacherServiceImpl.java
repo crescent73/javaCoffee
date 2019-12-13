@@ -133,13 +133,23 @@ public class TeacherServiceImpl implements TeacherService {
 			int result = fileDao.insert(file);
 			if(result > 0) {
 				isSuccess = true;
-//				System.out.println("fileID:"+file.getId());
 			}
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);  //必要参数为空
 			return resultData;
 		}
+		//调用添加附件！
+		resultData = addAttachment(file.getId(),dirPath,attachments);
+		if(isSuccess && resultData.getCode().equals("406")){
+			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_SUCCESS);//文件上传成功
+		} else {
+			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_FAILURE);//文件上传失败
+		}
+		return resultData;
+	}
 
+	@Override
+	public ResultData addAttachment(Long fileId, String dirPath, List<MultipartFile> attachments) {
 		// 处理attachment
 		if(attachments !=null && !attachments.isEmpty() && attachments.size() > 0){
 			for(MultipartFile attachment : attachments){
@@ -152,7 +162,7 @@ public class TeacherServiceImpl implements TeacherService {
 					filePath.mkdirs();
 				}
 				//使用UUID给附件重新命名（附件名+文件id+uuid+）
-				String newFileName = file.getId() + "_" + UUID.randomUUID()+ "_" + originalFileName;
+				String newFileName = fileId + "_" + UUID.randomUUID()+ "_" + originalFileName;
 				System.out.println("newFileName: "+newFileName);
 				//将附件添加到文件夹中
 				try {
@@ -164,32 +174,42 @@ public class TeacherServiceImpl implements TeacherService {
 					return resultData;
 				}
 				//将附件添加到数据库中
-				myAttachment.setFileId(file.getId());
+				myAttachment.setFileId(fileId);
 				myAttachment.setAttachmentName(originalFileName);  //name存储的是原文件名
 				myAttachment.setAttachmentPath(FileStorage.FILE_STORAGE_PATH +"\\"+newFileName); //path存储的是路径和新文件名
 				System.out.println("myAttachmentPath:"+myAttachment.getAttachmentPath());
 				int result = attachmentDao.insert(myAttachment);
-				isSuccess = result > 0;
+				if(result > 0){
+					resultData.setResult(ResultCodeEnum.ATTACHMENT_UPLOAD_SUCCESS);//上传附件为空
+				} else {
+					resultData.setResult(ResultCodeEnum.ATTACHMENT_UPLOAD_FAILURE);//上传附件为空
+				}
 			}
 		} else{
 			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);//上传附件为空
 			return resultData;
 		}
-		if(isSuccess){
-			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_SUCCESS);//文件上传成功
-		} else {
-			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_FAILURE);//文件上传失败
-		}
 		return resultData;
 	}
 
 	@Override
-	public ResultData deleteFile(Long id) {
+	public ResultData deleteFile(Long id, String dirPath) {
 		if(id != null) {
+			//先删除附件
+			Attachment attachment = new Attachment();
+			attachment.setFileId(id);
+			List<Attachment> attachments = attachmentDao.find(attachment);
+			for(Attachment item : attachments){
+				resultData = deleteAttachment(item.getId(),dirPath);
+				if(!resultData.getCode().equals("204")){
+					resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE);
+					return resultData;
+				}
+			}
+			//再删除文档
 			File file = new File();
 			file.setId(id);
 			int result = fileDao.delete(file);
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!删除系统文件!!!!!!!!!!!!!!!!!!!!!!
 			if(result > 0) {
 				resultData.setResult(ResultCodeEnum.DB_DELETE_SUCCESS);
 			} else {
@@ -200,7 +220,46 @@ public class TeacherServiceImpl implements TeacherService {
 		}
 		return resultData;
 	}
-	
+
+	@Override
+	public ResultData deleteAttachment(Long id, String dirPath) {
+		if(id != null) {
+			Attachment attachment = new Attachment();
+			attachment.setId(id);
+			//先查询
+			List<Attachment> attachments = attachmentDao.find(attachment);
+			if(attachments.size() == 1) {
+				attachment = attachments.get(0);
+				//删除文件
+				java.io.File attachmentFile = new java.io.File(dirPath+attachment.getAttachmentPath());
+				System.out.println(attachmentFile);
+				if (attachmentFile.exists() && attachmentFile.isFile()) {
+					if (attachmentFile.delete()) {
+						//删除表中字段
+						int result = attachmentDao.delete(attachment);
+						if(result > 0) {
+							resultData.setResult(ResultCodeEnum.DB_DELETE_SUCCESS); //删除成功
+						} else {
+							resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE); //删除失败
+						}
+					} else {
+						resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE); //下载失败
+						return resultData;
+					}
+				} else {
+					resultData.setResult(ResultCodeEnum.FILE_EMPTY); //附件不存在
+					return resultData;
+				}
+			} else {
+				resultData.setResult(ResultCodeEnum.FILE_EMPTY); //附件不存在
+				return resultData;
+			}
+		} else {
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);  //必要参数为空
+		}
+		return resultData;
+	}
+
 	private boolean isNoticeExist(Long noticeId) {
 		List<NoticeDetail> notices = null;
 		Notice notice = new Notice();
