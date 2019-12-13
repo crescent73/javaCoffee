@@ -36,6 +36,41 @@
     </div>
     <div class="content">
 
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">课程详情</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <h5 class="text-bold text-lg">课程名：{{course.courseName}}</h5>
+                <p class="list-group-item-text">
+                    <b>课程号：</b> {{course.courseNumber}}<br>
+                    <b>课程学期：</b> {{course.courseSemester}}<br>
+                    <b>课程学院：</b> {{course.courseSchool | schoolFormat}}<br>
+                    <b>课程类型：</b> {{course.courseType | typeFormat}}<br>
+                    <b>课程学分：</b> {{course.courseCredit}}<br>
+                    <b>课程介绍：</b>
+                    <button type="button" class="btn btn-tool">
+                        <i class="fas fa-edit"></i>
+                    </button> <br>
+                    {{course.courseDescription}}
+                </p>
+                <h5 class="text-bold text-lg">课程教师</h5>
+                <p class="list-group-item-text">
+                    <b>教师姓名：</b> {{course.teacherName}}<br>
+                    <b>教师介绍：</b>
+                    <button type="button" class="btn btn-tool">
+                        <i class="fas fa-edit"></i>
+                    </button> <br>
+                    {{course.courseTeacherDescription}}
+                </p>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -48,4 +83,86 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#content',
+        data() {
+            return{
+                courseForm:{
+                    courseId:4
+                },
+                course:{
+                    "id": 1,
+                    "courseName": "english",
+                    "courseNumber": "C1234",
+                    "courseSchool": 1,
+                    "courseSemester": "2018-2019-2",
+                    "courseType": 0,
+                    "courseCredit": 5,
+                    "teacherId": 1,
+                    "teacherName":"name",
+                    "courseDescription":"这是一门很有意思的学科",
+                    "courseTeacherDescription":"这是一个很有意思的老师",
+
+                }
+            }
+        },
+        methods:{
+            getCourse(){
+                let that = this;
+                $.ajax({
+                    type:"post",
+                    url:"/blackboard/system/searchCourse",
+                    data:this.courseForm,
+                    success:function(res){
+                        console.log(res);
+                        that.course = res.data[0];
+                        console.log(that.course);
+                    },
+                    error:function(res){
+                        console.log(res)
+                    }
+                })
+            }
+        },
+        filters: {
+            typeFormat: function (value) {
+                console.log(value);
+                switch (value) {
+                    case 0: return "必修课";
+                    case 1: return "选修课";
+                    default: return "未知";
+                }
+            },
+            schoolFormat(value){
+                console.log(value);
+                switch (value) {
+                    case 1: return "信息与安全工程学院";
+                    case 2: return "马克思主义学院";
+                    case 3: return "哲学院";
+                    case 4: return "经济学院";
+                    case 5: return "财政税务学院";
+                    case 6: return "金融学院";
+                    case 7: return "法学院";
+                    case 8: return "刑事司法学院";
+                    case 9: return "外国语学院";
+                    case 10: return "新闻与文化传播学院";
+                    case 11: return "工商管理学院";
+                    case 12: return "文澜学院";
+                    case 13: return "会计学院";
+                    case 14: return "统计与数学学院";
+                    case 15: return "中韩新媒体学院";
+                    default: return "未知";
+                }
+            }
+        },
+        created(){
+
+        },
+        mounted(){
+            this.getCourse();
+        }
+    })
+</script>
 </html>

@@ -42,40 +42,33 @@
         <div class="card card-default">
             <div class="card-header">
                 <h3 class="card-title">添加课程</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                </div>
             </div>
 
             <div class="card-body">
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="course_name_input">课程名</label>
-                            <input type="text" class="form-control" id="course_name_input" placeholder="输入课程名">
+                            <input type="text" class="form-control" id="course_name_input" placeholder="输入课程名" v-model="form.courseName">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="course_number_input">课程号</label>
-                            <input type="text" class="form-control" id="course_number_input" placeholder="输入课程号">
+                            <input type="text" class="form-control" id="course_number_input" placeholder="输入课程号" v-model="form.courseNumber">
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="course_credit_input">课程学分</label>
-                            <input type="text" class="form-control" id="course_credit_input" placeholder="输入课程学分">
+                            <input type="text" class="form-control" id="course_credit_input" placeholder="输入课程学分" v-model="form.courseCredit">
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="course_school_select">学院</label>
                             <select id="course_school_select" class="form-control select2" data-placeholder="选择课程所属学院">
@@ -97,22 +90,22 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label for="course_semester_select">学期</label>
+                            <label for="course_semester_select">开课学期</label>
                             <select id="course_semester_select" class="form-control select2" data-placeholder="选择课程开课学期">
-                                <option value="1">2020-1</option>
-                                <option value="2">2020-2</option>
-                                <option value="3">2021-1</option>
-                                <option value="4">2021-2</option>
+                                <option>2020-1</option>
+                                <option>2020-2</option>
+                                <option>2021-1</option>
+                                <option>2021-2</option>
                             </select>
                         </div>
                     </div>
 
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="course_type_select">课程类型</label>
                             <select id="course_type_select" class="form-control select2" data-placeholder="选择课程类型">
@@ -121,13 +114,37 @@
                             </select>
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="course_teacher_select">授课教师</label>
                         <div class="form-group">
-                            <label for="course_teacher_select">授课教师</label>
                             <select id="course_teacher_select" class="form-control select2" data-placeholder="选择任课教师">
-                                <option value="1">Tom</option>
-                                <option value="2">Jerry</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="course_teacher_school_filter">教师所在学院</label>
+                            <select id="course_teacher_school_filter" class="form-control select2" data-placeholder="教师所在学院">
+                                <option value="0">默认</option>
+                                <option value="1">信息与安全工程学院</option>
+                                <option value="2">马克思主义学院</option>
+                                <option value="3">哲学院</option>
+                                <option value="4">经济学院</option>
+                                <option value="5">财政税务学院</option>
+                                <option value="6">金融学院</option>
+                                <option value="7">法学院</option>
+                                <option value="8">刑事司法学院</option>
+                                <option value="9">外国语学院</option>
+                                <option value="10">新闻与文化传播学院</option>
+                                <option value="11">工商管理学院</option>
+                                <option value="12">文澜学院</option>
+                                <option value="13">会计学院</option>
+                                <option value="14">统计与数学学院</option>
+                                <option value="15">中韩新媒体学院</option>
                             </select>
                         </div>
                     </div>
@@ -136,8 +153,8 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="course_description_input">课程描述</label>
-                            <textarea type="text" class="form-control" id="course_description_input" placeholder="输入课程描述">
+                            <label for="course_description_input">课程介绍</label>
+                            <textarea type="text" class="form-control" id="course_description_input" placeholder="输入课介绍" v-model="form.courseDescription">
                             </textarea>
                         </div>
                     </div>
@@ -145,9 +162,10 @@
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" @click="on_submit()">Submit</button>
             </div>
         </div>
+
     </div>
 
 </div>
@@ -168,15 +186,134 @@
         $("#course_school_select").select2({
             theme: 'bootstrap4'
         });
+        $("#course_teacher_school_filter").select2({
+            theme: 'bootstrap4'
+        });
         $("#course_semester_select").select2({
             theme: 'bootstrap4'
         });
         $("#course_teacher_select").select2({
-            theme: 'bootstrap4'
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/admin/searchTeacherByKey',
+                data: function (params) {
+                    return {
+                        searchKey: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var teachers = data.data.data;
+                        var list = [];
+                        teachers.forEach(function (teacher) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = teacher.id;
+                            option.text = teacher.teacherNumber + " " + teacher.teacherName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认教师姓名或工号。"
+                },
+                searching: function () {
+                    return '搜索中...';
+                }
+            }
         });
         $("#course_type_select").select2({
             theme: 'bootstrap4'
         });
     });
+
+
+    var vue = new Vue({
+        el: "#content",
+        data: {
+            form: {
+                courseName: "",
+                courseNumber: "",
+                courseCredit: 0,
+                courseSchool: 1,
+                courseSemester: "",
+                courseType: 1,
+                teacherId: 1,
+                courseDescription: ""
+            }
+        },
+        methods: {
+            on_submit: function () {
+                this.form.courseSemester = $("#course_semester_select option:selected").text();
+                this.form.courseSchool = $("#course_school_select option:selected").val();
+                this.form.courseType = $("#course_type_select").val();
+                this.form.teacherId = $("#course_teacher_select").val();
+
+                if(this.do_check()) {
+                    this.do_post();
+                }
+            },
+            do_post: function () {
+                let self = this;
+                $.ajax({
+                    type:"post",
+                    url:"/blackboard/admin/addCourse",
+                    data: self.form,
+                    success:function(res){
+                        self.do_clean(res);
+                        console.log(res);
+                        console.log(res.code);
+                    },
+                    error:function(res){
+                        console.log(res);
+                        alert("出问题了，请稍后重试或者退出重新登录。");
+                    }
+                })
+            },
+            do_check: function () {
+                if(this.form.courseName === undefined || this.form.courseName.replace("\\s") === "") {
+                    alert("课程名不能为空");
+                    return false;
+                }
+                if(this.form.courseNumber === undefined || this.form.courseNumber.replace("\\s") === "") {
+                    alert("课程号不能为空");
+                    return false;
+                }
+                if(this.form.courseCredit === undefined || this.form.courseCredit.replace("\\s") === "") {
+                    alert("课程学分不能为空");
+                    return false;
+                }
+                if(this.form.courseSemester === undefined || this.form.courseSemester.replace("\\s") === "") {
+                    alert("课程学期不能为空");
+                    return false;
+                }
+                return true;
+            },
+            do_clean: function (data) {
+                if(data.code === "202") {
+                    window.location.href="/blackboard/admin/addCourse";
+                    alert("添加成功！");
+                } else if(data.code === "203") {
+                    alert("添加失败！\n" + data.msg);
+                } else if(data.code === "301") {
+                    alert("添加失败！信息不完整！\n" + data.msg);
+                }
+            }
+        }
+    })
+
 </script>
 </html>

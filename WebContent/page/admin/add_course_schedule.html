@@ -41,7 +41,7 @@
     <div class="content">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">添加选课记录</h3>
+                <h3 class="card-title">为课程添加学生</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -51,35 +51,62 @@
             <div class="card-body">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="student_select">学生</label>
-                        <select type="text" class="form-control select2" id="student_select" data-placeholder="输入学生">
-                            <option>2015</option>
-                            <option>2016</option>
-                            <option>2017</option>
-                            <option>2018</option>
-                            <option>2019</option>
+                        <label for="for_course_course">课程</label>
+                        <select type="text" class="form-control select2" id="for_course_course" data-placeholder="选择课程">
+
                         </select>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="teacher_select">课程</label>
-                        <select type="text" class="form-control select2" id="teacher_select" data-placeholder="输入学生">
-                            <option>2015</option>
-                            <option>2016</option>
-                            <option>2017</option>
-                            <option>2018</option>
-                            <option>2019</option>
+                        <label for="for_course_student">选课学生</label>
+                        <select type="text" class="form-control select2" id="for_course_student" data-placeholder="选择学生" multiple>
+
                         </select>
                     </div>
                 </div>
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" @click="on_submit(1)">Submit</button>
             </div>
+
         </div>
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">为学生添加课程</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="for_student_student">学生</label>
+                        <select type="text" class="form-control select2" id="for_student_student" data-placeholder="选择学生">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="for_student_course">选课课程</label>
+                        <select type="text" class="form-control select2" id="for_student_course" data-placeholder="选择课程" multiple>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" @click="on_submit(2)">Submit</button>
+            </div>
+
+        </div>
+
     </div>
 
 </div>
@@ -97,12 +124,217 @@
 
 <script>
     $(document).ready(function() {
-        $("#student_select").select2({
-            theme: 'bootstrap4'
+        $("#for_course_course").select2({
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/admin/searchCourseByKey',
+                data: function (params) {
+                    return {
+                        searchKey: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var courses = data.data.data;
+                        var list = [];
+                        courses.forEach(function (course) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = course.id;
+                            option.text = course.courseNumber + " " + course.courseName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认课程名或课程号。"
+                },
+                searching: function () {
+                    return '搜索中...';
+                }
+            }
         });
-        $("#teacher_select").select2({
-            theme: 'bootstrap4'
+        $("#for_student_course").select2({
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/admin/searchCourseByKey',
+                data: function (params) {
+                    return {
+                        searchKey: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var courses = data.data.data;
+                        var list = [];
+                        courses.forEach(function (course) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = course.id;
+                            option.text = course.courseNumber + " " + course.courseName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认课程名或课程号。"
+                },
+                searching: function () {
+                    return '搜索中...';
+                }
+            }
+        });
+        $("#for_student_student").select2({
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/admin/searchStudentByKey',
+                data: function (params) {
+                    return {
+                        searchKey: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var students = data.data.data;
+                        var list = [];
+                        courses.forEach(function (student) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = student.id;
+                            option.text = student.studentNumber + " " + course.studentName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认学生姓名或学号。"
+                },
+                searching: function () {
+                    return '搜索中...';
+                }
+            }
+        });
+        $("#for_course_student").select2({
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/admin/searchStudentByKey',
+                data: function (params) {
+                    return {
+                        searchKey: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var students = data.data.data;
+                        var list = [];
+                        courses.forEach(function (student) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = student.id;
+                            option.text = student.studentNumber + " " + course.studentName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认学生姓名或学号。"
+                },
+                searching: function () {
+                    return '搜索中...';
+                }
+            }
         });
     });
+
+    var vue = new Vue({
+        el: "#content",
+        data: {
+            form: {
+                studentId: [],
+                courseId: []
+            }
+        },
+        methods: {
+            on_submit: function (index) {
+                let self = this;
+                if(index === 1) {
+                    $("#for_course_course option:selected").each(function () {
+                        self.form.courseId.push(this.val());
+                    });
+                    $("#for_course_student option:selected").each(function () {
+                        self.form.studentId.push(this.val());
+                    })
+                } else if (index === 2) {
+                    $("#for_student_student option:selected").each(function () {
+                        self.form.studentId.push(this.val());
+                    });
+                    $("#for_student_course option:selected").each(function () {
+                        self.form.courseId.push(this.val());
+                    })
+                }
+            },
+            do_post: function () {
+
+            },
+            do_check: function () {
+
+            },
+            do_clean: function () {
+
+            }
+        }
+    })
 </script>
 </html>

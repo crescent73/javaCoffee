@@ -50,13 +50,13 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="student_name_input">姓名</label>
-                            <input type="text" class="form-control" id="student_name_input" placeholder="输入学生姓名">
+                            <input type="text" class="form-control" id="student_name_input" placeholder="输入学生姓名" v-model="form.studentName">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="student_number_input">学号</label>
-                            <input type="text" class="form-control" id="student_number_input" placeholder="输入学生学号">
+                            <input type="text" class="form-control" id="student_number_input" placeholder="输入学生学号" v-model="form.studentNumber">
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="student_class_input">班级</label>
-                            <input type="text" class="form-control" id="student_class_input" placeholder="输入学生班级">
+                            <input type="text" class="form-control" id="student_class_input" placeholder="输入学生班级" v-model="form.studentClass">
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -107,9 +107,29 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="student_password_input">登录初始密码</label>
+                            <input type="password" class="form-control" id="student_password_input" v-model="form.studentPassword">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="student_email_input">学生邮箱</label>
+                            <input type="email" class="form-control" id="student_email_input" v-model="form.studentEmail">
+                        </div>
+                    </div>
+                </div>
+
+
+
             </div>
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" @click="on_submit()">Submit</button>
             </div>
         </div>
     </div>
@@ -138,5 +158,71 @@
             theme: 'bootstrap4'
         });
     });
+
+    var vue = new Vue({
+        el: "#content",
+        data: {
+            form: {
+                studentName: "",
+                studentNumber: "",
+                studentClass: "",
+                studentGrade: "",
+                studentEmail: "",
+                studentPassword: "",
+                studentSchool: "",
+            }
+        },
+        methods: {
+            on_submit: function () {
+                this.form.studentSchool = $("#student_school_select option:selected").val();
+                this.form.studentGrade = $("#student_grade_select option:selected").val();
+                if(this.do_check()){
+                    this.do_post();
+                }
+            },
+            do_check: function () {
+                if(this.form.studentName === undefined || this.form.studentName.replace("\\s") === "") {
+                    alert("学生姓名不能为空！");
+                    return false;
+                }
+                if(this.form.studentNumber === undefined || this.form.studentNumber.replace("\\s") === "") {
+                    alert("学号不能为空！");
+                    return false;
+                }
+                if(this.form.studentClass === undefined || this.form.studentClass.replace("\\s") === "") {
+                    alert("班级不能为空！");
+                    return false;
+                }
+                return true;
+            },
+            do_post: function () {
+                let self = this;
+                $.ajax({
+                    type:"post",
+                    url:"/blackboard/admin/addStudent",
+                    data: self.form,
+                    success:function(res){
+                        self.do_clean(res);
+                        console.log(res);
+                        console.log(res.code);
+                    },
+                    error:function(res){
+                        console.log(res)
+                    }
+                })
+            },
+            do_clean: function (data) {
+                if(data.code === "202") {
+                    window.location.href="/page/admin/add_student.html";
+                    alert("添加成功！");
+                } else if(data.code === "203") {
+                    alert("添加失败！\n" + data.msg);
+                } else if(data.code === "301") {
+                    alert("添加失败！信息不完整！\n" + data.msg);
+                }
+            }
+        }
+    })
+
 </script>
 </html>

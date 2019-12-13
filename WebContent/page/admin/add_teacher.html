@@ -50,22 +50,22 @@
             <div class="card-body">
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="teacher_name_input">教师名</label>
-                            <input type="text" class="form-control" id="teacher_name_input" placeholder="输入教师名">
+                            <input type="text" class="form-control" id="teacher_name_input" placeholder="输入教师名" v-model="form.teacherName">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="teacher_number_input">教师工号</label>
-                            <input type="text" class="form-control" id="teacher_number_input" placeholder="输入教师工号">
+                            <input type="text" class="form-control" id="teacher_number_input" placeholder="输入教师工号" v-model="form.teacherNumber">
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="teacher_school_select">学院</label>
                             <select id="teacher_school_select" class="form-control select2" data-placeholder="选择教师所属学院">
@@ -87,23 +87,39 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="teacher_title_select">教师职称</label>
+                            <select id="teacher_title_select" class="form-control select2" data-placeholder="选择教师职称">
+                                <option value="1">助教</option>
+                                <option value="2">讲师</option>
+                                <option value="3">教授</option>
+                                <option value="4">副教授</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="teacher_title_input">教师职称</label>
-                            <textarea type="text" class="form-control" id="teacher_title_input" placeholder="输入课程描述">
-                            </textarea>
+                            <label for="student_password_input">登录初始密码</label>
+                            <input type="password" class="form-control" id="student_password_input" v-model="form.teacherPassword">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="student_email_input">教师邮箱</label>
+                            <input type="email" class="form-control" id="student_email_input" v-model="form.teacherEmail">
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" @onclick="on_submit()">Submit</button>
             </div>
+
         </div>
 
     </div>
@@ -124,11 +140,79 @@
 <script src="../plugins/select2/js/select2.full.min.js"></script>
 
 <script>
+
     $(document).ready(function() {
         $("#teacher_school_select").select2({
             theme: 'bootstrap4'
         });
     });
+
+    var vue = new Vue({
+        el: "#content",
+        data: {
+            form: {
+                teacherName: "",
+                teacherNumber: "",
+                teacherTitle: "",
+                teacherEmail: "",
+                teacherPassword: "",
+                teacherSchool: "",
+            }
+        },
+        methods: {
+            on_submit: function () {
+                this.form.teacherSchool = $("#teacher_school_select option:selected").val();
+                this.form.teacherTitle = $("#teacher_title_select option:selected").val();
+
+                if(this.do_check()){
+                    this.do_post();
+                }
+            },
+            do_check: function () {
+                if(this.form.teacherName === undefined || this.form.teacherName.replace("\\s") === "") {
+                    alert("教师姓名不能为空！");
+                    return false;
+                }
+                if(this.form.teacherNUmber === undefined || this.form.teacherNUmber.replace("\\s") === "") {
+                    alert("教师工号不能为空！");
+                    return false;
+                }
+                if(this.form.teacherTitle === undefined || this.form.teacherTitle.replace("\\s") === "") {
+                    alert("教师职称不能为空！");
+                    return false;
+                }
+                return true;
+            },
+            do_post: function () {
+                let self = this;
+                $.ajax({
+                    type:"post",
+                    url:"/blackboard/admin/addTeacher",
+                    data: self.form,
+                    success:function(res){
+                        self.do_clean(res);
+                        console.log(res);
+                        console.log(res.code);
+                    },
+                    error:function(res){
+                        alert("出问题了，请稍后重试或者退出重新登录。");
+                        console.log(res)
+                    }
+                })
+            },
+            do_clean: function (data) {
+                if(data.code === "202") {
+                    window.location.href="/page/admin/add_teacher.html";
+                    alert("添加成功！");
+                } else if(data.code === "203") {
+                    alert("添加失败！\n" + data.msg);
+                } else if(data.code === "301") {
+                    alert("添加失败！信息不完整！\n" + data.msg);
+                }
+            }
+        }
+    })
+
 </script>
 
 </html>
