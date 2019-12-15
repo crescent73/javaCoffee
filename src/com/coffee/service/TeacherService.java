@@ -2,6 +2,7 @@ package com.coffee.service;
 
 
 import com.coffee.kit.ResultData;
+import com.coffee.po.Attachment;
 import com.coffee.po.File;
 import com.coffee.po.Notice;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,15 +37,15 @@ public interface TeacherService {
 	 * @param attachments 附件列表
 	 * @return
 	 */
-	public ResultData addFile(File file, List<MultipartFile> attachments);
+	public ResultData addFile(File file, String dirPath,List<MultipartFile> attachments);
 
 	/**
 	 * 添加附件
-	 * @param fileId 文档id
+	 * @param attachment 文档
 	 * @param attachments 附件
 	 * @return
 	 */
-	public ResultData addAttachment(Long fileId, List<MultipartFile> attachments);
+	public ResultData addAttachment(Attachment attachment, List<MultipartFile> attachments);
 	
 	/**
 	 * 删除文档，包括文档下的附件
@@ -55,9 +56,9 @@ public interface TeacherService {
 
 	/**
 	 * 删除附件
-	 * @param id 附件id
+	 * @param attachment 附件
 	 * @return
 	 */
-	public ResultData deleteAttachment(Long id);
+	public ResultData deleteAttachment(Attachment attachment);
 
 }

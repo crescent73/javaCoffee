@@ -3,9 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Redirect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!-- 引用vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
+    <div id="mainpage">
+        <button @click="choose(1)">admin</button><button @click="choose(2)">teacher</button><button @click="choose(3)">student</button><br>
+        用户名：<input v-model="loginData.name" type="text" placeholder="用户名" name="userNameOrEmailAddress"/><br>
+        密码：<input v-model="loginData.password" type="password" placeholder="密码" name="password"/><br>
+        <button @click="login">submit</button>
+    </div>
     <a href="page/course/course.html"><p>Teacher</p></a>
     <a href="page/admin/admin.html"><p>Admin</p></a>
+
+
 </body>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#mainpage',
+        data() {
+            return{
+                loginData:{
+                    name:"",
+                    password:"",
+                    userType: 1
+                }
+            }
+        },
+        methods:{
+            login(){
+                $.ajax({
+                    type:"post",
+                    url:"/blackboard/system/login",
+                    data:this.loginData,
+                    success:function(res){
+                        console.log(res);
+                        console.log(res.code);
+                    },
+                    error:function(res){
+                        console.log(res)
+                    }
+                })
+            },
+            choose(userType){
+                this.loginData.userType = userType;
+            }
+        },
+        created(){
+        },
+        mounted(){
+        }
+    })
+</script>
 </html>

@@ -116,7 +116,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public ResultData addFile(File file,List<MultipartFile> attachments) {
+	public ResultData addFile(File file,String dirPath,List<MultipartFile> attachments) {
 		boolean isSuccess = false;
 		// 处理file
 		if(file != null) {
@@ -138,8 +138,11 @@ public class TeacherServiceImpl implements TeacherService {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);  //必要参数为空
 			return resultData;
 		}
+		Attachment attachment = new Attachment();
+		attachment.setFileId(file.getId());
+		attachment.setAttachmentPath(dirPath);
 		//调用添加附件！
-		resultData = addAttachment(file.getId(),attachments);
+		resultData = addAttachment(attachment,attachments);
 		if(isSuccess && resultData.getCode().equals("406")){
 			resultData.setResult(ResultCodeEnum.FILE_UPLOAD_SUCCESS);//文件上传成功
 		} else {
@@ -149,24 +152,23 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public ResultData addAttachment(Long fileId, List<MultipartFile> attachments) {
+	public ResultData addAttachment(Attachment myAttachment, List<MultipartFile> attachments) {
 		// 处理attachment
 		if(attachments !=null && !attachments.isEmpty() && attachments.size() > 0){
 			for(MultipartFile attachment : attachments){
-				Attachment myAttachment = new Attachment();
 				String originalFileName = attachment.getOriginalFilename();
 //				System.out.println("atttachment:"+originalFileName);
-				System.out.println("dirPath: " + FileStorage.UPLOAD_DIRPATH);
-				java.io.File filePath = new java.io.File(FileStorage.UPLOAD_DIRPATH);
+				System.out.println("dirPath: " + myAttachment.getAttachmentPath());
+				java.io.File filePath = new java.io.File(myAttachment.getAttachmentPath());
 				if(!filePath.exists()) {
 					filePath.mkdirs();
 				}
 				//使用UUID给附件重新命名（附件名+文件id+uuid+）
-				String newFileName = fileId + "_" + UUID.randomUUID()+ "_" + originalFileName;
+				String newFileName = myAttachment.getFileId() + "_" + UUID.randomUUID()+ "_" + originalFileName;
 				System.out.println("newFileName: "+newFileName);
 				//将附件添加到文件夹中
 				try {
-					attachment.transferTo(new java.io.File(FileStorage.UPLOAD_DIRPATH +"\\"+ newFileName));
+					attachment.transferTo(new java.io.File(myAttachment.getAttachmentPath() +"\\"+ newFileName));
 				} catch (Exception e){
 					e.printStackTrace();
 					resultData.setCode("407");
@@ -174,9 +176,8 @@ public class TeacherServiceImpl implements TeacherService {
 					return resultData;
 				}
 				//将附件添加到数据库中
-				myAttachment.setFileId(fileId);
 				myAttachment.setAttachmentName(originalFileName);  //name存储的是原文件名
-				myAttachment.setAttachmentPath(FileStorage.FILE_STORAGE_PATH +"\\"+newFileName); //path存储的是路径和新文件名
+				myAttachment.setAttachmentPath(filePath +"\\"+newFileName); //path存储的是路径和新文件名
 				System.out.println("myAttachmentPath:"+myAttachment.getAttachmentPath());
 				int result = attachmentDao.insert(myAttachment);
 				if(result > 0){
@@ -200,7 +201,7 @@ public class TeacherServiceImpl implements TeacherService {
 			attachment.setFileId(id);
 			List<Attachment> attachments = attachmentDao.find(attachment);
 			for(Attachment item : attachments){
-				resultData = deleteAttachment(item.getId());
+				resultData = deleteAttachment(item);
 				if(!resultData.getCode().equals("204")){
 					resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE);
 					return resultData;
@@ -222,16 +223,14 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public ResultData deleteAttachment(Long id) {
-		if(id != null) {
-			Attachment attachment = new Attachment();
-			attachment.setId(id);
+	public ResultData deleteAttachment(Attachment attachment) {
+		if(attachment != null) {
 			//先查询
 			List<Attachment> attachments = attachmentDao.find(attachment);
 			if(attachments.size() == 1) {
 				attachment = attachments.get(0);
 				//删除文件
-				java.io.File attachmentFile = new java.io.File(FileStorage.DOWNLOAD_DIRPATH+attachment.getAttachmentPath());
+				java.io.File attachmentFile = new java.io.File(attachment.getAttachmentPath());
 				System.out.println(attachmentFile);
 				if (attachmentFile.exists() && attachmentFile.isFile()) {
 					if (attachmentFile.delete()) {

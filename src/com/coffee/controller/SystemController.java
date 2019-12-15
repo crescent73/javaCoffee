@@ -1,6 +1,5 @@
 package com.coffee.controller;
 
-import com.coffee.constant.FileStorage;
 import com.coffee.po.PageParam;
 import com.coffee.po.*;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.coffee.kit.ResultCodeEnum;
 import com.coffee.kit.ResultData;
 import com.coffee.service.SystemService;
+
+import javax.servlet.http.HttpSession;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -31,23 +32,39 @@ public class SystemController {
 
 	@RequestMapping("/login")
 	@ResponseBody
-	public ResultData login(String name,String password,String userType) {
+	public ResultData login(String name, String password, String userType, HttpSession session) {
 		if(StringUtils.isNotBlank(name) && StringUtils.isNotBlank(password)
 				&& StringUtils.isNotBlank(userType)) {
 			resultData = systemService.login(name, password, userType);
+			if(resultData.getCode().equals("400")){
+				System.out.println("login success");
+				//登陆成功设置用户名
+				session.setAttribute("login",1); //设置登陆状态是1
+				session.setAttribute("username",name);  //记录用户名
+			} else{
+				System.out.println(resultData.getCode());
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
-			
 		return resultData;
 	}
 	
 	@RequestMapping("/logout")
 	@ResponseBody
-	public ResultData logout(Long id, String userType ) {
+	public ResultData logout(Long id, String userType,HttpSession session) {
 		if(id != null && StringUtils.isNotBlank(userType)) {
-			resultData = systemService.logout(id, userType);
+			if (session.getAttribute("login") == null){
+				resultData.setResult(ResultCodeEnum.NO_LOGIN_USER);
+			}else if(session.getAttribute("login").equals(1)){
+				//退出登陆成功
+				session.removeAttribute("login");
+				resultData.setResult(ResultCodeEnum.LOGOUT_SUCCESS);
+			} else {
+				resultData.setResult(ResultCodeEnum.UNKOWN_ERROE);
+			}
+//			resultData = systemService.logout(id, userType);
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
@@ -128,7 +145,9 @@ public class SystemController {
 	@ResponseBody
 	public ResponseEntity downloadAttachment(Long attachmentId) {
 		if (attachmentId != null) {
-			AttachmentDetail attachmentDetail = systemService.downloadAttachment(attachmentId);
+			Attachment attachment = new Attachment();
+			attachment.setId(attachmentId);
+			AttachmentDetail attachmentDetail = systemService.downloadAttachment(attachment);
 			System.out.println(attachmentDetail);
 			if(attachmentDetail != null) {
 				InputStreamResource resource;

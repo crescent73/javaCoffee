@@ -71,10 +71,10 @@ public interface SystemService {
 
 	/**
 	 * 下载附件
-	 * @param attachmentId 附件id
+	 * @param attachment 附件i
 	 * @return 附件文件
 	 */
-	public AttachmentDetail downloadAttachment(Long attachmentId);
+	public AttachmentDetail downloadAttachment(Attachment attachment);
 
 	/**
 	 * 查询附件

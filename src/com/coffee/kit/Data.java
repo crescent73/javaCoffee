@@ -5,11 +5,13 @@ import com.github.pagehelper.PageInfo;
 public class Data<T> {
 
     private T data;
+    private String token;
     private Integer pageNum;//当前页的页码
     private Integer pageSize; //每页的数量
     private Integer size; //当前页的数量
     private Long total; //总记录数
     private Integer pages; //总页数
+
 
     public T getData() {
         return data;
@@ -17,6 +19,14 @@ public class Data<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setData(PageInfo pageInfo){
@@ -71,6 +81,7 @@ public class Data<T> {
     @Override
     public String toString() {
         return "Data{" +
+                "token=" + token +
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 ", size=" + size +

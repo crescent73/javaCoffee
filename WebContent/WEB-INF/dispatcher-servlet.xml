@@ -36,16 +36,16 @@
     <!--配置拦截器  -->
     <mvc:interceptors>
     	<!--使用bean直接定义在拦截器下面的Interceptor将拦截所有请求  -->
-    	<bean class="com.coffee.interceptor.Interceptor"></bean>
+<!--    	<bean class="com.coffee.security.interceptor.Interceptor"></bean>-->
     	<!-- 拦截器 -->
-    	<!-- <mvc:interceptor>
-    		配置拦截器的作用路径 
+    	<mvc:interceptor>
+<!--    		配置拦截器的作用路径 -->
     		<mvc:mapping path="/**"/>
-    		配置不需要拦截器作用的路径 
-    		<mvc:exclude-mapping path=""/>
-    		定义在此拦截器内，对路径匹配的请求才拦截 
-    		<bean class="com.spring.interceptor.Interceptor1"></bean>
-    	</mvc:interceptor> -->
+<!--    		配置不需要拦截器作用的路径 -->
+<!--    		<mvc:exclude-mapping path=""/>-->
+<!--    		定义在此拦截器内，对路径匹配的请求才拦截 -->
+    		<bean class="com.coffee.security.interceptor.AuthenticationInterceptor"></bean>
+    	</mvc:interceptor>
     </mvc:interceptors>
 
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

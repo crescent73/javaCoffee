@@ -1,8 +1,11 @@
 package com.coffee.controller;
 
+import com.coffee.constant.FileStorage;
+import com.coffee.po.Attachment;
 import com.coffee.po.File;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +17,9 @@ import com.coffee.kit.ResultData;
 import com.coffee.service.TeacherService;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.logging.Handler;
 
 @Controller
 @RequestMapping("/teacher")
@@ -73,7 +78,7 @@ public class TeacherController {
 	@RequestMapping("/addFile")
 	@ResponseBody
 	public ResultData addFile(Long courseId, Long uploaderId, String fileName , String fileDescription,
-							  @RequestParam("file") List<MultipartFile> files) {
+							  @RequestParam("file") List<MultipartFile> files,HttpServletRequest req) {
 		System.out.println("courseId:"+courseId+",uploaderId:"+uploaderId+",fileName:"+fileName);
 		if(courseId != null && uploaderId != null && StringUtils.isNotBlank(fileName)){
 			if(files != null && files.size() > 0){
@@ -83,7 +88,8 @@ public class TeacherController {
 				file.setFileName(fileName);
 				if(fileDescription != null)
 					file.setFileDescription(fileDescription);
-				resultData = teacherService.addFile(file,files);
+				String dirPath = req.getServletContext().getRealPath(FileStorage.FILE_STORAGE_PATH);
+				resultData = teacherService.addFile(file,dirPath,files);
 			} else{
 				resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);  //上传附件为空
 			}
@@ -96,10 +102,13 @@ public class TeacherController {
 
 	@RequestMapping("/addAttachment")
 	@ResponseBody
-	public ResultData addAttachment(Long fileId, @RequestParam("file") List<MultipartFile> files) {
+	public ResultData addAttachment(Long fileId, @RequestParam("file") List<MultipartFile> files, HttpServletRequest req) {
 		if(fileId != null){
 			if(files != null && files.size() > 0){
-				resultData = teacherService.addAttachment(fileId,files);
+				Attachment attachment = new Attachment();
+				attachment.setFileId(fileId);
+				attachment.setAttachmentPath(req.getServletContext().getRealPath(FileStorage.FILE_STORAGE_PATH));
+				resultData = teacherService.addAttachment(attachment,files);
 			} else{
 				resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);  //上传附件为空
 			}
@@ -124,7 +133,9 @@ public class TeacherController {
 	@ResponseBody
 	public ResultData deleteAttachment(Long attachmentId) {
 		if(attachmentId != null) {
-			resultData = teacherService.deleteAttachment(attachmentId);
+			Attachment attachment = new Attachment();
+			attachment.setId(attachmentId);
+			resultData = teacherService.deleteAttachment(attachment);
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}

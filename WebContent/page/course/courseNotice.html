@@ -50,7 +50,8 @@
 							{{ notice.noticeTitle}}
 							<!--------------------------------------------修改公告按钮------------------------------------------------------------->
 							<button type="button" class="btn btn-tool" data-toggle="modal" data-target=".myModal">
-								<i class="fas fa-edit"></i>
+                                <i class="fas fa-edit" ></i>
+<!--                                <i class="fas" v-bind:class="{'fa-edit':false,'fa-user-astronaut':!notice.flag}"></i>-->
 							</button>
 							<!--------------------------------------------修改公告按钮/------------------------------------------------------------->
 						</h5>
@@ -120,7 +121,8 @@
 							noticeContent:"content1",
 							publishDate:"2019-12-06 06:01:09.0",
 							noticeLevel:1,
-							teacherName:"老师"
+							teacherName:"老师",
+							// flag:true
 						},
 						{
 							id:2,
@@ -130,7 +132,8 @@
 							noticeContent:"content2",
 							publishDate:"2019-12-06 06:01:09.0",
 							noticeLevel:2,
-							teacherName:"老师"
+							teacherName:"老师",
+							// flag:true
 						},
 						{
 							id:3,
@@ -140,7 +143,8 @@
 							noticeContent:"content3",
 							publishDate:"2019-12-06 06:01:09.0",
 							noticeLevel:1,
-							teacherName:"老师"
+							teacherName:"老师",
+							// flag:false
 						}
 					],
 					noticeForm:{
@@ -162,7 +166,7 @@
 						data:this.noticeForm,
 						success:function(res){
 							console.log(res);
-							that.notices = res.data;
+							// that.notices = res.data;
 						},
 						error:function(res){
 							console.log(res)
@@ -172,6 +176,7 @@
 				click(notice,event){
 					console.log(notice);
 					console.log(event);
+					// notice.flag = !notice.flag;
 
 				}
 			},

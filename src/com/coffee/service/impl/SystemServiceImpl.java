@@ -2,7 +2,7 @@ package com.coffee.service.impl;
 
 import java.util.List;
 
-import com.coffee.constant.FileStorage;
+import com.coffee.security.AuthorizationAspect;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.coffee.kit.Data;
@@ -55,7 +55,7 @@ public class SystemServiceImpl implements SystemService {
 	@Override
 	public ResultData login(String name, String password, String userType) {
 		if(StringUtils.isNotBlank(name)&&StringUtils.isNotBlank(password)&&StringUtils.isNotBlank(userType)) {
-			List result = null;
+			boolean flag = false;
 			switch(userType) {
 			case "1":
 				//调用adminDao
@@ -63,41 +63,57 @@ public class SystemServiceImpl implements SystemService {
 				admin.setAdminName(name);
 				admin.setAdminPassword(password);
 				System.out.println(admin);
-				result = adminDao.find(admin);
-//				System.out.println(result);
+				List<Admin> resultA = null;
+				resultA = adminDao.find(admin);
+				if(resultA.size() == 1) {
+					Data<Admin> data = new Data<Admin>();
+					admin = resultA.get(0);
+					data.setToken(AuthorizationAspect.createToken(admin.getAdminName()));
+					data.setData(admin);
+					resultData.setData(data);
+					flag = true;
+				}
 				break;
 			case "2":
 				//调用teacherDao
 				Teacher teacher = new Teacher();
 				teacher.setTeacherName(name);
 				teacher.setTeacherPassword(password);
-				result = teacherDao.find(teacher);
+				List<Teacher> resultT = null;
+				resultT = teacherDao.find(teacher);
+				if(resultT.size() == 1) {
+					Data<Teacher> data = new Data<Teacher>();
+					teacher = resultT.get(0);
+					data.setToken(AuthorizationAspect.createToken(teacher.getTeacherName()));
+					data.setData(teacher);
+					resultData.setData(data);
+					flag = true;
+				}
 				break;
 			case "3":
 				//调用studentDao
 				Student student = new Student();
 				student.setStudentName(name);
 				student.setStudentPassword(password);
-				result = studentDao.find(student);
+				List<Student> resultS = null;
+				resultS = studentDao.find(student);
+				if(resultS.size() == 1) {
+					Data<Student> data = new Data<Student>();
+					student = resultS.get(0);
+					data.setToken(AuthorizationAspect.createToken(student.getStudentName()));
+					data.setData(student);
+					resultData.setData(data);
+					flag = true;
+				}
 				break;
 			default:
 				//返回错误信息
 				resultData.setResult(ResultCodeEnum.PARA_FORMAT_ERROR); //参数格式错误
 				return resultData;
 			}
-			//处理查询结果
-			if(result.size() == 1) {
-				Data data;
-				switch(userType) {
-					case "1": data = new Data<Admin>(); break;
-					case "2": data = new Data<Teacher>(); break;
-					case "3": data = new Data<Student>(); break;
-					default:
-						throw new IllegalStateException("Unexpected value: " + userType);
-				}
-				data.setData(result);
-				resultData.setData(data);
+			if(flag){
 				resultData.setResult(ResultCodeEnum.LOGIN_SUCCESS);  //登陆成功
+				System.out.println(resultData);
 			} else {
 				resultData.setResult(ResultCodeEnum.LOGIN_ERROR); //登陆失败
 			}
@@ -138,7 +154,6 @@ public class SystemServiceImpl implements SystemService {
 				Admin admin = new Admin();
 				admin.setId(id);
 				admin.setAdminPassword(password);
-				
 				result = adminDao.update(admin);
 				break;
 			case "2":
@@ -302,23 +317,22 @@ public class SystemServiceImpl implements SystemService {
 
 	/**
 	 * 下载附件
-	 * @param attachmentId 附件id
+	 * @param attachment 附件
 	 * @return 如果查询到了附件，则会返回AttachmentDetail
 	 *         如果没有查询到附件，则会返回null
 	 */
 	@Override
-	public AttachmentDetail downloadAttachment(Long attachmentId) {
-		if(attachmentId != null){
-			Attachment attachment = new Attachment();
-			attachment.setId(attachmentId);
+	public AttachmentDetail downloadAttachment(Attachment attachment) {
+		if(attachment != null){
 			List<Attachment> attachments = attachmentDao.find(attachment);
 			if(attachments.size() == 1) {
 				AttachmentDetail attachmentDetail = new AttachmentDetail();
 				attachmentDetail.setAttachmentInfo(attachments.get(0));
 
-				java.io.File attachmentFile = new java.io.File(FileStorage.DOWNLOAD_DIRPATH+attachmentDetail.getAttachmentPath());
-				attachmentDetail.setFile(attachmentFile);
+				java.io.File attachmentFile = new java.io.File(attachmentDetail.getAttachmentPath());
 				System.out.println("attachmentDetail"+attachmentDetail);
+				attachmentDetail.setFile(attachmentFile);
+
 				return attachmentDetail;
 			} else {
 				return null; //未找到对应文件，返回为空

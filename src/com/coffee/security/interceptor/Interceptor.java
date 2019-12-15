@@ -1,6 +1,5 @@
-package com.coffee.interceptor;
+package com.coffee.security.interceptor;
 
-import com.coffee.constant.FileStorage;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,18 +13,9 @@ public class Interceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object o) throws Exception {
-        // 设置basePath
-        if(FileStorage.DOWNLOAD_DIRPATH == null){
-            FileStorage.DOWNLOAD_DIRPATH = req.getServletContext().getRealPath("\\");
-            System.out.println("DOWNLOAD_DIRPATH："+FileStorage.DOWNLOAD_DIRPATH);
-        }
-        if(FileStorage.UPLOAD_DIRPATH == null){
-            FileStorage.UPLOAD_DIRPATH = req.getServletContext().getRealPath(FileStorage.FILE_STORAGE_PATH);
-            System.out.println("UPLOAD_DIRPATH："+FileStorage.UPLOAD_DIRPATH);
-        }
-
         //打印请求
-        System.out.println(new Date() + "     request : [" + req.getRequestURL() + "]     params  [" +  req.getParameterMap() + "]");
+        System.out.println("-------------------------------------------");
+        System.out.println(new Date() + ",request : [" + req.getRequestURL() + "]     params  [" +  req.getParameterMap() + "]");
         Enumeration enu= req.getParameterNames();
         while(enu.hasMoreElements()){
             String paraName=(String)enu.nextElement();
