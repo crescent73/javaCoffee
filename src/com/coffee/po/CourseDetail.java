@@ -2,6 +2,7 @@ package com.coffee.po;
 
 public class CourseDetail extends Course {
     private String teacherName;
+    private String teacherNumber;
 
     public String getTeacherName() {
         return teacherName;
@@ -9,6 +10,14 @@ public class CourseDetail extends Course {
 
     public void setTeacherName(String teacherName) {
         this.teacherName = teacherName;
+    }
+
+    public String getTeacherNumber() {
+        return teacherNumber;
+    }
+
+    public void setTeacherNumber(String teacherNumber) {
+        this.teacherNumber = teacherNumber;
     }
 
     @Override
@@ -25,6 +34,7 @@ public class CourseDetail extends Course {
                 ", courseCredit=" + getCourseCredit() +
                 ", teacherId=" + getTeacherId() +
                 ", teacherName=" + teacherName +
+                ", teacherNumber=" + teacherNumber +
                 '}';
     }
 }

@@ -43,7 +43,11 @@
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
-      <configuration />
+      <configuration process_explicitly_annotated="false">
+        <fileset id="fileset" name="Spring Security" removed="false">
+          <file>file://$MODULE_DIR$/config/spring-security.xml</file>
+        </fileset>
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager">

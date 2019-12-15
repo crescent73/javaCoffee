@@ -17,7 +17,7 @@
     </resultMap>
 
     <select id="find" parameterType="Course" resultType="CourseDetail">
-        select course.*,teacher.teacher_name
+        select course.*,teacher.teacher_name,teacher.teacher_number
         from course,teacher
         <where>
         and course.teacher_id = teacher.id
