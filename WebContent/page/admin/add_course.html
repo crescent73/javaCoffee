@@ -158,9 +158,6 @@
                             </textarea>
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="for_course_student">选课学生</label>
@@ -317,7 +314,7 @@
                 self.form.courseType = $("#course_type_select").val();
                 self.form.teacherId = $("#course_teacher_select").val();
                 $("#for_course_student option:selected").each(function () {
-                    self.studentList.push(this.val());
+                    self.studentList.push($(this).val());
                 });
                 if(this.do_check()) {
                     this.do_post();
@@ -360,13 +357,57 @@
                 return true;
             },
             do_clean: function (data) {
+                let self = this;
                 if(data.code === "202") {
-                    window.location.href="/blackboard/admin/addCourse";
-                    alert("添加成功！");
+                    alert("课程添加成功！");
+                    if(self.studentList.length === 0) {
+                        window.location.href="/blackboard/admin/addCourse";
+                    } else {
+                        $.ajax({
+                            type:"post",
+                            url:"/blackboard/system/searchCourse",
+                            data: {courseNumber: self.form.courseNumber},
+                            success:function(res){
+                                console.log(res);
+                                console.log(res.code);
+                                if(res.code === "208") {
+                                    var courseId = res.code.data.data[0].id;
+                                    $.ajax({
+                                        type:"post",
+                                        url:"/blackboard/system/addCourseSchedule",
+                                        data: {courseId: courseId, studentList: self.studentList},
+                                        success:function(res){
+                                            console.log(res);
+                                            console.log(res.code);
+                                            if(res.code === "202") {
+                                                alert("选课学生添加成功！");
+                                                window.location.href = "/blackboard/page/admin/add_course.html"
+                                            } else {
+                                                console.log(res);
+                                                alert("出问题了，无法添加选课学生。");
+                                                window.location.href = "/blackboard/page/admin/course_detail?course_id=" + courseId;
+                                            }
+                                        },
+                                        error:function(res){
+                                            console.log(res);
+                                            alert("出问题了，无法添加选课学生。");
+                                        }
+                                    });
+                                } else {
+                                    console.log(res);
+                                    alert("出问题了，无法添加选课学生。");
+                                }
+                            },
+                            error:function(res){
+                                console.log(res);
+                                alert("出问题了，无法添加选课学生。");
+                            }
+                        });
+                    }
                 } else if(data.code === "203") {
-                    alert("添加失败！\n" + data.msg);
+                    alert("课程添加失败！\n" + data.msg);
                 } else if(data.code === "301") {
-                    alert("添加失败！信息不完整！\n" + data.msg);
+                    alert("课程添加失败！信息不完整！\n" + data.msg);
                 }
             }
         }

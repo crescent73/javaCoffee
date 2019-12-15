@@ -152,11 +152,21 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="course_description_input">课程介绍</label>
                             <textarea type="text" class="form-control" id="course_description_input" placeholder="输入课介绍" v-model="form.courseDescription" disabled>
                             </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="for_course_student">选课学生</label>
+                            <select type="text" class="form-control select2" id="for_course_student" data-placeholder="选择学生">
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -166,72 +176,6 @@
             <div class="card-footer">
                 <button type="button" class="btn btn-danger float-left" @click="on_delete_course()">删除课程</button>
                 <button type="submit" class="btn btn-primary float-right" @click="on_modify_course()">提交修改</button>
-            </div>
-        </div>
-
-        <div class="card card-default">
-            <div class="card-header">
-                <h3 class="card-title">选课学生</h3>
-                <div class="card-tools">
-                    <div class="input-group input-group-sm" style="width: 250px;">
-                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="card-body table-responsive p-0">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>姓名</th>
-                        <th>学号</th>
-                        <th>班级</th>
-                        <th>年级</th>
-                        <th>学院</th>
-                        <th>
-                            <button type="button" class="btn btn-default btn-sm float-right" @click="on_check_all()"><i class="far" :class="{'fa-square': !check_state, 'fa-check-square': check_state}"></i></button>
-                            <button type="button" class="btn btn-default btn-sm float-right"><i class="far fa-trash-alt"></i></button>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <template v-for="(student, index) in payload">
-                        <tr>
-                            <td @click="on_content_click(student.id)">{{student.id}}</td>
-                            <td @click="on_content_click(student.id)">{{student.studentName}}</td>
-                            <td @click="on_content_click(student.id)">{{student.studentNumber}}</td>
-                            <td @click="on_content_click(student.id)">{{student.studentClass}}</td>
-                            <td @click="on_content_click(student.id)">{{student.studentGrade}}</td>
-                            <td @click="on_content_click(student.id)">{{student.studentSchool}}</td>
-                            <td>
-                                <button type="button"
-                                        @click="on_student_check(index)"
-                                        class="btn btn-default btn-sm float-right">
-                                    <i class="far"
-                                       :class="{'fa-check-square': student.checked, 'fa-square': !student.checked}">
-                                    </i>
-                                </button>
-                                <button type="button" class="btn btn-default btn-sm float-right"><i class="far fa-trash-alt"></i></button>
-                            </td>
-                        </tr>
-                    </template>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="card-footer clearfix">
-                <ul class="pagination pagination-sm m-0 float-right">
-                    <li class="page-item"><a class="page-link" @click="on_previous_page()">«</a></li>
-                    <template v-for="page_nav in page_navs">
-                        <li class="page-item" :class="{active: current_page === page_nav}"><a class="page-link" @click="on_nav_page(page_nav)">{{page_nav}}</a></li>
-                    </template>
-                    <li class="page-item"><a class="page-link" @click="on_next_page()">»</a></li>
-                </ul>
             </div>
         </div>
 
@@ -309,6 +253,50 @@
         $("#course_type_select").select2({
             theme: 'bootstrap4'
         });
+        $("#for_course_student").select2({
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/system/searchStudentByKey',
+                data: function (params) {
+                    return {
+                        key: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var students = data.data.data;
+                        var list = [];
+                        students.forEach(function (student) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = student.id;
+                            option.text = student.studentNumber + " " + student.studentName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认学生姓名或学号。"
+                },
+                searching: function () {
+                    return '搜索中...';
+                }
+            }
+        });
+
     });
 
     var vue = new Vue({
@@ -329,9 +317,88 @@
             page_count: 0,
             page_navs: [],
 
-            check_state: false,
         },
         methods: {
+            on_previous_page: function () {
+                this.nav_to(this.current_page - 1);
+            },
+            on_next_page: function () {
+                this.nav_to(this.current_page + 1)
+            },
+            on_nav_page: function (index) {
+                this.nav_to(index);
+            },
+            on_content_click: function (courseId) {
+                window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
+            },
+            is_end_page: function (index) {
+                return this.current_page === this.end_page;
+            },
+            is_start_page: function (index) {
+                return this.current_page === this.start_page;
+            },
+            nav_to: function (index) {
+                if(index > this.end_page) {
+                    alert("这是最后一页了！");
+                    return;
+                } else if(index < this.start_page) {
+                    alert("这是以经第一页了！");
+                    return;
+                }
+
+                this.payload = this.get_payload(index);
+                this.current_page = index;
+            },
+            set_nav: function () {
+                var start = this.current_page - 2;
+                var end = this.current_page + 2;
+                if(start < this.start_page) {
+                    start = this.start_page;
+                }
+                if(end > this.end_page) {
+                    end = this.end_page;
+                }
+
+                this.page_navs = [];
+                for(var i = start; i < end + 1; i++) {
+                    this.page_navs.push(i);
+                }
+            },
+            get_payload: function (index) {
+                let self = this;
+                var data = self.payloads.get(index);
+
+                if(data === undefined) {
+                    var form = {
+                        pageNum: index,
+                        pageSize: self.page_size,
+                        courseId: self.course.id
+                    };
+
+                    $.ajax({
+                        type:"post",
+                        url: "/blackboard/system/searchStudent",
+                        data: form,
+                        success: function (res) {
+                            if(res.code === "208") {
+                                self.current_page = res.data.pageNum;
+                                self.page_size = res.data.pageSize;
+                                self.page_count = res.data.pages;
+                                self.start_page = 1;
+                                self.end_page = self.page_count;
+                                self.payloads[res.data.pageNum] = res.data.data;
+                                self.payload = res.data.data;
+                                self.set_nav();
+                            }
+                        },
+                        error: function (res) {
+                            console.log(res)
+                        }
+                    })
+                }
+                self.set_nav();
+                return data;
+            },
             on_modify_course: function () {
 
             },
@@ -358,33 +425,7 @@
                     }
                 })
             },
-            on_remove_student: function (id) {
-                let self = this;
-                var form = {
-                    courseId: self.course.id
-                };
-                $.ajax({
-                    type:"post",
-                    url: "/blackboard/admin/deleteCourse",
-                    data: form,
-                    success: function (res) {
-                        if(res.code === "204") {
-                            alert("删除成功！");
-                            window.location.href = "/blackboard/admin/course_detail.html?course_id=" + self.course.id;
-                        } else {
-                            alert("删除失败！")
-                        }
-                    },
-                    error: function (res) {
-                        console.log(res);
-                        alert("删除失败！");
-                    }
-                })
-            },
             on_delete_student: function (studentId) {
-
-            },
-            on_remove_selected_student: function () {
 
             },
             on_check_all: function () {
@@ -397,99 +438,28 @@
             on_student_check: function (index) {
                 this.payload[index].checked = !this.payload[index].checked;
             },
-            on_previous_page: function () {
-                this.nav_to(this.current_page - 1);
-            },
-            on_next_page: function () {
-                this.nav_to(this.current_page + 1)
-            },
-            on_nav_page: function (index) {
-                this.nav_to(index);
-            },
-            on_content_click: function (studentId) {
-                window.location.href = "/blackboard/page/admin/student_detail.html?student_id=" + studentId;
-            },
-            is_end_page: function (index) {
-                return this.current_page === this.end_page;
-            },
-            is_start_page: function (index) {
-                return this.current_page === this.start_page;
-            },
-            nav_to: function (index) {
-                this.checked = [];
-                this.check_state = false;
-                if(index > this.end_page) {
-                    alert("这是最后一页了！");
-                    return;
-                } else if(index < this.start_page) {
-                    alert("这是已经第一页了！");
-                    return;
-                }
-
-                this.get_payload(index);
-                this.current_page = index;
-            },
-            set_nav: function () {
-                var start = this.current_page - 2;
-                var end = this.current_page + 2;
-                if(start < this.start_page) {
-                    start = this.start_page;
-                }
-                if(end > this.end_page) {
-                    end = this.end_page;
-                }
-
-                this.page_navs = [];
-                for(var i = start; i < end + 1; i++) {
-                    this.page_navs.push(i);
-                }
-            },
-            get_payload: function (index) {
-                let self = this;
-                self.check_state = false;
-                var data = self.payloads.get(index);
-
-                if(data === undefined) {
-                    var form = {
-                        pageNum: index,
-                        pageSize: self.page_size,
-                        courseId: self.course.id
-                    };
-
-                    $.ajax({
-                        type:"post",
-                        url: "/blackboard/system/searchStudent",
-                        data: form,
-                        success: function (res) {
-                            if(res.code === "208") {
-                                self.current_page = res.data.pageNum;
-                                self.page_size = res.data.pageSize;
-                                self.page_count = res.data.pages;
-                                self.start_page = 1;
-                                self.end_page = self.page_count;
-                                self.payloads[res.data.pageNum] = res.data.data;
-                                res.data.data.forEach(function (item) {
-                                    item.checked = false;
-                                });
-                                self.payload = res.data.data;
-                                self.set_nav();
-                            }
-                        },
-                        error: function (res) {
-                            console.log(res)
-                        }
-                    })
-                } else {
-                    data.forEach(function (item) {
-                        item.checked = true;
-                    });
-                    self.payload = data;
-                    self.set_nav();
-                    return data;
-                }
-            },
             load_course: function () {
-
+                let self = this;
+                var form = {
+                    courseId: self.course.id
+                };
+                $.ajax({
+                    type:"post",
+                    url: "/blackboard/system/searchCourse",
+                    data: form,
+                    success: function (res) {
+                        if(res.code === "208") {
+                            self.course = res.data.data[0];
+                            self.form = res.data.data[0];
+                        } else {
+                            alert("出问题了，请刷新重试！");
+                            window.location.href = "/blackboard/page/admin/course_list.html";
+                        }
+                    },
+                    error: function (res) {
+                        console.log(res)
+                    }
+                });
             }
         },
         mounted: function () {
@@ -506,37 +476,16 @@
                 });
                 if(params.has("course_id")) {
                     self.course.id = params.get("course_id");
+                    self.load_course();
                     self.get_payload(1);
-                    var form = {
-                        courseId: self.course.id
-                    };
-                    $.ajax({
-                        type:"post",
-                        url: "/blackboard/system/searchCourse",
-                        data: form,
-                        success: function (res) {
-                            if(res.code === "208") {
-                               self.course = res.data.data[0];
-                               self.form = res.data.data[0];
-
-                            } else {
-                                alert("出问题了，请刷新重试！");
-                                window.location.href = "/blackboard/admin/course_list.html";
-                            }
-                        },
-                        error: function (res) {
-                            console.log(res)
-                        }
-                    });
                 } else {
                     alert("出问题了，请刷新重试！");
-                    window.location.href = "/blackboard/admin/course_list.html";
+                    window.location.href = "/blackboard/page/admin/course_list.html";
                 }
             } else {
                 alert("出问题了，请刷新重试！");
-                window.location.href = "/blackboard/admin/course_list.html";
+                window.location.href = "/blackboard/page/admin/course_list.html";
             }
-
         }
     })
 </script>

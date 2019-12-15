@@ -58,16 +58,15 @@
                         <th>姓名</th>
                         <th>学院</th>
                         <th>职称</th>
-                        <th>学院</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <template v-for="(student, index) in payload">
-                        <tr @click="on_content_click(student.id)">
+                    <template v-for="(teacher, index) in payload">
+                        <tr @click="on_content_click(teacher.id)">
                             <td>{{teacher.teacherNumber}}</td>
                             <td>{{teacher.teacherName}}</td>
-                            <td>{{teacher.teacherTitle}}</td>
                             <td>{{teacher.teacherSchool}}</td>
+                            <td>{{teacher.teacherTitle}}</td>
                         </tr>
                     </template>
                     </tbody>

@@ -113,24 +113,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_password_input">登录初始密码</label>
-                            <input type="password" class="form-control" id="student_password_input" v-model="form.studentPassword">
+                            <input type="text" class="form-control" id="student_password_input" v-model="form.studentPassword">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_email_input">学生邮箱</label>
                             <input type="email" class="form-control" id="student_email_input" v-model="form.studentEmail">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="for_student_course">选课课程</label>
-                            <select type="text" class="form-control select2" id="for_student_course" data-placeholder="选择课程" multiple>
-
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -165,50 +154,6 @@
         $("#student_school_select").select2({
             theme: 'bootstrap4'
         });
-        $("#for_student_course").select2({
-            theme: 'bootstrap4',
-            ajax: {
-                delay: 500,
-                type: 'post',
-                url: '/blackboard/system/searchCourseByKey',
-                data: function (params) {
-                    return {
-                        key: params.term
-                    };
-                },
-                processResults: function (data, params) {
-                    if(data.code === "208") {
-                        var courses = data.data.data;
-                        var list = [];
-                        courses.forEach(function (course) {
-                            var option = {
-                                id: "",
-                                text: "",
-                            };
-                            option.id = course.id;
-                            option.text = course.courseNumber + " " + course.courseName;
-                            list.push(option);
-                        });
-                        return {
-                            results: list
-                        }
-                    }
-                    return {
-                        results: []
-                    };
-                },
-                cache: true
-            },
-            language: {
-                noResults: function (params) {
-                    return "没有找到，请确认课程名或课程号。"
-                },
-                searching: function () {
-                    return '搜索中...';
-                }
-            }
-        });
-
     });
 
     var vue = new Vue({
@@ -265,7 +210,7 @@
             },
             do_clean: function (data) {
                 if(data.code === "202") {
-                    window.location.href="/page/admin/add_student.html";
+                    window.location.href="/blackboard/page/admin/add_student.html";
                     alert("添加成功！");
                 } else if(data.code === "203") {
                     alert("添加失败！\n" + data.msg);
