@@ -14,6 +14,10 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- 引用vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Select2 -->
+    <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
 </head>
 
 <body  style="background-color: #f4f6f9">
@@ -36,38 +40,198 @@
     </div>
     <div class="content">
 
-        <div class="card">
+        <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">课程详情</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                </div>
+                <h3 class="card-title">课程信息</h3>
             </div>
 
             <div class="card-body">
-                <h5 class="text-bold text-lg">课程名：{{course.courseName}}</h5>
-                <p class="list-group-item-text">
-                    <b>课程号：</b> {{course.courseNumber}}<br>
-                    <b>课程学期：</b> {{course.courseSemester}}<br>
-                    <b>课程学院：</b> {{course.courseSchool | schoolFormat}}<br>
-                    <b>课程类型：</b> {{course.courseType | typeFormat}}<br>
-                    <b>课程学分：</b> {{course.courseCredit}}<br>
-                    <b>课程介绍：</b>
-                    <button type="button" class="btn btn-tool">
-                        <i class="fas fa-edit"></i>
-                    </button> <br>
-                    {{course.courseDescription}}
-                </p>
-                <h5 class="text-bold text-lg">课程教师</h5>
-                <p class="list-group-item-text">
-                    <b>教师姓名：</b> {{course.teacherName}}<br>
-                    <b>教师介绍：</b>
-                    <button type="button" class="btn btn-tool">
-                        <i class="fas fa-edit"></i>
-                    </button> <br>
-                    {{course.courseTeacherDescription}}
-                </p>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="course_name_input">课程名</label>
+                            <input type="text" class="form-control" id="course_name_input" placeholder="输入课程名" v-model="form.courseName" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="course_number_input">课程号</label>
+                            <input type="text" class="form-control" id="course_number_input" placeholder="输入课程号" v-model="form.courseNumber" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="course_credit_input">课程学分</label>
+                            <input type="text" class="form-control" id="course_credit_input" placeholder="输入课程学分" v-model="form.courseCredit">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="course_school_select">学院</label>
+                            <select id="course_school_select" class="form-control select2" data-placeholder="选择课程所属学院">
+                                <option value="1" :selected="form.courseSchool === 1">信息与安全工程学院</option>
+                                <option value="2" :selected="form.courseSchool === 2">马克思主义学院</option>
+                                <option value="3" :selected="form.courseSchool === 3">哲学院</option>
+                                <option value="4" :selected="form.courseSchool === 4">经济学院</option>
+                                <option value="5" :selected="form.courseSchool === 5">财政税务学院</option>
+                                <option value="6" :selected="form.courseSchool === 6">金融学院</option>
+                                <option value="7" :selected="form.courseSchool === 7">法学院</option>
+                                <option value="8" :selected="form.courseSchool === 8">刑事司法学院</option>
+                                <option value="9" :selected="form.courseSchool === 9">外国语学院</option>
+                                <option value="10" :selected="form.courseSchool === 10">新闻与文化传播学院</option>
+                                <option value="11" :selected="form.courseSchool === 11">工商管理学院</option>
+                                <option value="12" :selected="form.courseSchool === 12">文澜学院</option>
+                                <option value="13" :selected="form.courseSchool === 13">会计学院</option>
+                                <option value="14" :selected="form.courseSchool === 14">统计与数学学院</option>
+                                <option value="15":selected="form.courseSchool === 15">中韩新媒体学院</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="course_semester_select">开课学期</label>
+                            <select id="course_semester_select" class="form-control select2" data-placeholder="选择课程开课学期">
+                                <option :selected="form.courseSemester === '2019-2020-1">2019-2020-1</option>
+                                <option :selected="form.courseSemester === '2019-2020-2">2019-2020-2</option>
+                                <option :selected="form.courseSemester === '2020-2021-1">2020-2021-1</option>
+                                <option :selected="form.courseSemester === '2020-2021-2">2020-2021-2</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="course_type_select">课程类型</label>
+                            <select id="course_type_select" class="form-control select2" data-placeholder="选择课程类型">
+                                <option value="1" :selected="form.courseType === 1">必修课</option>
+                                <option value="2" :selected="form.courseType === 2">选修课</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="course_teacher_select">授课教师</label>
+                        <div class="form-group">
+                            <select id="course_teacher_select" class="form-control select2" data-placeholder="选择任课教师">
+                                <option :value="form.teacherId" selected>{{form.teacherName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="course_teacher_school_filter">教师所在学院</label>
+                            <select id="course_teacher_school_filter" class="form-control select2" data-placeholder="教师所在学院">
+                                <option value="0">默认</option>
+                                <option value="1">信息与安全工程学院</option>
+                                <option value="2">马克思主义学院</option>
+                                <option value="3">哲学院</option>
+                                <option value="4">经济学院</option>
+                                <option value="5">财政税务学院</option>
+                                <option value="6">金融学院</option>
+                                <option value="7">法学院</option>
+                                <option value="8">刑事司法学院</option>
+                                <option value="9">外国语学院</option>
+                                <option value="10">新闻与文化传播学院</option>
+                                <option value="11">工商管理学院</option>
+                                <option value="12">文澜学院</option>
+                                <option value="13">会计学院</option>
+                                <option value="14">统计与数学学院</option>
+                                <option value="15">中韩新媒体学院</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="course_description_input">课程介绍</label>
+                            <textarea type="text" class="form-control" id="course_description_input" placeholder="输入课介绍" v-model="form.courseDescription" disabled>
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-footer">
+                <button type="button" class="btn btn-danger float-left" @click="on_delete_course()">删除课程</button>
+                <button type="submit" class="btn btn-primary float-right" @click="on_modify_course()">提交修改</button>
+            </div>
+        </div>
+
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">选课学生</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 250px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>姓名</th>
+                        <th>学号</th>
+                        <th>班级</th>
+                        <th>年级</th>
+                        <th>学院</th>
+                        <th>
+                            <button type="button" class="btn btn-default btn-sm float-right" @click="on_check_all()"><i class="far" :class="{'fa-square': !check_state, 'fa-check-square': check_state}"></i></button>
+                            <button type="button" class="btn btn-default btn-sm float-right"><i class="far fa-trash-alt"></i></button>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <template v-for="(student, index) in payload">
+                        <tr>
+                            <td @click="on_content_click(student.id)">{{student.id}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentName}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentNumber}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentClass}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentGrade}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentSchool}}</td>
+                            <td>
+                                <button type="button"
+                                        @click="on_student_check(index)"
+                                        class="btn btn-default btn-sm float-right">
+                                    <i class="far"
+                                       :class="{'fa-check-square': student.checked, 'fa-square': !student.checked}">
+                                    </i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-sm float-right"><i class="far fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                    <li class="page-item"><a class="page-link" @click="on_previous_page()">«</a></li>
+                    <template v-for="page_nav in page_navs">
+                        <li class="page-item" :class="{active: current_page === page_nav}"><a class="page-link" @click="on_nav_page(page_nav)">{{page_nav}}</a></li>
+                    </template>
+                    <li class="page-item"><a class="page-link" @click="on_next_page()">»</a></li>
+                </ul>
             </div>
         </div>
 
@@ -83,85 +247,273 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<!-- Select2 -->
+<script src="../plugins/select2/js/select2.full.min.js"></script>
+<!-- 引用vue -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <script type="text/javascript">
-    var app = new Vue({
-        el: '#content',
-        data() {
-            return{
-                courseForm:{
-                    courseId:4
+    $(document).ready(function() {
+        $("#course_school_select").select2({
+            theme: 'bootstrap4'
+        });
+        $("#course_teacher_school_filter").select2({
+            theme: 'bootstrap4'
+        });
+        $("#course_semester_select").select2({
+            theme: 'bootstrap4'
+        });
+        $("#course_teacher_select").select2({
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/admin/searchTeacherByKey',
+                data: function (params) {
+                    return {
+                        searchKey: params.term
+                    };
                 },
-                course:{
-                    "id": 1,
-                    "courseName": "english",
-                    "courseNumber": "C1234",
-                    "courseSchool": 1,
-                    "courseSemester": "2018-2019-2",
-                    "courseType": 0,
-                    "courseCredit": 5,
-                    "teacherId": 1,
-                    "teacherName":"name",
-                    "courseDescription":"这是一门很有意思的学科",
-                    "courseTeacherDescription":"这是一个很有意思的老师",
-
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var teachers = data.data.data;
+                        var list = [];
+                        teachers.forEach(function (teacher) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = teacher.id;
+                            option.text = teacher.teacherNumber + " " + teacher.teacherName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认教师姓名或工号。"
+                },
+                searching: function () {
+                    return '搜索中...';
                 }
             }
+        });
+        $("#course_type_select").select2({
+            theme: 'bootstrap4'
+        });
+    });
+
+    var vue = new Vue({
+        el: "#content",
+        data: {
+            form: {
+                id: "",
+                courseName: "",
+                courseNumber: "",
+                courseCredit: 0,
+                courseSchool: 1,
+                courseSemester: "",
+                courseType: 1,
+                teacherId: 1,
+                courseDescription: ""
+            },
+            course: {
+                id: 0,
+                courseName: "",
+                courseNumber: "",
+                courseCredit: 0,
+                courseSchool: 1,
+                courseSemester: "",
+                courseType: 1,
+                teacherId: 1,
+                courseDescription: "",
+                teacherName: "",
+            },
+            payloads: new Map(),
+            payload: [],
+            start_page: 1,
+            end_page: 1,
+            current_page: 1,
+            page_size: 1,
+            page_count: 0,
+            page_navs: [],
+
+            check_state: false,
         },
-        methods:{
-            getCourse(){
-                let that = this;
-                $.ajax({
-                    type:"post",
-                    url:"/blackboard/system/searchCourse",
-                    data:this.courseForm,
-                    success:function(res){
-                        console.log(res);
-                        that.course = res.data[0];
-                        console.log(that.course);
-                    },
-                    error:function(res){
-                        console.log(res)
-                    }
-                })
-            }
-        },
-        filters: {
-            typeFormat: function (value) {
-                console.log(value);
-                switch (value) {
-                    case 0: return "必修课";
-                    case 1: return "选修课";
-                    default: return "未知";
+        methods: {
+            on_modify_course: function () {
+
+            },
+            on_delete_course: function () {
+
+            },
+            on_remove_student: function (id) {
+
+            },
+            on_delete_student: function (studentId) {
+
+            },
+            on_remove_selected_student: function () {
+
+            },
+            on_check_all: function () {
+                let self = this;
+                self.check_state = ! self.check_state;
+                self.payload.forEach(function (item) {
+                    item.checked = self.check_state;
+                });
+            },
+            on_student_check: function (index) {
+                this.payload[index].checked = !this.payload[index].checked;
+            },
+            on_previous_page: function () {
+                this.nav_to(this.current_page - 1);
+            },
+            on_next_page: function () {
+                this.nav_to(this.current_page + 1)
+            },
+            on_nav_page: function (index) {
+                this.nav_to(index);
+            },
+            on_content_click: function (studentId) {
+                window.location.href = "/blackboard/page/admin/student_detail.html?student_id=" + studentId;
+            },
+            is_end_page: function (index) {
+                return this.current_page === this.end_page;
+            },
+            is_start_page: function (index) {
+                return this.current_page === this.start_page;
+            },
+            nav_to: function (index) {
+                this.checked = [];
+                this.check_state = false;
+                if(index > this.end_page) {
+                    alert("这是最后一页了！");
+                    return;
+                } else if(index < this.start_page) {
+                    alert("这是已经第一页了！");
+                    return;
+                }
+
+                this.get_payload(index);
+                this.current_page = index;
+            },
+            set_nav: function () {
+                var start = this.current_page - 2;
+                var end = this.current_page + 2;
+                if(start < this.start_page) {
+                    start = this.start_page;
+                }
+                if(end > this.end_page) {
+                    end = this.end_page;
+                }
+
+                this.page_navs = [];
+                for(var i = start; i < end + 1; i++) {
+                    this.page_navs.push(i);
                 }
             },
-            schoolFormat(value){
-                console.log(value);
-                switch (value) {
-                    case 1: return "信息与安全工程学院";
-                    case 2: return "马克思主义学院";
-                    case 3: return "哲学院";
-                    case 4: return "经济学院";
-                    case 5: return "财政税务学院";
-                    case 6: return "金融学院";
-                    case 7: return "法学院";
-                    case 8: return "刑事司法学院";
-                    case 9: return "外国语学院";
-                    case 10: return "新闻与文化传播学院";
-                    case 11: return "工商管理学院";
-                    case 12: return "文澜学院";
-                    case 13: return "会计学院";
-                    case 14: return "统计与数学学院";
-                    case 15: return "中韩新媒体学院";
-                    default: return "未知";
+            get_payload: function (index) {
+                let self = this;
+                self.check_state = false;
+                var data = self.payloads.get(index);
+
+                if(data === undefined) {
+                    var form = {
+                        pageNum: index,
+                        pageSize: self.page_size,
+                        courseId: self.course.id
+                    };
+
+                    $.ajax({
+                        type:"post",
+                        url: "/blackboard/system/searchStudent",
+                        data: form,
+                        success: function (res) {
+                            if(res.code === "208") {
+                                self.current_page = res.data.pageNum;
+                                self.page_size = res.data.pageSize;
+                                self.page_count = res.data.pages;
+                                self.start_page = 1;
+                                self.end_page = self.page_count;
+                                self.payloads[res.data.pageNum] = res.data.data;
+                                res.data.data.forEach(function (item) {
+                                    item.checked = false;
+                                });
+                                self.payload = res.data.data;
+                                self.set_nav();
+                            }
+                        },
+                        error: function (res) {
+                            console.log(res)
+                        }
+                    })
+                } else {
+                    data.forEach(function (item) {
+                        item.checked = true;
+                    });
+                    self.payload = data;
+                    self.set_nav();
+                    return data;
                 }
+            },
+            load_course: function () {
+
             }
         },
-        created(){
+        mounted: function () {
+            let self = this;
+            var query = window.location.href.split("?");
+            if(query.length === 2) {
+                var params = new Map();
+                var str = query[1].split("&");
+                str.forEach(function (item) {
+                    var param = item.split("=");
+                    if(param.length === 2) {
+                        params.set(param[0], param[1]);
+                    }
+                });
+                if(params.has("course_id")) {
+                    self.course.id = params.get("course_id");
+                    self.get_payload(1);
+                    var form = {
+                        courseId: self.course.id
+                    };
+                    $.ajax({
+                        type:"post",
+                        url: "/blackboard/system/searchCourse",
+                        data: form,
+                        success: function (res) {
+                            if(res.code === "208") {
+                               self.course = res.data.data[0];
+                               self.form = res.data.data[0];
 
-        },
-        mounted(){
-            this.getCourse();
+                            } else {
+                                alert("出问题了，请刷新重试！");
+                                window.location.href = "/blackboard/admin/course_list.html";
+                            }
+                        },
+                        error: function (res) {
+                            console.log(res)
+                        }
+                    });
+                } else {
+                    alert("出问题了，请刷新重试！");
+                    window.location.href = "/blackboard/admin/course_list.html";
+                }
+            } else {
+                alert("出问题了，请刷新重试！");
+                window.location.href = "/blackboard/admin/course_list.html";
+            }
+
         }
     })
 </script>

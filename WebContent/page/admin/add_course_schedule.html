@@ -32,7 +32,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="home.html">主页</a></li>
-                        <li class="breadcrumb-item active">添加选课记录</li>
+                        <li class="breadcrumb-item active">添加选课</li>
                     </ol>
                 </div>
             </div>
@@ -129,10 +129,10 @@
             ajax: {
                 delay: 500,
                 type: 'post',
-                url: '/blackboard/admin/searchCourseByKey',
+                url: '/blackboard/system/searchCourseByKey',
                 data: function (params) {
                     return {
-                        searchKey: params.term
+                        key: params.term
                     };
                 },
                 processResults: function (data, params) {
@@ -172,10 +172,10 @@
             ajax: {
                 delay: 500,
                 type: 'post',
-                url: '/blackboard/admin/searchCourseByKey',
+                url: '/blackboard/system/searchCourseByKey',
                 data: function (params) {
                     return {
-                        searchKey: params.term
+                        key: params.term
                     };
                 },
                 processResults: function (data, params) {
@@ -215,23 +215,23 @@
             ajax: {
                 delay: 500,
                 type: 'post',
-                url: '/blackboard/admin/searchStudentByKey',
+                url: '/blackboard/system/searchStudentByKey',
                 data: function (params) {
                     return {
-                        searchKey: params.term
+                        key: params.term
                     };
                 },
                 processResults: function (data, params) {
                     if(data.code === "208") {
                         var students = data.data.data;
                         var list = [];
-                        courses.forEach(function (student) {
+                        students.forEach(function (student) {
                             var option = {
                                 id: "",
                                 text: "",
                             };
                             option.id = student.id;
-                            option.text = student.studentNumber + " " + course.studentName;
+                            option.text = student.studentNumber + " " + student.studentName;
                             list.push(option);
                         });
                         return {
@@ -258,23 +258,23 @@
             ajax: {
                 delay: 500,
                 type: 'post',
-                url: '/blackboard/admin/searchStudentByKey',
+                url: '/blackboard/system/searchStudentByKey',
                 data: function (params) {
                     return {
-                        searchKey: params.term
+                        key: params.term
                     };
                 },
                 processResults: function (data, params) {
                     if(data.code === "208") {
                         var students = data.data.data;
                         var list = [];
-                        courses.forEach(function (student) {
+                        students.forEach(function (student) {
                             var option = {
                                 id: "",
                                 text: "",
                             };
                             option.id = student.id;
-                            option.text = student.studentNumber + " " + course.studentName;
+                            option.text = student.studentNumber + " " + student.studentName;
                             list.push(option);
                         });
                         return {
