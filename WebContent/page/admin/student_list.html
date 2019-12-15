@@ -55,7 +55,6 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>ID</th>
                         <th>姓名</th>
                         <th>学号</th>
                         <th>班级</th>
@@ -64,27 +63,29 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Murmur</td>
-                        <td>S2342342432</td>
-                        <td>计算机科学1701</td>
-                        <td>2017</td>
-                        <td>信息与安全工程学院</td>
-                    </tr>
+                    <template v-for="(student, index) in payload">
+                        <tr @click="on_content_click(student.id)">
+                            <td>{{student.studentName}}</td>
+                            <td>{{student.studentNumber}}</td>
+                            <td>{{student.studentClass}}</td>
+                            <td>{{student.studentGrade}}</td>
+                            <td>{{student.studentSchool}}</td>
+                        </tr>
+                    </template>
                     </tbody>
                 </table>
             </div>
 
             <div class="card-footer clearfix">
                 <ul class="pagination pagination-sm m-0 float-right">
-                    <li class="page-item"><a class="page-link" href="#">«</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">»</a></li>
+                    <li class="page-item"><a class="page-link" @click="on_previous_page()">«</a></li>
+                    <template v-for="page_nav in page_navs">
+                        <li class="page-item" :class="{active: current_page === page_nav}"><a class="page-link" @click="on_nav_page(page_nav)">{{page_nav}}</a></li>
+                    </template>
+                    <li class="page-item"><a class="page-link" @click="on_next_page()">»</a></li>
                 </ul>
             </div>
+
         </div>
     </div>
 
@@ -97,4 +98,105 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+
+<script>
+    vue = new Vue({
+        el: "#content",
+        data: {
+            payloads: new Map(),
+            payload: [],
+            start_page: 1,
+            end_page: 1,
+            current_page: 1,
+            page_size: 1,
+            page_count: 0,
+            page_navs: [],
+        },
+
+        methods: {
+            on_previous_page: function () {
+                this.nav_to(this.current_page - 1);
+            },
+            on_next_page: function () {
+                this.nav_to(this.current_page + 1)
+            },
+            on_nav_page: function (index) {
+                this.nav_to(index);
+            },
+            on_content_click: function (studentId) {
+                window.location.href = "/blackboard/page/admin/student_detail.html?studentId=" + studentId;
+            },
+            is_end_page: function (index) {
+                return this.current_page === this.end_page;
+            },
+            is_start_page: function (index) {
+                return this.current_page === this.start_page;
+            },
+            nav_to: function (index) {
+                if(index > this.end_page) {
+                    alert("这是最后一页了！");
+                    return;
+                } else if(index < this.start_page) {
+                    alert("这是以经第一页了！");
+                    return;
+                }
+
+                this.payload = this.get_payload(index);
+                this.current_page = index;
+            },
+            set_nav: function () {
+                var start = this.current_page - 2;
+                var end = this.current_page + 2;
+                if(start < this.start_page) {
+                    start = this.start_page;
+                }
+                if(end > this.end_page) {
+                    end = this.end_page;
+                }
+
+                this.page_navs = [];
+                for(var i = start; i < end + 1; i++) {
+                    this.page_navs.push(i);
+                }
+            },
+            get_payload: function (index) {
+                let self = this;
+                var data = self.payloads.get(index);
+
+                if(data === undefined) {
+                    var form = {
+                        pageNum: index,
+                        pageSize: self.page_size
+                    };
+
+                    $.ajax({
+                        type:"post",
+                        url: "/blackboard/system/searchStudent",
+                        data: form,
+                        success: function (res) {
+                            if(res.code === "208") {
+                                self.current_page = res.data.pageNum;
+                                self.page_size = res.data.pageSize;
+                                self.page_count = res.data.pages;
+                                self.start_page = 1;
+                                self.end_page = self.page_count;
+                                self.payloads[res.data.pageNum] = res.data.data;
+                                self.payload = res.data.data;
+                                self.set_nav();
+                            }
+                        },
+                        error: function (res) {
+                            console.log(res)
+                        }
+                    })
+                }
+                self.set_nav();
+                return data;
+            }
+        },
+        mounted: function () {
+            this.get_payload(1);
+        }
+    });
+</script>
 </html>

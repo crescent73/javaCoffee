@@ -97,10 +97,10 @@
                         <div class="form-group">
                             <label for="course_semester_select">开课学期</label>
                             <select id="course_semester_select" class="form-control select2" data-placeholder="选择课程开课学期">
-                                <option>2020-1</option>
-                                <option>2020-2</option>
-                                <option>2021-1</option>
-                                <option>2021-2</option>
+                                <option>2019-2020-1</option>
+                                <option>2019-2020-2</option>
+                                <option>2020-2021-1</option>
+                                <option>2020-2021-2</option>
                             </select>
                         </div>
                     </div>
@@ -159,6 +159,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="for_course_student">选课学生</label>
+                            <select type="text" class="form-control select2" id="for_course_student" data-placeholder="选择学生" multiple>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div class="card-footer">
@@ -238,6 +249,49 @@
         $("#course_type_select").select2({
             theme: 'bootstrap4'
         });
+        $("#for_course_student").select2({
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/system/searchStudentByKey',
+                data: function (params) {
+                    return {
+                        key: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var students = data.data.data;
+                        var list = [];
+                        students.forEach(function (student) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = student.id;
+                            option.text = student.studentNumber + " " + student.studentName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认学生姓名或学号。"
+                },
+                searching: function () {
+                    return '搜索中...';
+                }
+            }
+        });
     });
 
     var vue = new Vue({
@@ -252,15 +306,19 @@
                 courseType: 1,
                 teacherId: 1,
                 courseDescription: ""
-            }
+            },
+            studentList: []
         },
         methods: {
             on_submit: function () {
-                this.form.courseSemester = $("#course_semester_select option:selected").text();
-                this.form.courseSchool = $("#course_school_select option:selected").val();
-                this.form.courseType = $("#course_type_select").val();
-                this.form.teacherId = $("#course_teacher_select").val();
-
+                let self = this;
+                self.form.courseSemester = $("#course_semester_select option:selected").text();
+                self.form.courseSchool = $("#course_school_select option:selected").val();
+                self.form.courseType = $("#course_type_select").val();
+                self.form.teacherId = $("#course_teacher_select").val();
+                $("#for_course_student option:selected").each(function () {
+                    self.studentList.push(this.val());
+                });
                 if(this.do_check()) {
                     this.do_post();
                 }

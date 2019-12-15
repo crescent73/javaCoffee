@@ -32,6 +32,111 @@
                     </ol>
                 </div>
             </div>
+
+            <div class="card card-default">
+
+                <div class="card-header">
+                    <h3 class="card-title">学生详情</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="student_name_input">姓名</label>
+                                <input type="text" class="form-control" id="student_name_input" placeholder="输入学生姓名" v-model="form.studentName">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="student_number_input">学号</label>
+                                <input type="text" class="form-control" id="student_number_input" placeholder="输入学生学号" v-model="form.studentNumber">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="student_class_input">班级</label>
+                                <input type="text" class="form-control" id="student_class_input" placeholder="输入学生班级" v-model="form.studentClass">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="student_grade_select">年级</label>
+                                <select type="text" class="form-control select2" id="student_grade_select" data-placeholder="输入学生年级">
+                                    <option>2015</option>
+                                    <option>2016</option>
+                                    <option>2017</option>
+                                    <option>2018</option>
+                                    <option>2019</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="student_school_select">学院</label>
+                                <select id="student_school_select" class="form-control select2" data-placeholder="选择学生所属学院">
+                                    <option value="1">信息与安全工程学院</option>
+                                    <option value="2">马克思主义学院</option>
+                                    <option value="3">哲学院</option>
+                                    <option value="4">经济学院</option>
+                                    <option value="5">财政税务学院</option>
+                                    <option value="6">金融学院</option>
+                                    <option value="7">法学院</option>
+                                    <option value="8">刑事司法学院</option>
+                                    <option value="9">外国语学院</option>
+                                    <option value="10">新闻与文化传播学院</option>
+                                    <option value="11">工商管理学院</option>
+                                    <option value="12">文澜学院</option>
+                                    <option value="13">会计学院</option>
+                                    <option value="14">统计与数学学院</option>
+                                    <option value="15">中韩新媒体学院</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="student_password_input">登录初始密码</label>
+                                <input type="password" class="form-control" id="student_password_input" v-model="form.studentPassword">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="student_email_input">学生邮箱</label>
+                                <input type="email" class="form-control" id="student_email_input" v-model="form.studentEmail">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="for_student_course">选课课程</label>
+                                <select type="text" class="form-control select2" id="for_student_course" data-placeholder="选择课程" multiple>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary" @click="on_submit()">Submit</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -49,4 +154,59 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+        $("#student_grade_select").select2({
+            theme: 'bootstrap4'
+        });
+        $("#student_school_select").select2({
+            theme: 'bootstrap4'
+        });
+        $("#for_student_course").select2({
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/system/searchCourseByKey',
+                data: function (params) {
+                    return {
+                        key: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var courses = data.data.data;
+                        var list = [];
+                        courses.forEach(function (course) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = course.id;
+                            option.text = course.courseNumber + " " + course.courseName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认课程名或课程号。"
+                },
+                searching: function () {
+                    return '搜索中...';
+                }
+            }
+        });
+    });
+</script>
 </html>

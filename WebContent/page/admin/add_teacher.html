@@ -117,7 +117,7 @@
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary" @onclick="on_submit()">Submit</button>
+                <button type="button" class="btn btn-primary" @click="on_submit()">Submit</button>
             </div>
 
         </div>
@@ -173,7 +173,7 @@
                     alert("教师姓名不能为空！");
                     return false;
                 }
-                if(this.form.teacherNUmber === undefined || this.form.teacherNUmber.replace("\\s") === "") {
+                if(this.form.teacherNumber === undefined || this.form.teacherNumber.replace("\\s") === "") {
                     alert("教师工号不能为空！");
                     return false;
                 }

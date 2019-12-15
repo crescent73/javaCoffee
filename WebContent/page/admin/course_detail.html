@@ -98,10 +98,10 @@
                         <div class="form-group">
                             <label for="course_semester_select">开课学期</label>
                             <select id="course_semester_select" class="form-control select2" data-placeholder="选择课程开课学期">
-                                <option :selected="form.courseSemester === '2019-2020-1">2019-2020-1</option>
-                                <option :selected="form.courseSemester === '2019-2020-2">2019-2020-2</option>
-                                <option :selected="form.courseSemester === '2020-2021-1">2020-2021-1</option>
-                                <option :selected="form.courseSemester === '2020-2021-2">2020-2021-2</option>
+                                <option :selected="form.courseSemester === '2019-2020-1'">2019-2020-1</option>
+                                <option :selected="form.courseSemester === '2019-2020-2'">2019-2020-2</option>
+                                <option :selected="form.courseSemester === '2020-2021-1'">2020-2021-1</option>
+                                <option :selected="form.courseSemester === '2020-2021-2'">2020-2021-2</option>
                             </select>
                         </div>
                     </div>
@@ -315,27 +315,10 @@
         el: "#content",
         data: {
             form: {
-                id: "",
-                courseName: "",
-                courseNumber: "",
-                courseCredit: 0,
-                courseSchool: 1,
-                courseSemester: "",
-                courseType: 1,
-                teacherId: 1,
-                courseDescription: ""
+
             },
             course: {
-                id: 0,
-                courseName: "",
-                courseNumber: "",
-                courseCredit: 0,
-                courseSchool: 1,
-                courseSemester: "",
-                courseType: 1,
-                teacherId: 1,
-                courseDescription: "",
-                teacherName: "",
+
             },
             payloads: new Map(),
             payload: [],
@@ -353,10 +336,50 @@
 
             },
             on_delete_course: function () {
-
+                let self = this;
+                var form = {
+                    courseId: self.course.id
+                };
+                $.ajax({
+                    type:"post",
+                    url: "/blackboard/admin/deleteCourse",
+                    data: form,
+                    success: function (res) {
+                        if(res.code === "204") {
+                            alert("删除成功！");
+                            window.location.href = "/blackboard/page/admin/course_list.html";
+                        } else {
+                            alert("删除失败！")
+                        }
+                    },
+                    error: function (res) {
+                        console.log(res);
+                        alert("删除失败！");
+                    }
+                })
             },
             on_remove_student: function (id) {
-
+                let self = this;
+                var form = {
+                    courseId: self.course.id
+                };
+                $.ajax({
+                    type:"post",
+                    url: "/blackboard/admin/deleteCourse",
+                    data: form,
+                    success: function (res) {
+                        if(res.code === "204") {
+                            alert("删除成功！");
+                            window.location.href = "/blackboard/admin/course_detail.html?course_id=" + self.course.id;
+                        } else {
+                            alert("删除失败！")
+                        }
+                    },
+                    error: function (res) {
+                        console.log(res);
+                        alert("删除失败！");
+                    }
+                })
             },
             on_delete_student: function (studentId) {
 

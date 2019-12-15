@@ -38,6 +38,7 @@
     </div>
     <div class="content">
         <div class="card card-default">
+
             <div class="card-header">
                 <h3 class="card-title">添加学生</h3>
                 <div class="card-tools">
@@ -45,15 +46,16 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
+
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_name_input">姓名</label>
                             <input type="text" class="form-control" id="student_name_input" placeholder="输入学生姓名" v-model="form.studentName">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_number_input">学号</label>
                             <input type="text" class="form-control" id="student_number_input" placeholder="输入学生学号" v-model="form.studentNumber">
@@ -62,13 +64,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_class_input">班级</label>
                             <input type="text" class="form-control" id="student_class_input" placeholder="输入学生班级" v-model="form.studentClass">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_grade_select">年级</label>
                             <select type="text" class="form-control select2" id="student_grade_select" data-placeholder="输入学生年级">
@@ -114,9 +116,6 @@
                             <input type="password" class="form-control" id="student_password_input" v-model="form.studentPassword">
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_email_input">学生邮箱</label>
@@ -125,7 +124,16 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="for_student_course">选课课程</label>
+                            <select type="text" class="form-control select2" id="for_student_course" data-placeholder="选择课程" multiple>
 
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
             </div>
             <div class="card-footer">
@@ -157,6 +165,50 @@
         $("#student_school_select").select2({
             theme: 'bootstrap4'
         });
+        $("#for_student_course").select2({
+            theme: 'bootstrap4',
+            ajax: {
+                delay: 500,
+                type: 'post',
+                url: '/blackboard/system/searchCourseByKey',
+                data: function (params) {
+                    return {
+                        key: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    if(data.code === "208") {
+                        var courses = data.data.data;
+                        var list = [];
+                        courses.forEach(function (course) {
+                            var option = {
+                                id: "",
+                                text: "",
+                            };
+                            option.id = course.id;
+                            option.text = course.courseNumber + " " + course.courseName;
+                            list.push(option);
+                        });
+                        return {
+                            results: list
+                        }
+                    }
+                    return {
+                        results: []
+                    };
+                },
+                cache: true
+            },
+            language: {
+                noResults: function (params) {
+                    return "没有找到，请确认课程名或课程号。"
+                },
+                searching: function () {
+                    return '搜索中...';
+                }
+            }
+        });
+
     });
 
     var vue = new Vue({

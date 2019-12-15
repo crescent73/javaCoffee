@@ -301,9 +301,13 @@
     var vue = new Vue({
         el: "#content",
         data: {
-            form: {
-                studentId: [],
-                courseId: []
+            form_for_course: {
+                studentList: [],
+                courseId: 0
+            },
+            form_for_student: {
+                studentId: 0,
+                courseList: [],
             }
         },
         methods: {
@@ -311,29 +315,63 @@
                 let self = this;
                 if(index === 1) {
                     $("#for_course_course option:selected").each(function () {
-                        self.form.courseId.push(this.val());
+                        self.form_for_course.courseId = this.val();
                     });
                     $("#for_course_student option:selected").each(function () {
-                        self.form.studentId.push(this.val());
+                        self.form_for_course.studentId.push(this.val());
+                    });
+                    if(self.form_for_course.courseId === undefined || self.form_for_course.studentList.length === 0) {
+                        alert("选课课程和学生不能为空！");
+                        return;
+                    }
+                    $.ajax({
+                        type:"post",
+                        url: "/blackboard/admin/addCourseSchedule",
+                        data: self.form_for_course,
+                        success: function (res) {
+                            if(res.code === "202") {
+                                alert("添加成功！");
+                                window.location.href = "/blackboard/page/admin/add_course_schedule";
+                            } else {
+                                alert("添加失败！");
+                            }
+                        },
+                        error: function (res) {
+                            console.log(res);
+                            alert("添加失败！");
+                        }
                     })
+
                 } else if (index === 2) {
                     $("#for_student_student option:selected").each(function () {
-                        self.form.studentId.push(this.val());
+                        self.form_for_student.studentId = this.val();
                     });
                     $("#for_student_course option:selected").each(function () {
-                        self.form.courseId.push(this.val());
+                        self.form_for_student.courseId.push(this.val());
+                    });
+                    if(self.form_for_student.studentId === undefined || self.form_for_student.courseList.length === 0) {
+                        alert("选课课程和学生不能为空！");
+                        return;
+                    }
+                    $.ajax({
+                        type:"post",
+                        url: "/blackboard/admin/addCourseSchedule",
+                        data: self.form_for_student,
+                        success: function (res) {
+                            if(res.code === "202") {
+                                alert("添加成功！");
+                                window.location.href = "/blackboard/page/admin/add_course_schedule";
+                            } else {
+                                alert("添加失败！");
+                            }
+                        },
+                        error: function (res) {
+                            console.log(res);
+                            alert("添加失败！");
+                        }
                     })
                 }
             },
-            do_post: function () {
-
-            },
-            do_check: function () {
-
-            },
-            do_clean: function () {
-
-            }
         }
     })
 </script>
