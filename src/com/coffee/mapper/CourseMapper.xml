@@ -28,7 +28,7 @@
                 and course_name like #{courseName}
             </if>
             <if test="courseNumber != null">
-                and course_number like #{coureseNumber}
+                and course_number like #{courseNumber}
             </if>
             <if test="courseSchool != null">
                 and course_school = #{courseSchool}
@@ -52,7 +52,7 @@
                 course_name = #{courseName},
             </if>
             <if test="courseNumber != null">
-                course_number like #{coureseNumber},
+                course_number like #{couresNumber},
             </if>
             <if test="courseSchool != null">
                 course_school = #{courseSchool},

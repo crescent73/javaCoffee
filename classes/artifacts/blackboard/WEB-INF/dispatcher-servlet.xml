@@ -11,7 +11,7 @@
 	
 	
 	<!--配置包扫描器  -->
-	<context:component-scan base-package="com.murmur" />
+	<context:component-scan base-package="com.coffee" />
 	
 	<!-- <aop:aspectj-autoproxy></aop:aspectj-autoproxy> -->
 	
@@ -36,7 +36,7 @@
     <!--配置拦截器  -->
     <mvc:interceptors>
     	<!--使用bean直接定义在拦截器下面的Interceptor将拦截所有请求  -->
-    	<bean class="com.murmur.interceptor.Interceptor"></bean>
+    	<bean class="com.coffee.interceptor.Interceptor"></bean>
     	<!-- 拦截器 -->
     	<!-- <mvc:interceptor>
     		配置拦截器的作用路径 

@@ -38,6 +38,7 @@
     </div>
     <div class="content">
         <div class="card card-default">
+
             <div class="card-header">
                 <h3 class="card-title">添加学生</h3>
                 <div class="card-tools">
@@ -45,15 +46,16 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
+
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_name_input">姓名</label>
                             <input type="text" class="form-control" id="student_name_input" placeholder="输入学生姓名" v-model="form.studentName">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_number_input">学号</label>
                             <input type="text" class="form-control" id="student_number_input" placeholder="输入学生学号" v-model="form.studentNumber">
@@ -62,13 +64,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_class_input">班级</label>
                             <input type="text" class="form-control" id="student_class_input" placeholder="输入学生班级" v-model="form.studentClass">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_grade_select">年级</label>
                             <select type="text" class="form-control select2" id="student_grade_select" data-placeholder="输入学生年级">
@@ -111,12 +113,9 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_password_input">登录初始密码</label>
-                            <input type="password" class="form-control" id="student_password_input" v-model="form.studentPassword">
+                            <input type="text" class="form-control" id="student_password_input" v-model="form.studentPassword">
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_email_input">学生邮箱</label>
@@ -124,8 +123,6 @@
                         </div>
                     </div>
                 </div>
-
-
 
             </div>
             <div class="card-footer">
@@ -213,7 +210,7 @@
             },
             do_clean: function (data) {
                 if(data.code === "202") {
-                    window.location.href="/page/admin/add_student.html";
+                    window.location.href="/blackboard/page/admin/add_student.html";
                     alert("添加成功！");
                 } else if(data.code === "203") {
                     alert("添加失败！\n" + data.msg);

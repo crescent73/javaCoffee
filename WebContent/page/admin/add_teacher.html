@@ -104,7 +104,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_password_input">登录初始密码</label>
-                            <input type="password" class="form-control" id="student_password_input" v-model="form.teacherPassword">
+                            <input type="text" class="form-control" id="student_password_input" v-model="form.teacherPassword">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -117,7 +117,7 @@
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary" @onclick="on_submit()">Submit</button>
+                <button type="button" class="btn btn-primary" @click="on_submit()">Submit</button>
             </div>
 
         </div>
@@ -173,7 +173,7 @@
                     alert("教师姓名不能为空！");
                     return false;
                 }
-                if(this.form.teacherNUmber === undefined || this.form.teacherNUmber.replace("\\s") === "") {
+                if(this.form.teacherNumber === undefined || this.form.teacherNumber.replace("\\s") === "") {
                     alert("教师工号不能为空！");
                     return false;
                 }
@@ -202,7 +202,7 @@
             },
             do_clean: function (data) {
                 if(data.code === "202") {
-                    window.location.href="/page/admin/add_teacher.html";
+                    window.location.href="/blackboard/page/admin/add_teacher.html";
                     alert("添加成功！");
                 } else if(data.code === "203") {
                     alert("添加失败！\n" + data.msg);
