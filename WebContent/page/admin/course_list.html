@@ -43,7 +43,7 @@
 
                 <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 250px;">
-                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search" v-model="search_key">
 
                         <div class="input-group-append">
                             <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
@@ -115,9 +115,10 @@
             start_page: 1,
             end_page: 1,
             current_page: 1,
-            page_size: 1,
+            page_size: 20,
             page_count: 0,
             page_navs: [],
+            search_key: 0
         },
 
         methods: {
@@ -199,6 +200,9 @@
                 }
                 self.set_nav();
                 return data;
+            },
+            on_search: function () {
+
             }
         },
         mounted: function () {

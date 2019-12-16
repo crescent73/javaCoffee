@@ -311,11 +311,10 @@
                 let self = this;
                 self.form.courseSemester = $("#course_semester_select option:selected").text();
                 self.form.courseSchool = $("#course_school_select option:selected").val();
-                self.form.courseType = $("#course_type_select").val();
-                self.form.teacherId = $("#course_teacher_select").val();
-                $("#for_course_student option:selected").each(function () {
-                    self.studentList.push($(this).val());
-                });
+                self.form.courseType = $("#course_type_select option:selected").val();
+                self.form.teacherId = $("#course_teacher_select option:selected").val();
+                self.studentList = $("#for_course_student").select2("val");
+
                 if(this.do_check()) {
                     this.do_post();
                 }
@@ -371,11 +370,21 @@
                                 console.log(res);
                                 console.log(res.code);
                                 if(res.code === "208") {
-                                    var courseId = res.code.data.data[0].id;
+                                    var courseId = res.data.data[0].id;
+                                    var list = self.studentList.concat();
+                                    list.forEach(function (item) {
+                                       item = parseInt(item);
+                                    });
+                                    var form_data = {
+                                        courseId: courseId,
+                                        studentList: list,
+                                    };
                                     $.ajax({
                                         type:"post",
-                                        url:"/blackboard/system/addCourseSchedule",
-                                        data: {courseId: courseId, studentList: self.studentList},
+                                        url:"/blackboard/admin/addCourseSchedule",
+                                        contentType: false,
+                                        processData: false,
+                                        data: form_data,
                                         success:function(res){
                                             console.log(res);
                                             console.log(res.code);
@@ -385,22 +394,26 @@
                                             } else {
                                                 console.log(res);
                                                 alert("出问题了，无法添加选课学生。");
-                                                window.location.href = "/blackboard/page/admin/course_detail?course_id=" + courseId;
+                                                window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
                                             }
                                         },
                                         error:function(res){
                                             console.log(res);
                                             alert("出问题了，无法添加选课学生。");
+                                            window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
                                         }
                                     });
                                 } else {
                                     console.log(res);
                                     alert("出问题了，无法添加选课学生。");
+                                    window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
+
                                 }
                             },
                             error:function(res){
                                 console.log(res);
                                 alert("出问题了，无法添加选课学生。");
+                                window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
                             }
                         });
                     }

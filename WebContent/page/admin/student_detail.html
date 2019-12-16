@@ -122,7 +122,9 @@
                             </div>
                         </div>
                     </div>
-
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-danger float-left" @click="on_delete_student()">删除学生</button>
                 </div>
             </div>
 
@@ -186,13 +188,11 @@
 
             </div>
 
+            <div class="card card-default">
+
+            </div>
         </div>
     </div>
-
-    <div class="content">
-
-    </div>
-
 </div>
 
 
@@ -274,11 +274,32 @@
             start_page: 1,
             end_page: 1,
             current_page: 1,
-            page_size: 1,
+            page_size: 20,
             page_count: 0,
             page_navs: [],
         },
         methods: {
+            on_delete_student: function () {
+                let self = this;
+                $.ajax({
+                    type:"post",
+                    url: "/blackboard/admin/deleteStudent",
+                    data: {studentId: self.student.id},
+                    success: function (res) {
+                        console.log(res);
+                        if(res.code === "204") {
+                            alert("删除成功！");
+                            window.location.href = "/blackboard/page/admin/student_list.html";
+                        } else {
+                            alert("删除失败！");
+                        }
+                    },
+                    error: function (res) {
+                        console.log(res);
+                        alert("出问题了，请稍后重试！");
+                    }
+                })
+            },
             on_previous_page: function () {
                 this.nav_to(this.current_page - 1);
             },

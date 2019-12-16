@@ -116,7 +116,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="card-footer">
+                <button type="button" class="btn btn-danger float-left" @click="on_delete_teacher()">删除教师</button>
+            </div>
+
         </div>
+
         <div class="card card-default">
             <div class="card-header">
                 <h3 class="card-title">课程列表</h3>
@@ -219,11 +225,32 @@
             start_page: 1,
             end_page: 1,
             current_page: 1,
-            page_size: 1,
+            page_size: 20,
             page_count: 0,
             page_navs: [],
         },
         methods: {
+            on_delete_teacher: function () {
+                let self = this;
+                $.ajax({
+                    type:"post",
+                    url: "/blackboard/admin/deleteTeacher",
+                    data: {teacherId: self.teacher.id},
+                    success: function (res) {
+                        console.log(res);
+                        if(res.code === "204") {
+                            alert("删除成功！");
+                            window.location.href = "/blackboard/page/admin/teacher_list.html";
+                        } else {
+                            alert("删除失败！");
+                        }
+                    },
+                    error: function (res) {
+                        console.log(res);
+                        alert("出问题了，请稍后重试！");
+                    }
+                })
+            },
             on_previous_page: function () {
                 this.nav_to(this.current_page - 1);
             },

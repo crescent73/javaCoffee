@@ -161,21 +161,92 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="for_course_student">选课学生</label>
-                            <select type="text" class="form-control select2" id="for_course_student" data-placeholder="选择学生">
-                            </select>
-                        </div>
-                    </div>
-                </div>
 
             </div>
 
             <div class="card-footer">
                 <button type="button" class="btn btn-danger float-left" @click="on_delete_course()">删除课程</button>
                 <button type="submit" class="btn btn-primary float-right" @click="on_modify_course()">提交修改</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">选课学生</h3>
+
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 250px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>
+                            <button type="button" class="btn btn-default btn-sm" @click="on_check_all()"><i class="far" :class="{'fa-square': !check_state, 'fa-check-square': check_state}"></i></button>
+                        </th>
+                        <th>姓名</th>
+                        <th>学号</th>
+                        <th>班级</th>
+                        <th>年级</th>
+                        <th>学院</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <template v-for="(student, index) in payload">
+                        <tr>
+                            <td>
+                                <button type="button" class="btn btn-default btn-sm" @click="student.checked = !student.checked"><i class="far" :class="{'fa-square': !student.checked, 'fa-check-square': student.checked}"></i></button>
+                            </td>
+                            <td @click="on_content_click(student.id)">{{student.studentName}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentNumber}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentClass}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentGrade}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentSchool}}</td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer clearfix">
+                <div class="button-group float-left">
+                    <button type="button" class="btn btn-sm btn-danger" @click="on_delete_student()"><i class="fas fa-trash"></i> 删除选中 </button>
+                </div>
+                <ul class="pagination pagination-sm m-0 float-right">
+                    <li class="page-item"><a class="page-link" @click="on_previous_page()">«</a></li>
+                    <template v-for="page_nav in page_navs">
+                        <li class="page-item" :class="{active: current_page === page_nav}"><a class="page-link" @click="on_nav_page(page_nav)">{{page_nav}}</a></li>
+                    </template>
+                    <li class="page-item"><a class="page-link" @click="on_next_page()">»</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">添加选课学生</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="for_course_student">
+                            添加选课学生
+                        </label>
+                        <select type="text" class="form-control select2" id="for_course_student" data-placeholder="选择学生" multiple>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary float-right" @click="on_add_student()">提交修改</button>
             </div>
         </div>
 
@@ -308,15 +379,16 @@
             course: {
 
             },
+            studentList: [],
             payloads: new Map(),
             payload: [],
             start_page: 1,
             end_page: 1,
             current_page: 1,
-            page_size: 1,
+            page_size: 20,
             page_count: 0,
             page_navs: [],
-
+            check_state: false
         },
         methods: {
             on_previous_page: function () {
@@ -328,8 +400,8 @@
             on_nav_page: function (index) {
                 this.nav_to(index);
             },
-            on_content_click: function (courseId) {
-                window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
+            on_content_click: function (studentId) {
+                window.location.href = "/blackboard/page/admin/student_detail.html?studentId=" + studentId;
             },
             is_end_page: function (index) {
                 return this.current_page === this.end_page;
@@ -387,6 +459,9 @@
                                 self.start_page = 1;
                                 self.end_page = self.page_count;
                                 self.payloads[res.data.pageNum] = res.data.data;
+                                res.data.data.forEach(function (item) {
+                                    item.checked = self.check_state;
+                                });
                                 self.payload = res.data.data;
                                 self.set_nav();
                             }
@@ -400,7 +475,38 @@
                 return data;
             },
             on_modify_course: function () {
+                let self = this;
+                self.form.courseSemester = $("#course_semester_select option:selected").text();
+                self.form.courseSchool = $("#course_school_select option:selected").val();
+                self.form.courseType = $("#course_type_select option:selected").val();
+                self.form.teacherId = $("#course_teacher_select option:selected").val();
 
+                var data = {
+                    courseId: self.course.id,
+                    courseCredit: self.course.courseCredit === self.form.courseCredit ? undefined : self.form.courseCredit,
+                    courseSchool: self.course.courseSchool === self.form.courseSchool ? undefined : self.form.courseSchool,
+                    teacherId: self.course.teacherId === self.form.teacherId ? undefined : self.form.teacherId,
+                    courseSemester: self.course.courseSemester === self.form.courseSemester ? undefined : self.form.courseSemester,
+                    courseType: self.course.courseType === self.form.courseType ? undefined : self.form.courseType
+                };
+
+                $.ajax({
+                    type: "post",
+                    url: "/blackboard/admin/modifyCourse",
+                    data: data,
+                    success: function (res) {
+                        if(res.code === "202") {
+                            alert("修改成功！");
+                            window.location.href = "/blackboard/page/admin/course_detail.html?course_id = " + self.course.id;
+                        } else {
+                            alert("修改失败！")
+                        }
+                    },
+                    error: function (res) {
+                        console.log(res);
+                        alert("修改失败！");
+                    }
+                })
             },
             on_delete_course: function () {
                 let self = this;
@@ -425,8 +531,38 @@
                     }
                 })
             },
-            on_delete_student: function (studentId) {
-
+            on_delete_student: function () {
+                let self = this;
+                var list = [];
+                self.payload.forEach(function (item) {
+                    if(item.checked) {
+                        list.push(item.id);
+                    }
+                });
+                var form_data = new FormData();
+                form_data.append("courseId", self.course.id);
+                form_data.append("studentList", list);
+                $.ajax({
+                    type:"post",
+                    url: "/blackboard/admin/deleteCourseSchedule",
+                    contentType: false,
+                    processData: false,
+                    data: form_data,
+                    success: function (res) {
+                        if(res.code === "204") {
+                            alert("删除成功！");
+                            self.payloads.clear();
+                            self.get_payload(1);
+                        } else {
+                            console.log(res);
+                            alert("删除失败！")
+                        }
+                    },
+                    error: function (res) {
+                        console.log(res);
+                        alert("删除失败！");
+                    }
+                })
             },
             on_check_all: function () {
                 let self = this;
@@ -437,6 +573,38 @@
             },
             on_student_check: function (index) {
                 this.payload[index].checked = !this.payload[index].checked;
+            },
+            on_add_student: function () {
+                let self = this;
+                var list = $("#for_course_student").select2("val");
+                var form = new FormData();
+                form.append("courseId", self.course.id);
+                form.append("studentList", list);
+                $.ajax({
+                    type:"post",
+                    url: "/blackboard/admin/addCourseSchedule",
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    data: form,
+                    success: function (res) {
+                        if(res.code === "202") {
+                            console.log(res);
+                            self.payloads.clear();
+                            self.get_payload(1);
+                            $("#for_course_student").empty();
+                            alert("添加选课学生成功！");
+                        } else {
+                            console.log(res);
+                            alert("添加选课学生失败！");
+                        }
+                    },
+                    error: function (res) {
+                        console.log(res);
+                        alert("添加选课学生失败！");
+                    }
+                });
+
             },
             load_course: function () {
                 let self = this;
@@ -452,6 +620,7 @@
                             self.course = res.data.data[0];
                             self.form = res.data.data[0];
                         } else {
+                            console.log(res);
                             alert("出问题了，请刷新重试！");
                             window.location.href = "/blackboard/page/admin/course_list.html";
                         }
@@ -460,6 +629,9 @@
                         console.log(res)
                     }
                 });
+            },
+            on_search_student: function () {
+
             }
         },
         mounted: function () {
@@ -488,5 +660,6 @@
             }
         }
     })
+
 </script>
 </html>
