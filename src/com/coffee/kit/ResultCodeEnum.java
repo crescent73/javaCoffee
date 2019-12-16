@@ -21,6 +21,7 @@ public enum ResultCodeEnum
 	DB_ADD_FAILURE_COURSE_NOT_EXIST("203","添加失败_课程不存在"),
 	DB_ADD_FAILURE_TEACHER_ALREADY_EXIST("203","添加失败_老师已存在"),
 	DB_ADD_FAILURE_STUDENT_ALREADY_EXIST("203","添加失败_学生已存在"),
+	DB_ADD_FAILURE_COURSE_ALREADY_EXIST("203","添加失败_老师已存在"),
 	//删
 	DB_DELETE_SUCCESS("204","删除成功"),
 	DB_DELETE_FAILURE("205","删除失败"),
@@ -58,7 +59,8 @@ public enum ResultCodeEnum
 	ATTACHMENT_UPLOAD_FAILURE("407","附件上传失败"),
 	ATTACHMENT_DOWNLOAD_SUCCESS("408","附件下载成功"),
 	ATTACHMENT_DOWNLOAD_FAILURE("409","附件下载失败"),
-	FILE_EMPTY("410","附件不存在");
+	FILE_EMPTY("410","附件不存在"),
+	USER_ALREADY_LOGIN("411","用户已登陆"),;
 	
 	private String code;
     private String desc;

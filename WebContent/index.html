@@ -35,13 +35,26 @@
         },
         methods:{
             login(){
+                let that = this;
                 $.ajax({
                     type:"post",
                     url:"/blackboard/system/login",
-                    data:this.loginData,
+                    data:that.loginData,
                     success:function(res){
                         console.log(res);
-                        console.log(res.code);
+                        if(res.code === "400"){
+                            switch (that.loginData.userType) {
+                                case 1:
+                                    console.log("1");
+                                    window.location.href ="/blackboard/page/admin/admin.html";
+                                    break;
+                                case 2:
+                                case 3:
+                                    console.log("2");
+                                    window.location.href = "/blackboard/page/course/course.html";
+                                    break;
+                            }
+                        }
                     },
                     error:function(res){
                         console.log(res)

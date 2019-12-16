@@ -48,61 +48,68 @@ public class SystemServiceImpl implements SystemService {
 	@Autowired
 	private AttachmentMapper attachmentDao;
 
-	public SystemServiceImpl() {
-		resultData = new ResultData<Data>();
-	}
 
 	@Override
-	public ResultData login(String name, String password, String userType) {
-		if(StringUtils.isNotBlank(name)&&StringUtils.isNotBlank(password)&&StringUtils.isNotBlank(userType)) {
+	public ResultData login(User user) {
+		resultData = new ResultData<Data>();
+		if(StringUtils.isNotBlank(user.getName())&&StringUtils.isNotBlank(user.getPassword())&&StringUtils.isNotBlank(user.getUserType())) {
 			boolean flag = false;
-			switch(userType) {
+			switch(user.getUserType()) {
 			case "1":
 				//调用adminDao
 				Admin admin = new Admin();
-				admin.setAdminName(name);
-				admin.setAdminPassword(password);
+				admin.setAdminName(user.getName());
+				admin.setAdminPassword(user.getPassword());
 				System.out.println(admin);
 				List<Admin> resultA = null;
 				resultA = adminDao.find(admin);
 				if(resultA.size() == 1) {
-					Data<Admin> data = new Data<Admin>();
 					admin = resultA.get(0);
-					data.setToken(AuthorizationAspect.createToken(admin.getAdminName()));
+					user.setId(admin.getId());
+					System.out.println("service:"+user);
+					Data<Admin> data = new Data<Admin>();
+					data.setToken(AuthorizationAspect.createToken(user));
 					data.setData(admin);
 					resultData.setData(data);
+
 					flag = true;
 				}
 				break;
 			case "2":
 				//调用teacherDao
 				Teacher teacher = new Teacher();
-				teacher.setTeacherName(name);
-				teacher.setTeacherPassword(password);
+				teacher.setTeacherName(user.getName());
+				teacher.setTeacherPassword(user.getPassword());
 				List<Teacher> resultT = null;
 				resultT = teacherDao.find(teacher);
 				if(resultT.size() == 1) {
-					Data<Teacher> data = new Data<Teacher>();
 					teacher = resultT.get(0);
-					data.setToken(AuthorizationAspect.createToken(teacher.getTeacherName()));
+					user.setId(teacher.getId());
+					System.out.println("service:"+user);
+					Data<Teacher> data = new Data<Teacher>();
+
+					data.setToken(AuthorizationAspect.createToken(user));
 					data.setData(teacher);
 					resultData.setData(data);
+
 					flag = true;
 				}
 				break;
 			case "3":
 				//调用studentDao
 				Student student = new Student();
-				student.setStudentName(name);
-				student.setStudentPassword(password);
+				student.setStudentName(user.getName());
+				student.setStudentPassword(user.getPassword());
 				List<Student> resultS = null;
 				resultS = studentDao.find(student);
 				if(resultS.size() == 1) {
-					Data<Student> data = new Data<Student>();
 					student = resultS.get(0);
-					data.setToken(AuthorizationAspect.createToken(student.getStudentName()));
+					user.setId(student.getId());
+					Data<Student> data = new Data<Student>();
+					data.setToken(AuthorizationAspect.createToken(user));
 					data.setData(student);
 					resultData.setData(data);
+
 					flag = true;
 				}
 				break;
@@ -125,6 +132,7 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData logout(Long id, String userType) {
+		resultData = new ResultData<Data>();
 		switch(userType) {
 		case "1":
 			//调用adminDao
@@ -146,6 +154,7 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData modifyInfo(Long id, String password, String userType) {
+		resultData = new ResultData<Data>();
 		if(id!=null &&StringUtils.isNotBlank(password)&&StringUtils.isNotBlank(userType)) {
 			int result;
 			switch(userType) {
@@ -190,6 +199,7 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchCourse(Long studentId, Course course, PageParam pageParam) {
+		resultData = new ResultData<Data>();
 		if(course == null) {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
 			return resultData;
@@ -227,6 +237,7 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchStudent(Long courseId, Student student, PageParam pageParam) {
+		resultData = new ResultData<Data>();
 		if(student == null) {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
 			return resultData;
@@ -263,6 +274,7 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchNotice(Notice notice, PageParam pageParam) {
+		resultData = new ResultData<Data>();
 		if(notice != null) {
 			if(pageParam != null && pageParam.isPaginate()){
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
@@ -290,6 +302,7 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchFile(File file, PageParam pageParam) {
+		resultData = new ResultData<Data>();
 		if(file != null) {
 			if(pageParam != null && pageParam.isPaginate()){
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
@@ -323,6 +336,7 @@ public class SystemServiceImpl implements SystemService {
 	 */
 	@Override
 	public AttachmentDetail downloadAttachment(Attachment attachment) {
+		resultData = new ResultData<Data>();
 		if(attachment != null){
 			List<Attachment> attachments = attachmentDao.find(attachment);
 			if(attachments.size() == 1) {
@@ -343,6 +357,7 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchAttachment(Attachment attachment, PageParam pageParam) {
+		resultData = new ResultData<Data>();
 		if(attachment != null){
 			//是否分页
 			if(pageParam != null && pageParam.isPaginate()){
@@ -371,6 +386,7 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchStudentByKey(String key) {
+		resultData = new ResultData<Data>();
 		List<Student> students = studentDao.search(key);
 		if(students.size() > 0) {
 			Data<List<Student>> data = new Data<>();
@@ -385,6 +401,7 @@ public class SystemServiceImpl implements SystemService {
 
 	@Override
 	public ResultData searchCourseByKey(String key) {
+		resultData = new ResultData<Data>();
 		List<Course> courses = courseDao.search(key);
 		if(courses.size() > 0) {
 			Data<List<Course>> data = new Data<>();

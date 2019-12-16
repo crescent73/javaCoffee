@@ -32,15 +32,17 @@ public class SystemController {
 
 	@RequestMapping("/login")
 	@ResponseBody
-	public ResultData login(String name, String password, String userType, HttpSession session) {
-		if(StringUtils.isNotBlank(name) && StringUtils.isNotBlank(password)
-				&& StringUtils.isNotBlank(userType)) {
-			resultData = systemService.login(name, password, userType);
+	public ResultData login(User user, HttpSession session) {
+		if(StringUtils.isNotBlank(user.getName()) && StringUtils.isNotBlank(user.getPassword())
+				&& StringUtils.isNotBlank(user.getUserType())) {
+			resultData = systemService.login(user);
 			if(resultData.getCode().equals("400")){
 				System.out.println("login success");
 				//登陆成功设置用户名
+				System.out.println("user:"+user);
 				session.setAttribute("login",1); //设置登陆状态是1
-				session.setAttribute("username",name);  //记录用户名
+				session.setAttribute("user",user);  //记录用户
+
 			} else{
 				System.out.println(resultData.getCode());
 			}

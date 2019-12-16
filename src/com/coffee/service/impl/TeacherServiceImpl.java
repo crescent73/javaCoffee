@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.coffee.constant.FileStorage;
+import com.coffee.kit.Data;
 import com.coffee.mapper.*;
 import com.coffee.po.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,9 @@ public class TeacherServiceImpl implements TeacherService {
 	@Autowired
 	private AttachmentMapper attachmentDao;
 
-	public TeacherServiceImpl() {
-		resultData = new ResultData();
-	}
-
 	@Override
 	public ResultData addNotice(Notice notice) {
+		resultData = new ResultData<Data>();
 		if(notice != null) {
 			//course外键校验
 			if(!isCourseExist(notice.getCourseId())) {
@@ -69,6 +67,7 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public ResultData deleteNotice(Long id) {
+		resultData = new ResultData<Data>();
 		if(id != null) {
 			Notice notice = new Notice();
 			notice.setId(id);
@@ -86,6 +85,7 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public ResultData modifyNotice(Notice notice) {
+		resultData = new ResultData<Data>();
 		if(notice != null && notice.getId() > 0) { //course不为空且id存在
 			//公告校验
 			if(!isNoticeExist(notice.getId())) {
@@ -117,6 +117,7 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public ResultData addFile(File file,String dirPath,List<MultipartFile> attachments) {
+		resultData = new ResultData<Data>();
 		boolean isSuccess = false;
 		// 处理file
 		if(file != null) {
@@ -153,6 +154,7 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public ResultData addAttachment(Attachment myAttachment, List<MultipartFile> attachments) {
+		resultData = new ResultData<Data>();
 		// 处理attachment
 		if(attachments !=null && !attachments.isEmpty() && attachments.size() > 0){
 			for(MultipartFile attachment : attachments){
@@ -195,6 +197,7 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public ResultData deleteFile(Long id) {
+		resultData = new ResultData<Data>();
 		if(id != null) {
 			//先删除附件
 			Attachment attachment = new Attachment();
@@ -224,6 +227,7 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public ResultData deleteAttachment(Attachment attachment) {
+		resultData = new ResultData<Data>();
 		if(attachment != null) {
 			//先查询
 			List<Attachment> attachments = attachmentDao.find(attachment);

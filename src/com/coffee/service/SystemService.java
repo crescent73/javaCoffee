@@ -10,12 +10,10 @@ public interface SystemService {
 	/**
 	 * 系统登陆入口：
 	 * 为管理员，教师，学生提供统一登陆接口
-	 * @param name 用户名
-	 * @param password 用户密码
-	 * @param userType 用户类型：1：管理员；2：教师；3：学生 
+	 * @param user 用户
 	 * @return
 	 */
-	public ResultData login(String name, String password, String userType);
+	public ResultData login(User user);
 	
 	/**
 	 * 退出系统

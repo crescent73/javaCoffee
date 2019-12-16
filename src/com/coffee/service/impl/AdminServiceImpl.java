@@ -36,20 +36,20 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private CourseScheduleMapper courseScheduleDao;
 
-    public AdminServiceImpl() {
-        resultData = new ResultData<Data>();
-    }
-
     @Override
     public ResultData addCourse(Course course) {
+        resultData = new ResultData<Data>();
         if(course != null) {
             // 插入前进行校验工作，判断约束
             // 课程号唯一
-            // 课程学期默认值处理
-
-            if(course.getCourseSemester() == null) {
-                course.setCourseSemester("2019-2020-1"); //暂定
+            if(isCourseExist(null,course.getCourseNumber())) {
+                resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_COURSE_ALREADY_EXIST);//课程已存在
+                return resultData;
             }
+            // 课程学期默认值处理
+//            if(course.getCourseSemester() == null) {
+//                course.setCourseSemester("2019-2020-1"); //暂定
+//            }
             // teacherId 引用的外键，要外键存在才可以插入！否则插入报错！
             if(course.getTeacherId()!= null) {
             	if(!isTeacherExist(course.getTeacherId(),null)) {
@@ -80,6 +80,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData deleteCourse(Long id) {
+        resultData = new ResultData<Data>();
         if(id != null) { //如果id不为空
             Course course = new Course();
             course.setId(id);
@@ -98,6 +99,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData modifyCourse(Course course) {
+        resultData = new ResultData<Data>();
         if(course != null && course.getId() > 0) { //course不为空且id存在
         	// teacherId 引用的外键，要外键存在才可以插入！否则插入报错！
             if(course.getTeacherId()!= null) {
@@ -122,6 +124,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData addTeacher(Teacher teacher) {
+        resultData = new ResultData<Data>();
         if(teacher != null) {
         	//teacher设置teacherNumber唯一
         	if(teacher.getTeacherNumber()!= null) {
@@ -146,6 +149,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData deleteTeacher(Long id) {
+        resultData = new ResultData<Data>();
         //级联删除的问题！！！
         if(id != null) {
             Teacher teacher = new Teacher();
@@ -164,6 +168,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData searchTeacher(Teacher teacher, PageParam pageParam) {
+        resultData = new ResultData<Data>();
         if(pageParam != null && pageParam.isPaginate()){//是否分页
             PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
         }
@@ -187,9 +192,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData addStudent(Student student) {
+        resultData = new ResultData<Data>();
         if(student != null) {
         	//学生学号唯一检验
-        	if(isStudentExist(student.getStudentNumber())) {
+        	if(isStudentExist(null,student.getStudentNumber())) {
         		resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_STUDENT_ALREADY_EXIST);//学生已存在
         		return resultData;
         	}
@@ -208,6 +214,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData deleteStudent(Long id) {
+        resultData = new ResultData<Data>();
         System.out.println(id);
         if(id != null) {
             Student student = new Student();
@@ -224,38 +231,11 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
     
-    /**
-     * 判断老师是否存在
-     * 外键约束条件，若老师不存在插入修改报错
-     * @param teacherId 教师id
-     * @return 存在 true 不存在 false
-     */
-    private boolean isTeacherExist(Long teacherId,String teacherNumber) {
-    	List<Teacher> teachers = null;
-        Teacher teacher = new Teacher();
-        if(teacherId != null) {
-        	teacher.setId(teacherId);
-            teachers = teacherDao.find(teacher);
-        }else if(teacherNumber != null) {
-        	teacher.setTeacherNumber(teacherNumber);
-        	teachers = teacherDao.find(teacher);
-        }
-        return teachers != null && teachers.size() == 1;
-    }
-    
-    private boolean isStudentExist(String studentNumber) {
-    	List<Student> students = null;
-    	Student student = new Student();
-    	if(studentNumber != null) {
-    		student.setStudentNumber(studentNumber);
-    		students = studentDao.find(student);
-    	}
 
-        return students != null && students.size() == 1;
-    }
 
     @Override
     public ResultData searchTeacherByKey(String searchKey) {
+        resultData = new ResultData<Data>();
         List<Teacher> teachers = teacherDao.search(searchKey);
         if(teachers.size() > 0) {
             Data<List<Teacher>> data = new Data<>();
@@ -270,6 +250,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData addCourseSchedule(List<Long> studentId, List<Long> courseId) {
+        resultData = new ResultData<Data>();
         if(studentId == null || courseId == null){
             resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //重要请求参数为空
             return resultData;
@@ -280,13 +261,13 @@ public class AdminServiceImpl implements AdminService {
         if(courseId.size() == 1) {
             // 为一个课程添加多个学生
             //课程的外键检验
-            if(!isCourseExist(courseId.get(0))){
+            if(!isCourseExist(courseId.get(0),null)){
                 resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_COURSE_NOT_EXIST);//课程不存在
                 return resultData;
             }
             for(Long student:studentId){
                 //学生的外键检验
-                if(!isStudentExist(student)){
+                if(!isStudentExist(student,null)){
                     resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_STUDENT_NOT_EXIST);//学生不存在
                     return resultData;
                 }
@@ -300,13 +281,13 @@ public class AdminServiceImpl implements AdminService {
         } else if(studentId.size() == 1) {
             //为一个学生添加多个课程
             //学生的外键检验
-            if(!isStudentExist(studentId.get(0))){
+            if(!isStudentExist(studentId.get(0),null)){
                 resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_STUDENT_NOT_EXIST);//学生不存在
                 return resultData;
             }
             for(Long course:courseId){
                 //课程的外键检验
-                if(!isCourseExist(course)){
+                if(!isCourseExist(course,null)){
                     resultData.setResult(ResultCodeEnum.DB_ADD_FAILURE_COURSE_NOT_EXIST);//课程不存在
                     return resultData;
                 }
@@ -325,6 +306,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultData deleteCourseSchedule(Long id) {
+        resultData = new ResultData<Data>();
         if(id != null){
             int result = courseScheduleDao.delete(new CourseSchedule(id));
             if(result > 0) {
@@ -344,17 +326,17 @@ public class AdminServiceImpl implements AdminService {
      * @param courseId
      * @return 存在 true 不存在 false
      */
-    private boolean isCourseExist(Long courseId) {
+    private boolean isCourseExist(Long courseId,String courseNumber) {
         List<CourseDetail> courses = null;
         Course course = new Course();
         if(courseId != null) {
             course.setId(courseId);
             courses = courseDao.find(course);
+        } else if(courseNumber != null){
+            course.setCourseNumber(courseNumber);
+            courses = courseDao.find(course);
         }
-        if(courseId!= null && courses.size() == 1)
-            return true;
-        else
-            return false;
+        return courses != null && courses.size() == 1;
     }
 
     /**
@@ -363,16 +345,36 @@ public class AdminServiceImpl implements AdminService {
      * @param studentId 学生id
      * @return
      */
-    private boolean isStudentExist(Long studentId) {
+    private boolean isStudentExist(Long studentId,String studentNumber) {
         List<Student> students = null;
         Student student = new Student();
         if(studentId != null) {
             student.setId(studentId);
             students = studentDao.find(student);
+        } else if(studentNumber != null) {
+            student.setStudentNumber(studentNumber);
+            students = studentDao.find(student);
         }
-        if(students!= null && students.size() == 1)
-            return true;
-        else
-            return false;
+        return students != null && students.size() == 1;
+    }
+
+    /**
+     * 判断老师是否存在
+     * 外键约束条件，若老师不存在插入修改报错
+     * @param teacherId 教师id
+     * @return 存在 true 不存在 false
+     */
+    private boolean isTeacherExist(Long teacherId,String teacherNumber) {
+        resultData = new ResultData<Data>();
+        List<Teacher> teachers = null;
+        Teacher teacher = new Teacher();
+        if(teacherId != null) {
+            teacher.setId(teacherId);
+            teachers = teacherDao.find(teacher);
+        }else if(teacherNumber != null) {
+            teacher.setTeacherNumber(teacherNumber);
+            teachers = teacherDao.find(teacher);
+        }
+        return teachers != null && teachers.size() == 1;
     }
 }
