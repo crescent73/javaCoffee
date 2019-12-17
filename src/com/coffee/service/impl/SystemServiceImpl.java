@@ -395,7 +395,7 @@ public class SystemServiceImpl implements SystemService {
 	@Override
 	public ResultData searchStudentByKey(String key) {
 		resultData = new ResultData<Data>();
-		List<Student> students = studentDao.search(null,key);
+		List<Student> students = studentDao.search(new Student(), key);
 		if(students.size() > 0) {
 			Data<List<Student>> data = new Data<>();
 			data.setData(students);
@@ -410,7 +410,7 @@ public class SystemServiceImpl implements SystemService {
 	@Override
 	public ResultData searchCourseByKey(String key) {
 		resultData = new ResultData<Data>();
-		List<CourseDetail> courses = courseDao.search(null,key);
+		List<CourseDetail> courses = courseDao.search(new Course(), key);
 		if(courses.size() > 0) {
 			Data<List<CourseDetail>> data = new Data<>();
 			data.setData(courses);

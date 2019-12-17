@@ -242,7 +242,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResultData searchTeacherByKey(String searchKey) {
         resultData = new ResultData<Data>();
-        List<Teacher> teachers = teacherDao.search(null,searchKey);
+        List<Teacher> teachers = teacherDao.search(new Teacher(), searchKey);
         if(teachers.size() > 0) {
             Data<List<Teacher>> data = new Data<>();
             data.setData(teachers);

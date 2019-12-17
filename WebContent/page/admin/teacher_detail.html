@@ -129,10 +129,10 @@
 
                 <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 250px;">
-                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search" v-model="search_key">
 
                         <div class="input-group-append">
-                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                            <button type="button" class="btn btn-default" @click="on_search()"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
                 </div>
@@ -169,6 +169,11 @@
                     </template>
                     </tbody>
                 </table>
+                <div v-show="payload.length === 0">
+                    <p>
+                    <div style="text-align: center;">没有记录了</div>
+                    </p>
+                </div>
             </div>
 
             <div class="card-footer clearfix">
@@ -231,6 +236,7 @@
             page_size: 20,
             page_count: 0,
             page_navs: [],
+            search_key: "",
         },
         methods: {
             on_delete_teacher: function () {
@@ -310,7 +316,8 @@
                     var form = {
                         pageNum: index,
                         pageSize: self.page_size,
-                        teacherId: self.teacher.id
+                        teacherId: self.teacher.id,
+                        searchKey: self.search_key
                     };
 
                     $.ajax({
@@ -362,6 +369,12 @@
                         console.log(res)
                     }
                 })
+            },
+            on_search: function () {
+                let self = this;
+                self.payload = [];
+                self.payloads.clear();
+                self.get_payload(1);
             }
         },
         mounted: function () {
