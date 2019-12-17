@@ -78,7 +78,7 @@ public class SystemServiceImpl implements SystemService {
 			case "2":
 				//调用teacherDao
 				Teacher teacher = new Teacher();
-				teacher.setTeacherName(user.getName());
+				teacher.setTeacherNumber(user.getName());
 				teacher.setTeacherPassword(user.getPassword());
 				List<Teacher> resultT = null;
 				resultT = teacherDao.find(teacher);
@@ -98,7 +98,7 @@ public class SystemServiceImpl implements SystemService {
 			case "3":
 				//调用studentDao
 				Student student = new Student();
-				student.setStudentName(user.getName());
+				student.setStudentNumber(user.getName());
 				student.setStudentPassword(user.getPassword());
 				List<Student> resultS = null;
 				resultS = studentDao.find(student);
