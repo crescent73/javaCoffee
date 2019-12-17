@@ -21,6 +21,9 @@
 
 </body>
 <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+
 <script>
     var app = new Vue({
         el: '#mainpage',
@@ -36,13 +39,16 @@
         methods:{
             login(){
                 let that = this;
-                $.ajax({
+                request({
                     type:"post",
                     url:"/blackboard/system/login",
-                    data:that.loginData,
-                    success:function(res){
+                    data:this.loginData
+                }).then(
+                    function success(res){
                         console.log(res);
+
                         if(res.code === "400"){
+                            $.session.set("token",res.data.token);
                             switch (that.loginData.userType) {
                                 case 1:
                                     console.log("1");
@@ -56,10 +62,11 @@
                             }
                         }
                     },
-                    error:function(res){
+                    function error(res){
                         console.log(res)
+
                     }
-                })
+                )
             },
             choose(userType){
                 this.loginData.userType = userType;
@@ -68,7 +75,8 @@
         created(){
         },
         mounted(){
+
         }
-    })
+    });
 </script>
 </html>

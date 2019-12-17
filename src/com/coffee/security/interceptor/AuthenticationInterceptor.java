@@ -15,11 +15,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         HttpSession session = req.getSession();
         String url= req.getRequestURI();
         //拦截页面信息
-        if (url.indexOf("/page") > 0|| url.indexOf(".html") > 0 || url.equals("/blackboard/")) {
-            //插件请求返回
-            if(url.indexOf("/page/dist")>0 || url.indexOf("/page/plugins")>0){
-                return true;
-            }
+        if (url.indexOf(".jsp") > 0 ||url.indexOf(".html") > 0 || url.equals("/blackboard/")) {
             //如果用户未登录
             if(session.getAttribute("login")==null){
                 //只允许进入登陆页面

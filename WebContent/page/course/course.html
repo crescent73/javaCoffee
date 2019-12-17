@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -177,6 +173,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="/blackboard/page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="/blackboard/page/dist/js/adminlte.min.js"></script>
+  <script src="/blackboard/page/dist/js/request.js"></script>
+  <script src="/blackboard/page/dist/js/jquerySession.js"></script>
 </body>
 <script type="text/javascript">
   var app = new Vue({
@@ -191,18 +189,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
     },
     methods:{
       logout(){
-        $.ajax({
-          type:"post",
-          url:"/blackboard/system/logout",
-          data:this.logoutData,
-          success:function(res){
-            console.log(res);
-            console.log(res.code);
-          },
-          error:function(res){
-            console.log(res)
-          }
-        })
+          console.log($.session.get("token"));
+          request({
+              type:"post",
+              url:"/blackboard/system/logout",
+              data:this.logoutData,
+          }).then(
+              function success(res){
+                  $.session.clear();
+                  console.log(res);
+                  console.log(res.code);
+              },
+              function error(res){
+                  console.log(res)
+
+              }
+          );
       }
     },
     created(){

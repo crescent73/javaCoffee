@@ -57,6 +57,7 @@ public class SystemController {
 	@ResponseBody
 	public ResultData logout(Long id, String userType,HttpSession session) {
 		if(id != null && StringUtils.isNotBlank(userType)) {
+			resultData = new ResultData();
 			if (session.getAttribute("login") == null){
 				resultData.setResult(ResultCodeEnum.NO_LOGIN_USER);
 			}else if(session.getAttribute("login").equals(1)){

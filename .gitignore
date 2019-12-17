@@ -1,3 +1,7 @@
+.gitignore
+.classpath
 .project
+.idea
+.settings
 /build/
 /classes/
