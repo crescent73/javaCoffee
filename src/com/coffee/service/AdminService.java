@@ -47,7 +47,7 @@ public interface AdminService {
 	 * @param teacher
 	 * @return
 	 */
-	public ResultData searchTeacher(Teacher teacher, PageParam pageParam);
+	public ResultData searchTeacher(Teacher teacher,String searchKey, PageParam pageParam);
 	
 	/**
 	 * 添加学生

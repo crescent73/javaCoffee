@@ -3,38 +3,31 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.coffee.mapper.CourseMapper">
 
-    <resultMap id="courseResult" type="CourseDetail">
-        <id property="id" column="id"></id>
-        <result property="courseName" column="course_name"></result>
-        <result property="courseNumber" column="course_number"></result>
-        <result property="courseSchool" column="course_school"></result>
-        <result property="courseType" column="course_type"></result>
-        <result property="courseDescription" column="course_description"></result>
-        <result property="courseTeacherDescription" column="course_teacher_description"></result>
-        <result property="courseCredit" column="course_credit"></result>
-        <result property="teacherId" column="teacher_id"></result>
-        <result property="teacherName" column="teacher_name"></result>
-    </resultMap>
-
     <select id="find" parameterType="Course" resultType="CourseDetail">
         select course.*,teacher.teacher_name,teacher.teacher_number
         from course,teacher
         <where>
-        and course.teacher_id = teacher.id
+            and course.teacher_id = teacher.id
             <if test="id != null">
                 and course.id = #{id}
             </if>
             <if test="courseName != null">
-                and course_name like #{courseName}
+                <if test="courseName != ''">
+                    and course_name like #{courseName}
+                </if>
             </if>
             <if test="courseNumber != null">
-                and course_number like #{courseNumber}
+                <if test="courseNumber != ''">
+                    and course_number like #{courseNumber}
+                </if>
             </if>
             <if test="courseSchool != null">
                 and course_school = #{courseSchool}
             </if>
             <if test="courseSemester != null">
-                 and course_semester = #{courseSemester}
+                <if test="courseSemester != ''">
+                    and course_semester = #{courseSemester}
+                </if>
             </if>
             <if test="courseCredit != null">
                 and course_credit = #{courseCredit}
@@ -125,27 +118,54 @@
         where notice.course_id = #{courseId}
     </select>
 
-    <select id="search" parameterType="String" resultType="Course">
-        SELECT course.*
-        FROM
-            course
-            INNER JOIN
-            (
-                SELECT id, course_name as search_key
-                FROM course
-                WHERE course.course_name like CONCAT(CONCAT('%', #{key}), '%')
-                UNION
-                SELECT id, course_number as search_key
-                FROM course
-                WHERE course.course_number like CONCAT(CONCAT('%', #{key}), '%')
-                UNION
-                SELECT course.id, teacher.teacher_name as search_key
-                FROM course INNER JOIN teacher on course.teacher_id = teacher.id
-                WHERE teacher.teacher_name like CONCAT(CONCAT('%', #{key}), '%')
+    <select id="search" resultType="CourseDetail">
+        SELECT course.*,teacher.teacher_name,teacher.teacher_number
+        FROM course INNER JOIN teacher on course.teacher_id = teacher.id
+        <where>
+            course.id IN (
+                SELECT DISTINCT id
+                FROM(
+                    SELECT id, course_name as search_key
+                    FROM course
+                    WHERE course.course_name like CONCAT(CONCAT('%', #{key}), '%')
+                    UNION
+                    SELECT id, course_number as search_key
+                    FROM course
+                    WHERE course.course_number like CONCAT(CONCAT('%', #{key}), '%')
+                    UNION
+                    SELECT course.id , teacher.teacher_name as search_key
+                    FROM course INNER JOIN teacher on course.teacher_id = teacher.id
+                    WHERE teacher.teacher_name like CONCAT(CONCAT('%', #{key}), '%')
+                    ORDER BY LENGTH (search_key)
+                ) as temp
             )
-            temp
-            ON course.id = temp.id
-        ORDER BY LENGTH (temp.search_key);
+            <if test="course.id != null">
+                and course.id = #{course.id}
+            </if>
+            <if test="course.courseName != null">
+                <if test="course.courseName != ''">
+                    and course_name like #{course.courseName}
+                </if>
+            </if>
+            <if test="course.courseNumber != null">
+                <if test="course.courseNumber != ''">
+                    and course_number like #{course.courseNumber}
+                </if>
+            </if>
+            <if test="course.courseSchool != null">
+                and course_school = #{course.courseSchool}
+            </if>
+            <if test="course.courseSemester != null">
+                <if test="course.courseSemester != ''">
+                    and course_semester = #{course.courseSemester}
+                </if>
+            </if>
+            <if test="course.courseCredit != null">
+                and course_credit = #{course.courseCredit}
+            </if>
+            <if test="course.teacherId != null">
+                and teacher_id = #{course.teacherId}
+            </if>
+        </where>
     </select>
-
 </mapper>

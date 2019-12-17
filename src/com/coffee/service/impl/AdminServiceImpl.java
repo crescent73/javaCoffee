@@ -11,6 +11,7 @@ import com.coffee.mapper.CourseMapper;
 import com.coffee.mapper.StudentMapper;
 import com.coffee.mapper.TeacherMapper;
 import com.coffee.service.AdminService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -167,12 +168,17 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ResultData searchTeacher(Teacher teacher, PageParam pageParam) {
+    public ResultData searchTeacher(Teacher teacher, String searchKey, PageParam pageParam) {
         resultData = new ResultData<Data>();
         if(pageParam != null && pageParam.isPaginate()){//是否分页
             PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
         }
-        List<Teacher> teachers = teacherDao.find(teacher);
+        List<Teacher> teachers;
+        if(StringUtils.isNotBlank(searchKey)){ //为关键字搜索
+            teachers = teacherDao.search(teacher,searchKey);
+        } else {
+            teachers = teacherDao.find(teacher);
+        }
         if(teachers.size() > 0) {
             Data<List<Teacher>> data = new Data<List<Teacher>>();
             if(pageParam != null && pageParam.isPaginate()){
@@ -236,7 +242,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResultData searchTeacherByKey(String searchKey) {
         resultData = new ResultData<Data>();
-        List<Teacher> teachers = teacherDao.search(searchKey);
+        List<Teacher> teachers = teacherDao.search(null,searchKey);
         if(teachers.size() > 0) {
             Data<List<Teacher>> data = new Data<>();
             data.setData(teachers);

@@ -198,24 +198,28 @@ public class SystemServiceImpl implements SystemService {
 	}
 
 	@Override
-	public ResultData searchCourse(Long studentId, Course course, PageParam pageParam) {
+	public ResultData searchCourse(Long studentId, Course course, String searchKey, PageParam pageParam) {
 		resultData = new ResultData<Data>();
-		if(course == null) {
+		if(course == null && searchKey == null) {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
 			return resultData;
 		}
-		System.out.println("studentId:"+studentId+",course:"+course);
+		System.out.println("studentId:"+studentId+",course:"+course+"searchKey:"+searchKey);
 		List<CourseDetail> courses;
 		if(studentId != null) {//查询学生的课程列表
 			if(pageParam != null && pageParam.isPaginate()){//是否分页
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
 			}
 			courses = courseScheduleDao.findCourseByStudentId((long)(studentId));
-		} else {
+		} else { //查询所有的课程列表
 			if(pageParam.isPaginate()){//是否分页
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
 			}
-			courses = courseDao.find(course);
+			if(StringUtils.isNotBlank(searchKey)){ //为关键字搜索
+				courses = courseDao.search(course,searchKey);
+			} else {
+				courses = courseDao.find(course); //为正常条件查询
+			}
 		}
 		System.out.println(courses);
 		if(courses.size() > 0) {
@@ -236,9 +240,9 @@ public class SystemServiceImpl implements SystemService {
 	}
 
 	@Override
-	public ResultData searchStudent(Long courseId, Student student, PageParam pageParam) {
+	public ResultData searchStudent(Long courseId, Student student,String searchKey,  PageParam pageParam) {
 		resultData = new ResultData<Data>();
-		if(student == null) {
+		if(student == null && searchKey == null) {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
 			return resultData;
 		}
@@ -252,7 +256,11 @@ public class SystemServiceImpl implements SystemService {
 			if(pageParam != null && pageParam.isPaginate()){//是否分页
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
 			}
-			students = studentDao.find(student);
+			if(StringUtils.isNotBlank(searchKey)){ //为关键字搜索
+				students = studentDao.search(student,searchKey);
+			} else {
+				students = studentDao.find(student);
+			}
 		}
 		System.out.println(students);
 		if(students.size() > 0) {
@@ -387,7 +395,7 @@ public class SystemServiceImpl implements SystemService {
 	@Override
 	public ResultData searchStudentByKey(String key) {
 		resultData = new ResultData<Data>();
-		List<Student> students = studentDao.search(key);
+		List<Student> students = studentDao.search(null,key);
 		if(students.size() > 0) {
 			Data<List<Student>> data = new Data<>();
 			data.setData(students);
@@ -402,9 +410,9 @@ public class SystemServiceImpl implements SystemService {
 	@Override
 	public ResultData searchCourseByKey(String key) {
 		resultData = new ResultData<Data>();
-		List<Course> courses = courseDao.search(key);
+		List<CourseDetail> courses = courseDao.search(null,key);
 		if(courses.size() > 0) {
-			Data<List<Course>> data = new Data<>();
+			Data<List<CourseDetail>> data = new Data<>();
 			data.setData(courses);
 			resultData.setData(data);
 			resultData.setResult(ResultCodeEnum.DB_FIND_SUCCESS); //查找成功

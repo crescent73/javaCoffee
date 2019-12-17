@@ -10,16 +10,24 @@
                 and id = #{id}
             </if>
             <if test="studentName != null">
-                and student_name like #{studentName}
+                <if test="studentName != ''">
+                    and student_name like #{studentName}
+                </if>
             </if>
             <if test="studentNumber != null">
-                and student_number like #{studentNumber}
+                <if test="studentNumber != ''">
+                    and student_number like #{studentNumber}
+                </if>
             </if>
             <if test="studentEmail != null">
-                and student_email like #{studentEmail}
+                <if test="studentEmail != ''">
+                    and student_email like #{studentEmail}
+                </if>
             </if>
             <if test="studentClass != null">
-                and student_class = #{studentClass}
+                <if test="studentClass != ''">
+                    and student_class = #{studentClass}
+                </if>
             </if>
             <if test="studentSchool != null">
                 and student_school = #{studentSchool}
@@ -88,26 +96,59 @@
         )
     </insert>
 
-    <select id="search" parameterType="String" resultType="Student">
+    <select id="search" resultType="Student">
         SELECT student.*
-        FROM
-            student
-        INNER JOIN
-            (
-            SELECT id, student_name as search_key
-            FROM student
-            WHERE student.student_name like CONCAT(CONCAT('%', #{key}), '%')
-            UNION
-            SELECT id, student_number as search_key
-            FROM student
-            WHERE student.student_number like CONCAT(CONCAT('%', #{key}), '%')
-            UNION
-            SELECT id, student_class as search_key
-            FROM student
-            WHERE student.student_class like CONCAT(CONCAT('%', #{key}), '%')
+        FROM student
+        <where>
+            id IN (
+                SELECT DISTINCT id
+                FROM (
+                    SELECT id, student_name as search_key
+                    FROM student
+                    WHERE student.student_name like CONCAT(CONCAT('%', #{key}), '%')
+                    UNION
+                    SELECT id, student_number as search_key
+                    FROM student
+                    WHERE student.student_number like CONCAT(CONCAT('%', #{key}), '%')
+                    UNION
+                    SELECT id, student_class as search_key
+                    FROM student
+                    WHERE student.student_class like CONCAT(CONCAT('%', #{key}), '%')
+                    ORDER BY LENGTH (search_key)
+                ) as temp
             )
-            temp
-        ON student.id = temp.id
-        ORDER BY LENGTH (temp.search_key);
+            <if test="student.id != null">
+                and id = #{student.id}
+            </if>
+            <if test="student.studentName != null">
+                <if test="student.studentName != ''">
+                    and student_name like #{student.studentName}
+                </if>
+            </if>
+            <if test="student.studentNumber != null">
+                <if test="student.studentNumber != ''">
+                    and student_number like #{student.studentNumber}
+                </if>
+            </if>
+            <if test="student.studentEmail != null">
+                <if test="student.studentEmail != ''">
+                    and student_email like #{student.studentEmail}
+                </if>
+            </if>
+            <if test="student.studentClass != null">
+                <if test="student.studentClass != ''">
+                    and student_class = #{student.studentClass}
+                </if>
+            </if>
+            <if test="student.studentSchool != null">
+                and student_school = #{student.studentSchool}
+            </if>
+            <if test="student.studentGrade != null">
+                and student_grade = #{student.studentGrade}
+            </if>
+            <if test="student.studentPassword != null">
+                and student_password = #{student.studentPassword}
+            </if>
+        </where>
     </select>
 </mapper>

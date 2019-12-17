@@ -1,6 +1,7 @@
 package com.coffee.mapper;
 
 import com.coffee.po.Teacher;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Set;
@@ -16,5 +17,5 @@ public interface TeacherMapper {
      * @param key 搜索词
      * @return 结果
      */
-    public List<Teacher> search(String key);
+    public List<Teacher> search(@Param("teacher") Teacher teacher,@Param("key") String key);
 }

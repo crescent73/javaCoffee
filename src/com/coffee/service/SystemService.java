@@ -39,7 +39,7 @@ public interface SystemService {
 	 * @param course 课程信息
 	 * @return
 	 */
-	public ResultData searchCourse(Long studentId, Course course, PageParam pageParam);
+	public ResultData searchCourse(Long studentId, Course course, String searchKey, PageParam pageParam);
 	
 	/**
 	 * 查询学生列表
@@ -48,7 +48,7 @@ public interface SystemService {
 	 * @param student 学生信息
 	 * @return
 	 */
-	public ResultData searchStudent(Long courseId, Student student, PageParam pageParam);
+	public ResultData searchStudent(Long courseId, Student student, String searchKey, PageParam pageParam);
 	
 	/**
 	 * 查询公告列表

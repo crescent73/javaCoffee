@@ -1,6 +1,7 @@
 package com.coffee.mapper;
 
 import com.coffee.po.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,5 +20,5 @@ public interface CourseMapper {
      * @param key 搜索词
      * @return 结果
      */
-    public List<Course> search(String key);
+    public List<CourseDetail> search(@Param("course")Course course,@Param("key") String key);
 }

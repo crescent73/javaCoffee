@@ -42,11 +42,16 @@ public class TeacherController {
 					&& StringUtils.isNotBlank(notice.getNoticeTitle())
 					&& StringUtils.isNotBlank(notice.getNoticeContent())
 					&& notice.getNoticeLevel()!= null) {
-				resultData = teacherService.addNotice(notice);
+				try{
+					resultData = teacherService.addNotice(notice);
+				}catch(Exception e){
+					e.printStackTrace();
+					resultData = new ResultData();
+					resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+				}
 			} else {
 				resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 			}
-				
 		}else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
@@ -57,7 +62,13 @@ public class TeacherController {
 	@ResponseBody
 	public ResultData deleteNotice(Long noticeId) {
 		if(noticeId != null) {
-			resultData = teacherService.deleteNotice(noticeId);
+			try{
+				resultData = teacherService.deleteNotice(noticeId);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
@@ -68,7 +79,13 @@ public class TeacherController {
 	@ResponseBody
 	public ResultData modifyNotice(Notice notice) {
 		if(notice != null && notice.getId() != null) {
-			resultData = teacherService.modifyNotice(notice);
+			try{
+				resultData = teacherService.modifyNotice(notice);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
@@ -89,7 +106,13 @@ public class TeacherController {
 				if(fileDescription != null)
 					file.setFileDescription(fileDescription);
 				String dirPath = req.getServletContext().getRealPath(FileStorage.FILE_STORAGE_PATH);
-				resultData = teacherService.addFile(file,dirPath,files);
+				try{
+					resultData = teacherService.addFile(file,dirPath,files);
+				}catch(Exception e){
+					e.printStackTrace();
+					resultData = new ResultData();
+					resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+				}
 			} else{
 				resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);  //上传附件为空
 			}
@@ -108,7 +131,13 @@ public class TeacherController {
 				Attachment attachment = new Attachment();
 				attachment.setFileId(fileId);
 				attachment.setAttachmentPath(req.getServletContext().getRealPath(FileStorage.FILE_STORAGE_PATH));
-				resultData = teacherService.addAttachment(attachment,files);
+				try{
+					resultData = teacherService.addAttachment(attachment,files);
+				}catch(Exception e){
+					e.printStackTrace();
+					resultData = new ResultData();
+					resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+				}
 			} else{
 				resultData.setResult(ResultCodeEnum.FILE_UPLOAD_EMPTY);  //上传附件为空
 			}
@@ -122,7 +151,13 @@ public class TeacherController {
 	@ResponseBody
 	public ResultData deleteFile(Long fileId) {
 		if(fileId != null) {
-			resultData = teacherService.deleteFile(fileId);
+			try{
+				resultData = teacherService.deleteFile(fileId);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
@@ -135,7 +170,13 @@ public class TeacherController {
 		if(attachmentId != null) {
 			Attachment attachment = new Attachment();
 			attachment.setId(attachmentId);
-			resultData = teacherService.deleteAttachment(attachment);
+			try{
+				resultData = teacherService.deleteAttachment(attachment);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}

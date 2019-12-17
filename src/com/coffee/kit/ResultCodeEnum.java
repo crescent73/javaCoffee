@@ -9,6 +9,7 @@ public enum ResultCodeEnum
 	UNKOWN_ERROE("103","未知的错误"),
 	REQUEST_NO_PARAM_ID_ERROR("104","页面请求参数错误"),
 	DB_SYS_ERROR("105","数据库错误"),
+	SERVER_ERROR("500","服务器内部错误"),
 	
 	//连接
 	DB_CONNECTION_SUCCESS("200","数据库连接成功"),

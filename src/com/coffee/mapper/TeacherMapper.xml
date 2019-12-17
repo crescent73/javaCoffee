@@ -34,19 +34,27 @@
         update teacher
         <set>
             <if test="teacherNumber != null">
-                teacher_number = #{teacher_number},
+                <if test="teacherNumber != ''">
+                    teacher_number = #{teacher_number},
+                </if>
             </if>
             <if test="teacherName != null">
-                teacher_name = #{teacherName},
+                <if test="teacherName != ''">
+                    teacher_name = #{teacherName},
+                </if>
             </if>
             <if test="teacherSchool != null">
                 teacher_school = #{teacherSchool},
             </if>
             <if test="teacherTitle != null">
-                teacher_title = #{teacherTitle},
+                <if test="teacherTitle != ''">
+                    teacher_title = #{teacherTitle},
+                </if>
             </if>
             <if test="teacherEmail != null">
-                teacher_email = #{teacherEmail},
+                <if test="teacherEmail != ''">
+                    teacher_email = #{teacherEmail},
+                </if>
             </if>
             <if test="teacherPassword != null">
                 teacher_password = #{teacherPassword},
@@ -80,21 +88,52 @@
         values (#{teacherName}, #{teacherNumber}, #{teacherSchool}, #{teacherEmail}, #{teacherPassword}, #{teacherTitle})
     </insert>
 
-    <select id="search" parameterType="String" resultType="Teacher">
+    <select id="search" resultType="Teacher">
         SELECT teacher.*
-        FROM
-            teacher
-        inner join
-            (
-            SELECT id, teacher_name as search_key
-            FROM teacher
-            WHERE teacher.teacher_name like CONCAT(CONCAT('%', #{key}), '%')
-            UNION
-            SELECT id, teacher_number as search_key
-            FROM teacher
-            where teacher.teacher_number like CONCAT(CONCAT('%', #{key}), '%'))
-            temp
-        on teacher.id = temp.id
-        order by length(temp.search_key);
+        FROM teacher
+        <where>
+            id IN (
+                SELECT DISTINCT id
+                FROM (
+                    SELECT id, teacher_name as search_key
+                    FROM teacher
+                    WHERE teacher.teacher_name like CONCAT(CONCAT('%',#{key}), '%')
+                    UNION
+                    SELECT id, teacher_number as search_key
+                    FROM teacher
+                    where teacher.teacher_number like CONCAT(CONCAT('%',#{key}), '%')
+                    ORDER BY LENGTH (search_key)
+                ) as temp
+            )
+            <if test="teacher.id != null">
+                and id = #{teacher.id}
+            </if>
+            <if test="teacher.teacherNumber != null">
+                <if test="teacher.teacherNumber != '' ">
+                    and teacher_number like #{teacher.teacherNumber}
+                </if>
+            </if>
+            <if test="teacher.teacherName != null">
+                <if test="teacher.teacherName != '' ">
+                    and teacher_name like #{teacher.teacherName}
+                </if>
+            </if>
+            <if test="teacher.teacherSchool != null">
+                and teacher_school = #{teacher.teacherSchool}
+            </if>
+            <if test="teacher.teacherTitle != null">
+                <if test="teacher.teacherTitle != ''">
+                    and teacher_title = #{teacher.teacherTitle}
+                </if>
+            </if>
+            <if test="teacher.teacherEmail != null">
+                <if test="teacher.teacherEmail != ''">
+                    and teacher_email like #{teacher.teacherEmail}
+                </if>
+            </if>
+            <if test="teacher.teacherPassword != null">
+                and teacher_password = #{teacher.teacherPassword}
+            </if>
+        </where>
     </select>
 </mapper>

@@ -9,8 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Controller
@@ -51,7 +53,7 @@ public class AuthorizationAspect {
     public static String createToken(User user){
         Date iatDate = new Date();
         Calendar nowTime = Calendar.getInstance();
-        nowTime.add(Calendar.HOUR,2); //100f分钟后过期
+        nowTime.add(Calendar.HOUR,24); //24小时以后过期
         Date expireDate = nowTime.getTime();
         Map<String,Object> map = new HashMap<>();
         map.put("alg","HS256"); //SHA256加密
@@ -73,6 +75,11 @@ public class AuthorizationAspect {
     @ResponseBody
     public ResultData responseJson(HttpServletRequest req) {
         return (ResultData) req.getAttribute("resultData");
+    }
+
+    @RequestMapping("/")
+    public ModelAndView index(HttpServletRequest request, HttpServletResponse response){
+        return new ModelAndView("index.html");
     }
 
     public static void main(String[] args) {

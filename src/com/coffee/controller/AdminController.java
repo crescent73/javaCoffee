@@ -37,7 +37,13 @@ public class AdminController {
 				&& course.getCourseType() != null && course.getCourseCredit() != null
 				&& course.getCourseSchool() != null) {
 			//调用CourseService
-			resultData = adminService.addCourse(course);
+			try{
+				resultData = adminService.addCourse(course);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);//必要请求参数为空
@@ -55,7 +61,13 @@ public class AdminController {
 		System.out.println(courseId);
 		if(courseId!=null) {
 			//调用删除课程service
-			resultData = adminService.deleteCourse(courseId);
+			try{
+				resultData = adminService.deleteCourse(courseId);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
@@ -77,7 +89,13 @@ public class AdminController {
 					&& course.getCourseSchool() == null)) {
 				// 修改数据不都为空
 				System.out.println(course);
-				resultData = adminService.modifyCourse(course);
+				try{
+					resultData = adminService.modifyCourse(course);
+				}catch(Exception e){
+					e.printStackTrace();
+					resultData = new ResultData();
+					resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+				}
 			} else {
 				resultData.setResult(ResultCodeEnum.DB_UPDATE_REQUEST_NULL); //至少有一个修改数据
 			}
@@ -98,7 +116,13 @@ public class AdminController {
 				&& StringUtils.isNoneBlank(teacher.getTeacherTitle())
 				&& StringUtils.isNotBlank(teacher.getTeacherPassword())
 				&& teacher.getTeacherSchool() != null) {
-			resultData = adminService.addTeacher(teacher);  //添加老师
+			try{
+				resultData = adminService.addTeacher(teacher);  //添加老师
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
@@ -110,21 +134,32 @@ public class AdminController {
 	public ResultData deleteTeacher(Long teacherId) {
 		System.out.println(teacherId);
 		if(teacherId != null) {
-			resultData = adminService.deleteTeacher(teacherId);
+			try{
+				resultData = adminService.deleteTeacher(teacherId);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
-		
 		return resultData;
 	}
 	
 	@RequestMapping("/searchTeacher")
 	@ResponseBody
-	public ResultData searchTeacher(Teacher teacher, PageParam pageParam) {
+	public ResultData searchTeacher(Teacher teacher, String searchKey, PageParam pageParam) {
 		System.out.println(teacher);
 		if(teacher != null) {
-			resultData = adminService.searchTeacher(teacher,pageParam);
+			try{
+				resultData = adminService.searchTeacher(teacher,searchKey,pageParam);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
@@ -143,7 +178,13 @@ public class AdminController {
 				&& StringUtils.isNotBlank(student.getStudentEmail())
 				&& StringUtils.isNotBlank(student.getStudentPassword())
 				&& student.getStudentSchool() != null) {
-			resultData = adminService.addStudent(student);
+			try{
+				resultData = adminService.addStudent(student);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
@@ -155,7 +196,13 @@ public class AdminController {
 	@ResponseBody
 	public ResultData deleteStudent(Long studentId) {
 		if(studentId != null) {
-			resultData = adminService.deleteStudent(studentId);
+			try{
+				resultData = adminService.deleteStudent(studentId);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
@@ -168,7 +215,13 @@ public class AdminController {
 	@ResponseBody
 	public ResultData searchTeacherByKey(String searchKey) {
 		if(StringUtils.isNotBlank(searchKey)) {
-			resultData = adminService.searchTeacherByKey(searchKey);
+			try{
+				resultData = adminService.searchTeacherByKey(searchKey);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
@@ -187,14 +240,26 @@ public class AdminController {
 				List<Long> students = new ArrayList<>();
 				course.add(courseId);
 				students.addAll(Arrays.asList(studentList));
-				resultData = adminService.addCourseSchedule(students,course);
+				try{
+					resultData = adminService.addCourseSchedule(students,course);
+				}catch(Exception e){
+					e.printStackTrace();
+					resultData = new ResultData();
+					resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+				}
 			} else if(studentId != null && courseList != null) {
 	        	//为一个学生添加多个课程
 				List<Long> student = new ArrayList<>();
 				List<Long> courses = new ArrayList<>();
 				courses.addAll(Arrays.asList(courseList));
 				student.add(studentId);
-				resultData = adminService.addCourseSchedule(student,courses);
+				try{
+					resultData = adminService.addCourseSchedule(student,courses);
+				}catch(Exception e){
+					e.printStackTrace();
+					resultData = new ResultData();
+					resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+				}
 			} else {
 				resultData = new ResultData();
 				resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //重要参数为空
@@ -210,7 +275,13 @@ public class AdminController {
     @ResponseBody
     public ResultData deleteCourseSchedule(Long id) {
         if(id != null) {
-            resultData = adminService.deleteCourseSchedule(id);
+			try{
+				resultData = adminService.deleteCourseSchedule(id);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
         } else {
             resultData = new ResultData();
             resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);

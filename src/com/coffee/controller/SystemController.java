@@ -35,7 +35,13 @@ public class SystemController {
 	public ResultData login(User user, HttpSession session) {
 		if(StringUtils.isNotBlank(user.getName()) && StringUtils.isNotBlank(user.getPassword())
 				&& StringUtils.isNotBlank(user.getUserType())) {
-			resultData = systemService.login(user);
+			try{
+				resultData = systemService.login(user);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 			if(resultData.getCode().equals("400")){
 				System.out.println("login success");
 				//登陆成功设置用户名
@@ -80,7 +86,13 @@ public class SystemController {
 	@ResponseBody
 	public ResultData modifyInfo(Long id, String password, String userType) {
 		if(id != null && StringUtils.isNotBlank(password) && StringUtils.isNotBlank(userType)) {
-			resultData = systemService.modifyInfo(id, password, userType);
+			try{
+				resultData = systemService.modifyInfo(id, password, userType);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 			
 		} else {
 			resultData = new ResultData();
@@ -91,24 +103,36 @@ public class SystemController {
 	
 	@RequestMapping("/searchCourse")
 	@ResponseBody
-	public ResultData searchCourse(Long studentId, Long courseId, Course course, PageParam pageParam) {
+	public ResultData searchCourse(Long studentId, Long courseId, Course course, String searchKey, PageParam pageParam) {
 		System.out.println("studentId:"+studentId+",courseId:"+courseId+",course"+course);
 		if(courseId != null) {
 			course.setId(courseId);
 		}
-		resultData = systemService.searchCourse(studentId, course, pageParam);
+		try{
+			resultData = systemService.searchCourse(studentId, course,searchKey, pageParam);
+		}catch(Exception e){
+			e.printStackTrace();
+			resultData = new ResultData();
+			resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+		}
 		return resultData;
 	}
 	
 	
 	@RequestMapping("/searchStudent")
 	@ResponseBody
-	public ResultData searchStudent(Long courseId, Long studentId, Student student, PageParam pageParam) {
+	public ResultData searchStudent(Long courseId, Long studentId, Student student, String searchKey,PageParam pageParam) {
 		System.out.println("courseId:"+courseId+", studentId:"+studentId+",student:"+student);
 		if(studentId != null) {
 			student.setId(studentId);
 		}
-		resultData = systemService.searchStudent(courseId, student, pageParam);
+		try{
+			resultData = systemService.searchStudent(courseId, student,searchKey, pageParam);
+		}catch(Exception e){
+			e.printStackTrace();
+			resultData = new ResultData();
+			resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+		}
 		return resultData;
 	}
 	
@@ -118,14 +142,17 @@ public class SystemController {
 	public ResultData searchNotice(Notice notice, PageParam pageParam) {
 		if(notice != null && notice.getCourseId() != null) {
 			System.out.println(pageParam);
-			resultData = systemService.searchNotice(notice,pageParam);
+			try{
+				resultData = systemService.searchNotice(notice,pageParam);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		}else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
 		}
-		System.out.println("-----------------------------------");
-		System.out.println(resultData);
-		System.out.println("-----------------------------------");
 		return resultData;
 	}
 	
@@ -134,7 +161,13 @@ public class SystemController {
 	@ResponseBody
 	public ResultData searchFile(File file, PageParam pageParam) {
 		if(file != null && file.getCourseId() != null) {
-			resultData = systemService.searchFile(file,pageParam);
+			try{
+				resultData = systemService.searchFile(file,pageParam);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		}else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
@@ -150,7 +183,14 @@ public class SystemController {
 		if (attachmentId != null) {
 			Attachment attachment = new Attachment();
 			attachment.setId(attachmentId);
-			AttachmentDetail attachmentDetail = systemService.downloadAttachment(attachment);
+			AttachmentDetail attachmentDetail = null;
+			try{
+				attachmentDetail = systemService.downloadAttachment(attachment);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 			System.out.println(attachmentDetail);
 			if(attachmentDetail != null) {
 				InputStreamResource resource;
@@ -182,7 +222,13 @@ public class SystemController {
 	@ResponseBody
 	public ResultData searchStudentByKey(String key) {
 		if(StringUtils.isNotBlank(key)) {
-			resultData = systemService.searchStudentByKey(key);
+			try{
+				resultData = systemService.searchStudentByKey(key);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
@@ -194,7 +240,13 @@ public class SystemController {
 	@ResponseBody
 	public ResultData searchCourseByKey(String key) {
 		if(StringUtils.isNotBlank(key)) {
-			resultData = systemService.searchCourseByKey(key);
+			try{
+				resultData = systemService.searchCourseByKey(key);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
 		} else {
 			resultData = new ResultData();
 			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
