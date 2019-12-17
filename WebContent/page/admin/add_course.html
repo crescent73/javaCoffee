@@ -189,6 +189,10 @@
 <!-- Select2 -->
 <script src="../plugins/select2/js/select2.full.min.js"></script>
 
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+
 <script>
     $(document).ready(function() {
         $("#course_school_select").select2({
@@ -206,6 +210,9 @@
                 delay: 500,
                 type: 'post',
                 url: '/blackboard/admin/searchTeacherByKey',
+                headers:{
+                    token: $.session.get("token")
+                },
                 data: function (params) {
                     return {
                         searchKey: params.term
@@ -252,6 +259,9 @@
                 delay: 500,
                 type: 'post',
                 url: '/blackboard/system/searchStudentByKey',
+                headers:{
+                    token:$.session.get("token")
+                },
                 data: function (params) {
                     return {
                         key: params.term
@@ -324,6 +334,9 @@
                 $.ajax({
                     type:"post",
                     url:"/blackboard/admin/addCourse",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     data: self.form,
                     success:function(res){
                         self.do_clean(res);
@@ -360,11 +373,14 @@
                 if(data.code === "202") {
                     alert("课程添加成功！");
                     if(self.studentList.length === 0) {
-                        window.location.href="/blackboard/admin/addCourse";
+                        window.location.href="/blackboard/page/admin/add_course.html";
                     } else {
                         $.ajax({
                             type:"post",
                             url:"/blackboard/system/searchCourse",
+                            headers:{
+                                token: $.session.get("token")
+                            },
                             data: {courseNumber: self.form.courseNumber},
                             success:function(res){
                                 console.log(res);
@@ -384,6 +400,9 @@
                                         url:"/blackboard/admin/addCourseSchedule",
                                         contentType: false,
                                         processData: false,
+                                        headers:{
+                                            token: $.session.get("token")
+                                        },
                                         data: form_data,
                                         success:function(res){
                                             console.log(res);

@@ -198,6 +198,10 @@
 <!-- Select2 -->
 <script src="../plugins/select2/js/select2.full.min.js"></script>
 
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+
 <script>
     $(document).ready(function() {
         $("#teacher_school_select").select2({
@@ -235,6 +239,9 @@
                 $.ajax({
                     type:"post",
                     url: "/blackboard/admin/deleteTeacher",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     data: {teacherId: self.teacher.id},
                     success: function (res) {
                         console.log(res);
@@ -310,6 +317,9 @@
                     $.ajax({
                         type:"post",
                         url: "/blackboard/system/searchCourse",
+                        headers:{
+                            token:$.session.get("token")
+                        },
                         data: form,
                         success: function (res) {
                             if(res.code === "208") {
@@ -339,6 +349,9 @@
                 $.ajax({
                     type:"post",
                     url: "/blackboard/admin/searchTeacher",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     data: form,
                     success: function (res) {
                         if(res.code === "208") {

@@ -135,6 +135,9 @@
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
 
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
 
 <!-- Select2 -->
 <script src="../plugins/select2/js/select2.full.min.js"></script>
@@ -188,6 +191,9 @@
                 $.ajax({
                     type:"post",
                     url:"/blackboard/admin/addTeacher",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     data: self.form,
                     success:function(res){
                         self.do_clean(res);

@@ -106,6 +106,10 @@
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
 
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+
 <script>
     vue = new Vue({
         el: "#content",
@@ -180,6 +184,9 @@
                     $.ajax({
                         type:"post",
                         url: "/blackboard/system/searchCourse",
+                        headers:{
+                            token:$.session.get("token")
+                        },
                         data: form,
                         success: function (res) {
                             if(res.code === "208") {

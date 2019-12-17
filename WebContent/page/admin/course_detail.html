@@ -267,6 +267,10 @@
 <!-- 引用vue -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function() {
         $("#course_school_select").select2({
@@ -283,6 +287,9 @@
             ajax: {
                 delay: 500,
                 type: 'post',
+                headers:{
+                    token:$.session.get("token")
+                },
                 url: '/blackboard/admin/searchTeacherByKey',
                 data: function (params) {
                     return {
@@ -330,6 +337,9 @@
                 delay: 500,
                 type: 'post',
                 url: '/blackboard/system/searchStudentByKey',
+                headers:{
+                    token:$.session.get("token")
+                },
                 data: function (params) {
                     return {
                         key: params.term
@@ -450,6 +460,9 @@
                     $.ajax({
                         type:"post",
                         url: "/blackboard/system/searchStudent",
+                        headers:{
+                            token:$.session.get("token")
+                        },
                         data: form,
                         success: function (res) {
                             if(res.code === "208") {
@@ -493,6 +506,9 @@
                 $.ajax({
                     type: "post",
                     url: "/blackboard/admin/modifyCourse",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     data: data,
                     success: function (res) {
                         if(res.code === "202") {
@@ -516,6 +532,9 @@
                 $.ajax({
                     type:"post",
                     url: "/blackboard/admin/deleteCourse",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     data: form,
                     success: function (res) {
                         if(res.code === "204") {
@@ -545,6 +564,9 @@
                 $.ajax({
                     type:"post",
                     url: "/blackboard/admin/deleteCourseSchedule",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     contentType: false,
                     processData: false,
                     data: form_data,
@@ -583,6 +605,9 @@
                 $.ajax({
                     type:"post",
                     url: "/blackboard/admin/addCourseSchedule",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     cache: false,
                     processData: false,
                     contentType: false,
@@ -614,6 +639,9 @@
                 $.ajax({
                     type:"post",
                     url: "/blackboard/system/searchCourse",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     data: form,
                     success: function (res) {
                         if(res.code === "208") {

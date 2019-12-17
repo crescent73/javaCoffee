@@ -145,6 +145,10 @@
 <!-- Select2 -->
 <script src="../plugins/select2/js/select2.full.min.js"></script>
 
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+
 <script>
     $(document).ready(function() {
 
@@ -197,6 +201,9 @@
                 $.ajax({
                     type:"post",
                     url:"/blackboard/admin/addStudent",
+                    headers:{
+                        token:$.session.get("token")
+                    },
                     data: self.form,
                     success:function(res){
                         self.do_clean(res);

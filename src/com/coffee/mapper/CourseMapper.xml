@@ -85,8 +85,8 @@
     </delete>
 
     <insert id="insert" parameterType="Course">
-        insert into course(course_name, course_number, course_school, course_semester, course_type, teacher_id)
-        values(#{courseName}, #{courseNumber}, #{courseSchool}, #{courseSemester}, #{courseType}, #{teacherId})
+        insert into course(course_name, course_number, course_school, course_semester, course_type, teacher_id, course_credit)
+        values(#{courseName}, #{courseNumber}, #{courseSchool}, #{courseSemester}, #{courseType}, #{teacherId}, #{courseCredit})
     </insert>
 
     <select id="findTeacherByCourseId" parameterType="Long" resultType="Teacher">
