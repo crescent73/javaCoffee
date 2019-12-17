@@ -81,6 +81,8 @@
 </body>
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -121,19 +123,20 @@
 		methods:{
 			fileList(){
 				let that = this;
-				$.ajax({
+				request({
 					type:"post",
 					url:"/blackboard/system/searchFile",
-					data:this.fileForm,
-					success:function(res){
-						console.log(res);
-						that.files = res.data;
-						console.log(that.files);
-					},
-					error:function(res){
-						console.log(res)
-					}
-				})
+					data:that.fileForm,
+				}).then(
+						function success(res){
+							console.log(res);
+							that.files = res.data.data;
+							console.log(that.files);
+						},
+						function error(res){
+							console.log(res)
+						}
+				);
 			},
 			click(attachment){
 				console.log(attachment);

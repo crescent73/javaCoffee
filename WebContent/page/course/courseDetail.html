@@ -71,6 +71,8 @@
 </body>
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -102,19 +104,20 @@
 		methods:{
 			getCourse(){
 				let that = this;
-				$.ajax({
+				request({
 					type:"post",
 					url:"/blackboard/system/searchCourse",
-					data:this.courseForm,
-					success:function(res){
-						console.log(res);
-						that.course = res.data[0];
-						console.log(that.course);
-					},
-					error:function(res){
-						console.log(res)
-					}
-				})
+					data:that.courseForm,
+				}).then(
+						function success(res){
+							console.log(res);
+							that.course = res.data.data[0];
+							console.log(that.course);
+						},
+						function error(res){
+							console.log(res)
+						}
+				);
 			}
 		},
 		filters: {
