@@ -27,6 +27,7 @@ public enum ResultCodeEnum
 	DB_DELETE_SUCCESS("204","删除成功"),
 	DB_DELETE_FAILURE("205","删除失败"),
 	DB_DELETE_FAILURE_COURSE_NOT_EXIST("205","删除失败_课程不存在"),
+	DB_DELETE_FAILURE_STUDENT_NOT_EXIST("205","删除失败_学生不存在"),
 	//改
 	DB_UPDATE_SUCCESS("206","修改成功"),
 	DB_UPDATE_ERROR("207","修改失败"),

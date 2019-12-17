@@ -273,10 +273,10 @@ public class AdminController {
 
     @RequestMapping("/deleteCourseSchedule")
     @ResponseBody
-    public ResultData deleteCourseSchedule(Long id) {
-        if(id != null) {
+    public ResultData deleteCourseSchedule(Long courseId, Long[] studentList) {
+        if(courseId != null && studentList.length != 0) {
 			try{
-				resultData = adminService.deleteCourseSchedule(id);
+				resultData = adminService.deleteCourseSchedule(courseId,studentList);
 			}catch(Exception e){
 				e.printStackTrace();
 				resultData = new ResultData();

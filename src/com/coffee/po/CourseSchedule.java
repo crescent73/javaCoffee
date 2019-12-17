@@ -3,7 +3,7 @@ package com.coffee.po;
 import java.lang.reflect.Field;
 
 public class CourseSchedule {
-    private long id;
+    private Long id;
     private Long studentId;
     private Long courseId;
 
@@ -19,22 +19,11 @@ public class CourseSchedule {
         this.courseId = courseId;
     }
 
-    public void reset() {
-        Field[] fields = getClass().getDeclaredFields();
-        for(Field field : fields) {
-            try {
-                field.set(this, null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

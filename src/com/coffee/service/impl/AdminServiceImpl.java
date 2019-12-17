@@ -311,15 +311,27 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ResultData deleteCourseSchedule(Long id) {
+    public ResultData deleteCourseSchedule(Long courseId,Long[] studentList) {
         resultData = new ResultData<Data>();
-        if(id != null){
-            int result = courseScheduleDao.delete(new CourseSchedule(id));
-            if(result > 0) {
-                resultData.setResult(ResultCodeEnum.DB_DELETE_SUCCESS);
-            } else {
-                resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE);
+        if(courseId != null && studentList.length != 0){
+            for(Long studentId:studentList) {
+                if(!isCourseExist(courseId,null)){
+                    resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE_COURSE_NOT_EXIST);//课程不存在
+                    return resultData;
+                }
+                if(!isStudentExist(studentId,null)){
+                    resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE_STUDENT_NOT_EXIST);//学生不存在
+                    return resultData;
+                }
+//                System.out.println("studentID:"+studentId+"courseId:"+courseId);
+                int result = courseScheduleDao.delete(new CourseSchedule(studentId,courseId));
+//                System.out.println("result"+result);
+                if(result <= 0) {
+                    resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE);
+                    return resultData;
+                }
             }
+            resultData.setResult(ResultCodeEnum.DB_DELETE_SUCCESS);
         } else {
             resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //重要请求参数为空
         }

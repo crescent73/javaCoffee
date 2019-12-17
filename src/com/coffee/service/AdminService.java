@@ -77,9 +77,10 @@ public interface AdminService {
 
 	/**
 	 * 删除选课
-	 * @param id 选课id
+	 * @param courseId 课程id
+	 * @param studentList 学生列表
 	 * @return
 	 */
-	public ResultData deleteCourseSchedule(Long id);
+	public ResultData deleteCourseSchedule(Long courseId,Long[] studentList);
 
 }
