@@ -62,6 +62,8 @@
 </body>
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -96,21 +98,22 @@
 				for(i=0;i<this.fileForm.file.length;i++){
 					formData.append("file",this.fileForm.file[i]);
 				}
-				$.ajax({
-
+				request({
 					type:"post",
 					url:"/blackboard/teacher/addFile",
 					data:formData,
 					processData: false,
 					contentType : false,
 					dataType: "json",
-					success:function(res){
-						console.log(res);
-					},
-					error:function(res){
-						console.log(res)
-					}
-				})
+				}).then(
+						function success(res){
+							console.log(res);
+						},
+						function error(res){
+							console.log(res)
+
+						}
+				);
 			}
 		},
 		created(){

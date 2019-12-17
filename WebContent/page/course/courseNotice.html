@@ -103,6 +103,8 @@
 
 	<!-- jQuery -->
 	<script src="../plugins/jquery/jquery.min.js"></script>
+	<script src="/blackboard/page/dist/js/request.js"></script>
+	<script src="/blackboard/page/dist/js/jquerySession.js"></script>
 	<!-- Bootstrap 4 -->
 	<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
@@ -160,18 +162,19 @@
 			methods:{
 				init(){
 					let that = this;
-					$.ajax({
+					request({
 						type:"post",
 						url:"/blackboard/system/searchNotice",
 						data:this.noticeForm,
-						success:function(res){
-							console.log(res);
-							// that.notices = res.data;
-						},
-						error:function(res){
-							console.log(res)
-						}
-					})
+					}).then(
+							function success(res){
+								console.log(res);
+								that.notices = res.data.data;
+							},
+							function error(res){
+								console.log(res)
+							}
+					);
 				},
 				click(notice,event){
 					console.log(notice);

@@ -68,6 +68,8 @@
 </body>
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="/blackboard/page/dist/js/jquerySession.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -88,17 +90,18 @@
 		},
 		methods:{
 			addNotice(){
-				$.ajax({
+				request({
 					type:"post",
 					url:"/blackboard/teacher/addNotice",
 					data:this.noticeForm,
-					success:function(res){
-						console.log(res);
-					},
-					error:function(res){
-						console.log(res)
-					}
-				})
+				}).then(
+						function success(res){
+							console.log(res);
+						},
+						function error(res){
+							console.log(res)
+						}
+				);
 			}
 		},
 		created(){
