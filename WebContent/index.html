@@ -332,8 +332,8 @@
                     success:function(res){
                         console.log(res);
                         if(res.code === "400"){
-                            $.session.set("token", res.data.token);
-                            $.session.set("userType", type);
+                            localStorage.setItem("token",res.data.token);
+                            localStorage.setItem("userType",type);
                             switch (type) {
                                 case "1":
                                     console.log("1");
@@ -361,8 +361,8 @@
         },
 
         mounted: function (){
-            var token = $.session.get(token);
-            var userType = $.session.get("userType");
+            var token = localStorage.getItem("token");
+            var userType = localStorage.getItem("userType");
             if(token === null || token === undefined) {
                 return;
             }

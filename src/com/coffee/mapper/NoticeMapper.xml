@@ -32,10 +32,11 @@
             </if>
             <if test="noticeTitle != null ">
                 <if test="noticeTitle != '' ">
-                    and notice_tilte like #{noticeTitle}
+                    and notice_title like #{noticeTitle}
                 </if>
             </if>
         </where>
+        ORDER BY notice_level,update_date DESC
     </select>
 
     <update id="update" parameterType="Notice">
@@ -57,7 +58,7 @@
                 publish_date = #{publisDate},
             </if>
             <if test="noticeTitle != null">
-                notice_tilte = #{noticeTitle},
+                notice_title = #{noticeTitle},
             </if>
         </set>
 
