@@ -170,7 +170,7 @@
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary" @click="on_submit()">Submit</button>
+                <button type="submit" class="btn btn-primary" @click="on_submit()">添加</button>
             </div>
         </div>
 
@@ -386,14 +386,9 @@
                                 console.log(res.code);
                                 if(res.code === "208") {
                                     var courseId = res.data.data[0].id;
-                                    var list = self.studentList.concat();
-                                    list.forEach(function (item) {
-                                       item = parseInt(item);
-                                    });
-                                    var form_data = {
-                                        courseId: courseId,
-                                        studentList: list,
-                                    };
+                                    var form = new FormData();
+                                    form.append("courseId", courseId);
+                                    form.append("studentList", self.studentList);
                                     $.ajax({
                                         type:"post",
                                         url:"/blackboard/admin/addCourseSchedule",
@@ -402,7 +397,7 @@
                                         headers:{
                                             token: $.session.get("token")
                                         },
-                                        data: form_data,
+                                        data: form,
                                         success:function(res){
                                             console.log(res);
                                             console.log(res.code);

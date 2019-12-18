@@ -147,7 +147,6 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th>课程ID</th>
                             <th>课程号</th>
                             <th>课程名</th>
                             <th>学院</th>
@@ -155,21 +154,20 @@
                             <th>学分</th>
                             <th>类型</th>
                             <th>教师名</th>
-                            <th>教师ID</th>
+                            <th>教师工号</th>
                         </tr>
                         </thead>
                         <tbody>
                         <template v-for="(course, index) in payload">
                             <tr @click="on_content_click(course.id)">
-                                <td>{{course.id}}</td>
                                 <td>{{course.courseNumber}}</td>
                                 <td>{{course.courseName}}</td>
-                                <td>{{course.courseSchool}}</td>
+                                <td>{{course.courseSchool | schoolFormat}}</td>
                                 <td>{{course.courseSemester}}</td>
                                 <td>{{course.courseCredit}}</td>
-                                <td>{{course.courseType}}</td>
+                                <td>{{course.courseType | typeFormat}}</td>
                                 <td>{{course.teacherName}}</td>
-                                <td>{{course.teacherId}}</td>
+                                <td>{{course.teacherNumber}}</td>
                             </tr>
                         </template>
                         </tbody>
@@ -399,6 +397,12 @@
                 self.set_nav();
                 return data;
             },
+            on_search_course: function () {
+                let self = this;
+                self.payload = [];
+                self.payloads.clear();
+                self.get_payload(1);
+            },
             load_student: function () {
                 let self = this;
                 var form = {
@@ -423,11 +427,36 @@
                 })
             }
         },
-        on_search_course: function () {
-            let self = this;
-            self.payload = [];
-            self.payloads.clear();
-            self.get_payload(1);
+        filters: {
+            typeFormat: function (value) {
+                console.log(value);
+                switch (value) {
+                    case 0: return "必修课";
+                    case 1: return "选修课";
+                    default: return "未知";
+                }
+            },
+            schoolFormat(value){
+                console.log(value);
+                switch (value) {
+                    case 1: return "信息与安全工程学院";
+                    case 2: return "马克思主义学院";
+                    case 3: return "哲学院";
+                    case 4: return "经济学院";
+                    case 5: return "财政税务学院";
+                    case 6: return "金融学院";
+                    case 7: return "法学院";
+                    case 8: return "刑事司法学院";
+                    case 9: return "外国语学院";
+                    case 10: return "新闻与文化传播学院";
+                    case 11: return "工商管理学院";
+                    case 12: return "文澜学院";
+                    case 13: return "会计学院";
+                    case 14: return "统计与数学学院";
+                    case 15: return "中韩新媒体学院";
+                    default: return "未知";
+                }
+            }
         },
         mounted: function () {
             let self = this;
