@@ -16,5 +16,5 @@ public interface StudentMapper {
      * @param key 搜索词
      * @return 结果
      */
-    public List<Student> search(@Param("student") Student student, @Param("key") String key);
+    public List<Student> search(@Param("student") Student student, @Param("key") String key, @Param("courseId") Long courseId);
 }

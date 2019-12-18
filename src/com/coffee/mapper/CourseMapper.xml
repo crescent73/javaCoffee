@@ -166,6 +166,14 @@
             <if test="course.teacherId != null">
                 and teacher_id = #{course.teacherId}
             </if>
+            <!-- search under course scheudle -->
+            <if test="studentId != null">
+                and course.id in (
+                    select course_id
+                    from course_schedule
+                    where student_id = #{studentId}
+                )
+            </if>
         </where>
     </select>
 </mapper>

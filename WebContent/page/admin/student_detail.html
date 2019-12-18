@@ -482,6 +482,14 @@
                 alert("出问题了，请刷新重试！");
                 window.location.href = "/blackboard/page/admin/student_list.html";
             }
+        },
+        watch: {
+            search_key: function(val, oldVal) {
+                if(val === oldVal) {
+                    return;
+                }
+                this.on_search_course();
+            }
         }
     })
 

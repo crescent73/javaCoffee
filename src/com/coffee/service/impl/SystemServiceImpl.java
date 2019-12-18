@@ -206,21 +206,23 @@ public class SystemServiceImpl implements SystemService {
 		}
 		System.out.println("studentId:"+studentId+",course:"+course+"searchKey:"+searchKey);
 		List<CourseDetail> courses;
-		if(studentId != null) {//查询学生的课程列表
+
+		if(StringUtils.isNotBlank(searchKey)) { // search
 			if(pageParam != null && pageParam.isPaginate()){//是否分页
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
 			}
-			courses = courseScheduleDao.findCourseByStudentId((long)(studentId));
-		} else { //查询所有的课程列表
-			if(pageParam.isPaginate()){//是否分页
+			courses = courseDao.search(course, searchKey, studentId);
+		} else { // find
+			if(pageParam != null && pageParam.isPaginate()){//是否分页
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
 			}
-			if(StringUtils.isNotBlank(searchKey)){ //为关键字搜索
-				courses = courseDao.search(course,searchKey);
+			if(studentId != null) { // find course under student
+				courses = courseScheduleDao.findCourseByStudentId((long)(studentId));
 			} else {
 				courses = courseDao.find(course); //为正常条件查询
 			}
 		}
+
 		System.out.println(courses);
 		if(courses.size() > 0) {
 			Data<List<CourseDetail>> data = new Data<List<CourseDetail>>();
@@ -247,17 +249,18 @@ public class SystemServiceImpl implements SystemService {
 			return resultData;
 		}
 		List<Student> students;
-		if(courseId != null) {//查询某课程下的学生列表
+
+		if(StringUtils.isNotBlank(searchKey)) { // search
 			if(pageParam != null && pageParam.isPaginate()){//是否分页
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
 			}
-			students = courseScheduleDao.findStudentByCourseId(courseId);
-		} else {
+			students = studentDao.search(student,searchKey, courseId);
+		} else { // find
 			if(pageParam != null && pageParam.isPaginate()){//是否分页
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
 			}
-			if(StringUtils.isNotBlank(searchKey)){ //为关键字搜索
-				students = studentDao.search(student,searchKey);
+			if(courseId != null) {
+				students = courseScheduleDao.findStudentByCourseId(courseId);
 			} else {
 				students = studentDao.find(student);
 			}
@@ -395,7 +398,7 @@ public class SystemServiceImpl implements SystemService {
 	@Override
 	public ResultData searchStudentByKey(String key) {
 		resultData = new ResultData<Data>();
-		List<Student> students = studentDao.search(new Student(), key);
+		List<Student> students = studentDao.search(new Student(), key, null);
 		if(students.size() > 0) {
 			Data<List<Student>> data = new Data<>();
 			data.setData(students);
@@ -410,7 +413,7 @@ public class SystemServiceImpl implements SystemService {
 	@Override
 	public ResultData searchCourseByKey(String key) {
 		resultData = new ResultData<Data>();
-		List<CourseDetail> courses = courseDao.search(new Course(), key);
+		List<CourseDetail> courses = courseDao.search(new Course(), key, null);
 		if(courses.size() > 0) {
 			Data<List<CourseDetail>> data = new Data<>();
 			data.setData(courses);

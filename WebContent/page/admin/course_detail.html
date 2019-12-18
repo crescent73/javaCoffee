@@ -208,7 +208,7 @@
                             <td @click="on_content_click(student.id)">{{student.studentNumber}}</td>
                             <td @click="on_content_click(student.id)">{{student.studentClass}}</td>
                             <td @click="on_content_click(student.id)">{{student.studentGrade}}</td>
-                            <td @click="on_content_click(student.id)">{{student.studentSchool}}</td>
+                            <td @click="on_content_click(student.id)">{{student.studentSchool | schoolFormat}}</td>
                         </tr>
                     </template>
                     </tbody>
@@ -696,6 +696,44 @@
             } else {
                 alert("出问题了，请刷新重试！");
                 window.location.href = "/blackboard/page/admin/course_list.html";
+            }
+        }, filters: {
+            typeFormat: function (value) {
+                console.log(value);
+                switch (value) {
+                    case 0: return "必修课";
+                    case 1: return "选修课";
+                    default: return "未知";
+                }
+            },
+            schoolFormat(value){
+                console.log(value);
+                switch (value) {
+                    case 1: return "信息与安全工程学院";
+                    case 2: return "马克思主义学院";
+                    case 3: return "哲学院";
+                    case 4: return "经济学院";
+                    case 5: return "财政税务学院";
+                    case 6: return "金融学院";
+                    case 7: return "法学院";
+                    case 8: return "刑事司法学院";
+                    case 9: return "外国语学院";
+                    case 10: return "新闻与文化传播学院";
+                    case 11: return "工商管理学院";
+                    case 12: return "文澜学院";
+                    case 13: return "会计学院";
+                    case 14: return "统计与数学学院";
+                    case 15: return "中韩新媒体学院";
+                    default: return "未知";
+                }
+            }
+        },
+        watch: {
+            search_key: function(val, oldVal) {
+                if(val === oldVal) {
+                    return;
+                }
+                this.on_search_student();
             }
         }
     })

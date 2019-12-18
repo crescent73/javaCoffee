@@ -149,6 +149,14 @@
             <if test="student.studentPassword != null">
                 and student_password = #{student.studentPassword}
             </if>
+            <!-- search under course id -->
+            <if test="courseId != null">
+                and student.id in (
+                    select student_id
+                    from course_schedule
+                    where course_id = #{courseId}
+                )
+            </if>
         </where>
     </select>
 </mapper>

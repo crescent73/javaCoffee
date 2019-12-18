@@ -253,6 +253,14 @@
         },
         mounted: function () {
             this.get_payload(1);
+        },
+        watch: {
+            search_key: function(val, oldVal) {
+                if(val === oldVal) {
+                    return;
+                }
+                this.on_search();
+            }
         }
     });
 </script>

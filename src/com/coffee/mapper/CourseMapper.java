@@ -20,5 +20,5 @@ public interface CourseMapper {
      * @param key 搜索词
      * @return 结果
      */
-    public List<CourseDetail> search(@Param("course")Course course,@Param("key") String key);
+    public List<CourseDetail> search(@Param("course")Course course,@Param("key") String key, @Param("studentId") Long studentId);
 }
