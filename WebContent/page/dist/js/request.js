@@ -9,7 +9,7 @@ function request({url,type,data,dataType,contentType,processData}){
             contentType:contentType,
             processData:processData,
             headers:{
-                token:$.session.get("token")
+                token:localStorage.getItem("token")
             },
             success(res){
                 resolve.call(self,res);//执行成功函数

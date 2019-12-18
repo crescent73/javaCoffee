@@ -142,6 +142,7 @@ public class SystemController {
 	public ResultData searchNotice(Notice notice, PageParam pageParam) {
 		if(notice != null && notice.getCourseId() != null) {
 			System.out.println(pageParam);
+			System.out.println(notice);
 			try{
 				resultData = systemService.searchNotice(notice,pageParam);
 			}catch(Exception e){

@@ -4,21 +4,21 @@
 <mapper namespace="com.coffee.mapper.FileMapper">
 
     <resultMap id="fileDetail" type="fileDetail">
-        <id property="id" column="id"></id>
-        <result property="fileName" column="file_name"></result>
-        <result property="courseId" column="course_id"></result>
-        <result property="uploaderId" column="uploader_id"></result>
-        <result property="fileDescription" column="file_description"></result>
-        <result property="uploadDate" column="upload_date"></result>
-        <result property="updateDate" column="update_date"></result>
-        <result property="teacherName" column="teacher_name"></result>
+        <id property="id" column="id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="courseId" column="course_id"/>
+        <result property="uploaderId" column="uploader_id"/>
+        <result property="fileDescription" column="file_description"/>
+        <result property="uploadDate" column="upload_date"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="teacherName" column="teacher_name"/>
         <collection property="attachmentList" ofType="attachment">
-            <id property="id" column="aid"></id>
-            <result property="fileId" column="file_id"></result>
-            <result property="attachmentName" column="attachment_name"></result>
-            <result property="attachmentPath" column="attachment_path"></result>
-            <result property="uploadDate" column="upload_date"></result>
-            <result property="updateDate" column="update_date"></result>
+            <id property="id" column="aid"/>
+            <result property="fileId" column="file_id"/>
+            <result property="attachmentName" column="attachment_name"/>
+            <result property="attachmentPath" column="attachment_path"/>
+            <result property="uploadDate" column="upload_date"/>
+            <result property="updateDate" column="update_date"/>
         </collection>
     </resultMap>
 
@@ -49,6 +49,7 @@
                 and file_description like #{fileDescription}
             </if>
         </where>
+        ORDER BY update_date
     </select>
 
     <update id="update" parameterType="File">

@@ -36,32 +36,72 @@
 		<!-- /.content-header -->
 		<!-- Main content -->
 		<div class="content">
-			<div class="card">
-				<div class="card-body">
-					<h5 class="text-bold text-lg">课程名： {{course.courseName}}</h5>
-					<p class="list-group-item-text">
-						课程号： {{course.courseNumber}}<br>
-						课程学期： {{course.courseSemester}}<br>
-						课程学院： {{course.courseSchool | schoolFormat}}<br>
-						课程类型： {{course.courseType | typeFormat}}<br>
-						课程学分： {{course.courseCredit}}<br>
-						课程介绍：
-						<button type="button" class="btn btn-tool">
-							<i class="fas fa-edit"></i>
-						</button> <br>
-						{{course.courseDescription}}
-					</p>
-					<h5 class="text-bold text-lg">课程教师</h5>
-					<p class="list-group-item-text">
-						教师姓名： {{course.teacherName}}<br>
-						教师介绍：
-						<button type="button" class="btn btn-tool">
-							<i class="fas fa-edit"></i>
-						</button> <br>
-						{{course.courseTeacherDescription}}
 
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">课程详情</h3>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-6">
+							<dl>
+								<dt>课程名</dt>
+								<dd>{{course.courseName}}</dd>
+								<dt>课程学期</dt>
+								<dd>{{course.courseSemester}}</dd>
+								<dt>课程类型</dt>
+								<dd>{{course.courseType | typeFormat}}</dd>
+								<dt>课程介绍
+									<button @click="modifyCourse" type="button" class="btn btn-tool"><i class="fas fa-edit"></i></button>
+								</dt>
+								<dd >
+									<div v-show="!isModifyCourseDescription" >
+										{{course.courseDescription}}
+									</div>
+									<div v-show="isModifyCourseDescription">
+										<textarea class="form-control" rows="3" placeholder="请输入课程描述~" ></textarea>
+									</div>
+								</dd>
+							</dl>
+						</div>
+						<!-- ./col -->
+						<div class="col-md-6">
+							<dl>
+								<dt>课程号</dt>
+								<dd>{{course.courseNumber}}</dd>
+								<dt>课程学院</dt>
+								<dd>{{course.courseSchool | schoolFormat}}</dd>
+								<dt>课程学分</dt>
+								<dd>{{course.courseCredit}}</dd>
+							</dl>
+						</div>
+						<!-- ./col -->
+					</div>
+
+				</div><!-- /.card-body -->
+				<div v-show="isModifyCourseDescription" class="card-footer">
+					<button @click="addNotice" class="btn btn-primary">修改</button>
+				</div>
+			</div><!-- /.card -->
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">课程教师</h3>
+				</div>
+				<div class="card-body">
+					<div>教师姓名： {{course.teacherName}}</div>
+					<div>教师介绍：
+						<button type="button" class="btn btn-tool"><i class="fas fa-edit"></i></button>
+					</div>
+					<p v-show="!isModifyCourseTeacherDescription" class="list-group-item-text">
+						{{course.courseTeacherDescription}}
+					</p>
+					<p v-show="isModifyCourseTeacherDescription" class="list-group-item-text">
+						<textarea class="form-control" rows="3" placeholder="请输入课程描述~"></textarea>
 					</p>
 				</div><!-- /.card-body -->
+				<div v-show="isModifyCourseTeacherDescription" class="card-footer">
+					<button @click="addNotice" class="btn btn-primary">修改</button>
+				</div>
 			</div><!-- /.card -->
 		</div><!-- /.container-fluid -->
 	</div>
@@ -71,19 +111,24 @@
 </body>
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
-<script src="/blackboard/page/dist/js/request.js"></script>
-<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+<script src="../dist/js/request.js"></script>
+<script src="../dist/js/jquerySession.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<script src="requestParam.js"></script>
 <script type="text/javascript">
 	var app = new Vue({
 		el: '#content',
 		data() {
 			return{
+				isModifyCourseDescription:false,
+				isModifyCourseTeacherDescription:false,
 				courseForm:{
-					courseId:4
+					courseId:4,
+					courseDescription:"",
+					courseTeacherDescription:""
 				},
 				course:{
 					"id": 1,
@@ -97,27 +142,32 @@
 					"teacherName":"name",
 					"courseDescription":"这是一门很有意思的学科",
 					"courseTeacherDescription":"这是一个很有意思的老师",
-
 				}
 			}
 		},
 		methods:{
 			getCourse(){
+				localStorage.setItem("test","test1");
+				console.log(localStorage.getItem("test"));
 				let that = this;
 				request({
-					type:"post",
-					url:"/blackboard/system/searchCourse",
+					type:requestType.post,
+					url:requestUrl.searchCourse,
 					data:that.courseForm,
 				}).then(
 						function success(res){
 							console.log(res);
-							that.course = res.data.data[0];
-							console.log(that.course);
+							if(res.code === "208") {
+								that.course = res.data.data[0];
+							}
 						},
 						function error(res){
 							console.log(res)
 						}
 				);
+			},
+			modifyCourse(){
+
 			}
 		},
 		filters: {

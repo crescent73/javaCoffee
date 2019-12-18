@@ -291,6 +291,7 @@ public class SystemServiceImpl implements SystemService {
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
 			}
 			List<NoticeDetail> notices = noticeDao.find(notice);
+			System.out.println(notices);
 			if(notices.size()>0) {
 				Data<List<NoticeDetail>> data = new Data<List<NoticeDetail>>();
 				if(pageParam != null && pageParam.isPaginate()){
