@@ -13,9 +13,14 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- 引用vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <link href="./hhh/classroom.css" rel="stylesheet">
+
+
 </head>
 <body  style="background-color: #f4f6f9">
 <div class="content" id="content">
+
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -24,13 +29,48 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">主页</a></li></ol>
+                        <li class="breadcrumb-item"><a href="home.html">主页</a></li></ol>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="content">
+
+        <div class="content">
+            <div class="small-box bg-info col-md-4">
+                <div class="inner">
+                    <h3>{{ courseCount }}</h3>
+                    <p>课程数目</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-book"></i>
+                </div>
+                <a href="course_list.html" class="small-box-footer">课程管理<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            <div class="small-box bg-success col-md-4">
+                <div class="inner">
+                    <h3>{{ teacherCount }}</h3>
+                    <p>教师数目</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user-tie"></i>
+                </div>
+                <a href="teacher_list.html" class="small-box-footer">教师管理<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            <div class="small-box bg-warning col-md-4">
+                <div class="inner">
+                    <h3>{{studentCount}}</h3>
+                    <p>学生数目</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user-astronaut"></i>
+                </div>
+                <a href="student_list.html" class="small-box-footer">学生管理<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+
+        </div>
+
 
     </div>
 </div>
@@ -43,4 +83,107 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+
+<script src="../dist/js/request.js"></script>
+<script src="../dist/js/jquerySession.js"></script>
+
+<script type="text/javascript" charset="utf-8"  src="./hhh/L2Dwidget.0.min.js"></script>
+<script type="text/javascript" charset="utf-8"  src="./hhh/L2Dwidget.min.js"></script>
+<script type="text/javascript">
+    L2Dwidget.init({"display": {
+            "superSample": 2,
+            "width": 200,
+            "height": 400,
+            "position": "right",
+            "hOffset": 0,
+            "vOffset": 0
+        }
+    });
+</script>
+
+
+<script type="text/javascript">
+
+    var vue = new Vue({
+        el: "#content",
+        data: {
+            courseCount: 0,
+            studentCount: 0,
+            teacherCount: 0
+        },
+        mounted: function () {
+            let self = this;
+            request({
+                type:"post",
+                url:"/blackboard/system/searchCourse",
+                data: {
+                    pageSize: 1,
+                    pageNum: 1,
+                },
+            }).then(
+                function success(res){
+                    console.log(res);
+                    console.log(res.code);
+                    if(res.code === "208") {
+                        self.courseCount = res.data.total;
+                    } else {
+                        self.courseCount = 0;
+                    }
+
+                },
+                function error(res){
+                    console.log(res);
+                    self.courseCount = 0;
+                }
+            );
+            request({
+                type:"post",
+                url:"/blackboard/admin/searchTeacher",
+                data: {
+                    pageSize: 1,
+                    pageNum: 1,
+                },
+            }).then(
+                function success(res){
+                    console.log(res);
+                    console.log(res.code);
+                    if(res.code === "208") {
+                        self.teacherCount = res.data.total;
+                    } else {
+                        self.teacherCount = 0;
+                    }
+
+                },
+                function error(res){
+                    console.log(res);
+                    self.teacherCount = 0;
+                }
+            );
+            request({
+                type:"post",
+                url:"/blackboard/system/searchStudent",
+                data: {
+                    pageSize: 1,
+                    pageNum: 1,
+                },
+            }).then(
+                function success(res){
+                    console.log(res);
+                    console.log(res.code);
+                    if(res.code === "208") {
+                        self.studentCount = res.data.total;
+                    } else {
+                        self.studentCount = 0;
+                    }
+
+                },
+                function error(res){
+                    console.log(res);
+                    self.studentCount = 0;
+                }
+            );
+        }
+    })
+
+</script>
 </html>

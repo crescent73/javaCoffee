@@ -39,22 +39,29 @@
 		<div class="content">
 			<div class="card">
 				<div class="card-body">
-					<div class="form-group">
+					<div class="form-group row-md-12">
 						<label>文档标题</label>
 						<input type="text" v-model="fileForm.fileName" class="form-control" placeholder="文档标题">
 					</div>
-					<div class="form-group">
+					<div class="form-group row-md-12">
 						<label>文档描述</label>
 						<textarea v-model="fileForm.fileDescription" class="form-control" rows="3" placeholder="文档描述"></textarea>
 					</div>
 					<div class="form-group">
-						<label>上传附件</label><br>
-						<input type="file" multiple="multiple" @change="getFile($event)"><!--  class="form-control" -->
+						<label for="exampleInputFile">上传附件</label>
+						<div class="input-group">
+							<div class="custom-file">
+								<input type="file" class="custom-file-input" id="exampleInputFile" multiple @change="getFile($event)">
+								<label class="custom-file-label" for="exampleInputFile">选择文件</label>
+							</div>
+						</div>
 					</div>
+				</div>
+				<div class="card-footer">
 					<div class="form-group">
-						<button type="submit"  @click="addFile($event)" ref="realFile" class="btn btn-primary">提交</button>
+						<button type="button"  @click="addFile($event)" ref="realFile" class="btn btn-primary">提交</button>
 					</div>
-				</div><!-- /.card-body -->
+				</div>
 			</div><!-- /.card -->
 		</div><!-- /.container-fluid -->
 	</div>
@@ -68,17 +75,20 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<!-- bs-custom-file-input -->
+<script src="../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+
 <script type="text/javascript">
 	var app = new Vue({
 		el: '#content',
 		data() {
 			return{
 				fileForm: {
-					courseId:4,
-					uploaderId:2,
-					fileName:"filename",
-					fileDescription:"这是一份超厉害的文档",
-					file:null
+					courseId: 4,
+					uploaderId: 2,
+					fileName: "",
+					fileDescription: "",
+					file: null
 				}
 			}
 		},
@@ -120,7 +130,13 @@
 		},
 		mounted(){
 		}
-	})
+	});
+
+
+	$(document).ready(function () {
+		bsCustomFileInput.init();
+	});
 
 </script>
+
 </html>

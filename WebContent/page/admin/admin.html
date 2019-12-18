@@ -17,7 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 </head>
-<body class="hold-transition sidebar-mini sidebar-collapse" >
+<body class="hold-transition sidebar-mini" >
 <div class="wrapper" id="mainpage">
 
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -26,7 +26,7 @@
                 <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="#" class="nav-link" target="main">Home</a>
+                <a href="#" class="nav-link" target="main">主页</a>
             </li>
         </ul>
 
@@ -50,7 +50,7 @@
                 </div>
             </li>
             <li class="nav-item nav-sidebar">
-                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
+                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" onclick="logout()">
                     <i class="nav-icon fas fa-sign-out-alt"></i>
                 </a>
             </li>
@@ -60,7 +60,7 @@
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-light-dark elevation-0 sidebar-collapse">
+    <aside class="main-sidebar sidebar-light-danger elevation-0 sidebar-collapse">
         <!-- Brand Logo -->
         <a href="#" class="brand-link">
             <span class="iconfont iconxiaoheiban" style="font-size: 30px;margin-left: 10px;"></span>
@@ -176,7 +176,7 @@
 
     <div class="content-wrapper"  >
         <div class="content">
-            <div class="embed-responsive embed-responsive-1by1">
+            <div class="embed-responsive embed-responsive-16by9">
                 <iframe id='main' class="embed-responsive-item" name="main" src="home.html"></iframe>
             </div>
         </div>
@@ -202,6 +202,23 @@
 
 </body>
 <script type="text/javascript">
-
+    function logout() {
+        console.log($.session.get("token"));
+        request({
+            type:"post",
+            url:"/blackboard/system/logout",
+            data:this.logoutData,
+        }).then(
+            function success(res){
+                $.session.clear();
+                console.log(res);
+                console.log(res.code);
+                window.location.href="/blackboard/";
+            },
+            function error(res){
+                console.log(res)
+            }
+        );
+    }
 </script>
 </html>
