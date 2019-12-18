@@ -361,22 +361,22 @@
         },
 
         mounted: function (){
-            var token = localStorage.getItem("token");
-            var userType = localStorage.getItem("userType");
-            if(token === null || token === undefined) {
-                return;
-            }
-            switch (userType) {
-                case "1":
-                    console.log("1");
-                    window.location.href ="/blackboard/page/admin/admin.html";
-                    break;
-                case "2":
-                case "3":
-                    console.log("2");
-                    window.location.href = "/blackboard/page/course/course.html";
-                    break;
-            }
+            // var token = localStorage.getItem("token");
+            // var userType = localStorage.getItem("userType");
+            // if(token === null || token === undefined) {
+            //     return;
+            // }
+            // switch (userType) {
+            //     case "1":
+            //         console.log("1");
+            //         window.location.href ="/blackboard/page/admin/admin.html";
+            //         break;
+            //     case "2":
+            //     case "3":
+            //         console.log("2");
+            //         window.location.href = "/blackboard/page/course/course.html";
+            //         break;
+            // }
         }
     })
 

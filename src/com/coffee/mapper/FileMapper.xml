@@ -36,8 +36,11 @@
                     and filename like #{fileName}
                 </if>
             </if>
+            <if test="updateDate != null">
+                and file.update_date = #{updateDate}
+            </if>
             <if test="uploadDate != null">
-                and upload_date = #{uploadDate}
+                and file.upload_date = #{uploadDate}
             </if>
             <if test="courseId != null">
                 and course_id = #{courseId}
@@ -49,7 +52,7 @@
                 and file_description like #{fileDescription}
             </if>
         </where>
-        ORDER BY update_date
+        ORDER BY file.update_date
     </select>
 
     <update id="update" parameterType="File">

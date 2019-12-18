@@ -50,6 +50,9 @@
             <if test="courseSchool != null">
                 course_school = #{courseSchool},
             </if>
+            <if test="courseType != null">
+                course_type = #{courseType},
+            </if>
             <if test="courseSemester != null">
                 course_semester = #{courseSemester},
             </if>
@@ -59,8 +62,13 @@
             <if test="teacherId != null">
                 teacher_id = #{teacherId},
             </if>
+            <if test="courseDescription != null">
+                course_description = #{courseDescription},
+            </if>
+            <if test="courseTeacherDescription != null">
+                course_teacher_description = #{courseTeacherDescription},
+            </if>
         </set>
-
         <where>
             <if test="id == null">
                 and 1 != 1

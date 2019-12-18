@@ -5,7 +5,8 @@ var requestUrl = {
     searchNotice:"/blackboard/system/searchNotice",
     modifyNotice:"/blackboard/teacher/modifyNotice",
     searchCourse:"/blackboard/system/searchCourse",
-    modifyCourse:"/blackboard/admin/modifyCourse"
+    modifyCourse:"/blackboard/admin/modifyCourse",
+    logout:"/blackboard/system/logout"
 };
 var requestType = {
     post:"post",

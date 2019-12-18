@@ -51,17 +51,6 @@
 								<dd>{{course.courseSemester}}</dd>
 								<dt>课程类型</dt>
 								<dd>{{course.courseType | typeFormat}}</dd>
-								<dt>课程介绍
-									<button @click="modifyCourse" type="button" class="btn btn-tool"><i class="fas fa-edit"></i></button>
-								</dt>
-								<dd >
-									<div v-show="!isModifyCourseDescription" >
-										{{course.courseDescription}}
-									</div>
-									<div v-show="isModifyCourseDescription">
-										<textarea class="form-control" rows="3" placeholder="请输入课程描述~" ></textarea>
-									</div>
-								</dd>
 							</dl>
 						</div>
 						<!-- ./col -->
@@ -77,10 +66,28 @@
 						</div>
 						<!-- ./col -->
 					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<dl>
+								<dt>课程介绍
+									<button @click="startModify(1)" type="button" class="btn btn-tool"><i class="fas fa-edit"></i></button>
+								</dt>
+								<dd >
+									<div v-show="!isModifyCourseDescription" >
+										{{course.courseDescription}}
+									</div>
+									<div v-show="isModifyCourseDescription">
+										<textarea v-model="courseForm.courseDescription"  class="form-control" rows="3" placeholder="请输入课程介绍~" ></textarea>
+									</div>
+								</dd>
+							</dl>
+						</div>
 
+					</div>
 				</div><!-- /.card-body -->
 				<div v-show="isModifyCourseDescription" class="card-footer">
-					<button @click="addNotice" class="btn btn-primary">修改</button>
+					<button @click="modifyCourse" class="btn btn-primary">修改</button>
+					<button @click="startModify(3)" class="btn">取消</button>
 				</div>
 			</div><!-- /.card -->
 			<div class="card">
@@ -88,19 +95,26 @@
 					<h3 class="card-title">课程教师</h3>
 				</div>
 				<div class="card-body">
-					<div>教师姓名： {{course.teacherName}}</div>
-					<div>教师介绍：
-						<button type="button" class="btn btn-tool"><i class="fas fa-edit"></i></button>
-					</div>
-					<p v-show="!isModifyCourseTeacherDescription" class="list-group-item-text">
-						{{course.courseTeacherDescription}}
-					</p>
-					<p v-show="isModifyCourseTeacherDescription" class="list-group-item-text">
-						<textarea class="form-control" rows="3" placeholder="请输入课程描述~"></textarea>
-					</p>
+					<dl>
+						<dt>教师姓名</dt>
+						<dd>{{course.teacherName}}</dd>
+						<dt>
+							教师介绍
+							<button @click="startModify(2)" type="button" class="btn btn-tool"><i class="fas fa-edit"></i></button>
+						</dt>
+						<dd>
+							<p v-show="!isModifyCourseTeacherDescription" class="list-group-item-text">
+								{{course.courseTeacherDescription}}
+							</p>
+							<p v-show="isModifyCourseTeacherDescription" class="list-group-item-text">
+								<textarea v-model="courseForm.courseTeacherDescription" class="form-control" rows="3" placeholder="请输入教师介绍~"></textarea>
+							</p>
+						</dd>
+					</dl>
 				</div><!-- /.card-body -->
 				<div v-show="isModifyCourseTeacherDescription" class="card-footer">
-					<button @click="addNotice" class="btn btn-primary">修改</button>
+					<button @click="modifyCourse" class="btn btn-primary">修改</button>
+					<button @click="startModify(4)" class="btn">取消</button>
 				</div>
 			</div><!-- /.card -->
 		</div><!-- /.container-fluid -->
@@ -112,12 +126,12 @@
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
 <script src="../dist/js/request.js"></script>
-<script src="../dist/js/jquerySession.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
 <script src="requestParam.js"></script>
+
 <script type="text/javascript">
 	var app = new Vue({
 		el: '#content',
@@ -126,7 +140,7 @@
 				isModifyCourseDescription:false,
 				isModifyCourseTeacherDescription:false,
 				courseForm:{
-					courseId:4,
+					id:4,
 					courseDescription:"",
 					courseTeacherDescription:""
 				},
@@ -147,9 +161,8 @@
 		},
 		methods:{
 			getCourse(){
-				localStorage.setItem("test","test1");
-				console.log(localStorage.getItem("test"));
 				let that = this;
+				this.cleatFormData();
 				request({
 					type:requestType.post,
 					url:requestUrl.searchCourse,
@@ -159,6 +172,8 @@
 							console.log(res);
 							if(res.code === "208") {
 								that.course = res.data.data[0];
+								that.courseForm.courseDescription = that.course.courseDescription;
+								that.courseForm.courseTeacherDescription = that.course.courseTeacherDescription;
 							}
 						},
 						function error(res){
@@ -167,12 +182,48 @@
 				);
 			},
 			modifyCourse(){
-
+				let that = this;
+				request({
+					type:requestType.post,
+					url:requestUrl.modifyCourse,
+					data:that.courseForm,
+				}).then(
+						function success(res){
+							console.log(res);
+							if(res.code === "206") {
+								that.isModifyCourseDescription = false;
+								that.isModifyCourseTeacherDescription = false;
+								that.getCourse();//刷新页面
+							}
+						},
+						function error(res){
+							console.log(res)
+						}
+				);
+			},
+			startModify(type){
+				switch (type) {
+					case 1: this.isModifyCourseDescription = true; break;
+					case 2: this.isModifyCourseTeacherDescription = true; break;
+					case 3:
+						this.isModifyCourseDescription = false;
+						this.courseForm.courseDescription = this.course.courseDescription;
+						break;
+					case 4:
+						this.isModifyCourseTeacherDescription = false;
+						this.courseForm.courseTeacherDescription = this.course.courseTeacherDescription;
+						break;
+				}
+			},
+			cleatFormData(){
+				this.courseForm.courseDescription = "";
+				this.courseForm.courseTeacherDescription = "";
 			}
+
 		},
 		filters: {
 			typeFormat: function (value) {
-				console.log(value);
+				// console.log(value);
 				switch (value) {
 					case 0: return "必修课";
 					case 1: return "选修课";
@@ -180,7 +231,7 @@
 				}
 			},
 			schoolFormat(value){
-				console.log(value);
+				// console.log(value);
 				switch (value) {
 					case 1: return "信息与安全工程学院";
 					case 2: return "马克思主义学院";
