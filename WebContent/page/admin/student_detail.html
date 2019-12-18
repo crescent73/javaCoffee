@@ -51,13 +51,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="student_name_input">姓名</label>
-                                <input type="text" class="form-control" id="student_name_input" placeholder="输入学生姓名" v-model="form.studentName">
+                                <input type="text" class="form-control" id="student_name_input" placeholder="输入学生姓名" v-model="form.studentName" disabled>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="student_number_input">学号</label>
-                                <input type="text" class="form-control" id="student_number_input" placeholder="输入学生学号" v-model="form.studentNumber">
+                                <input type="text" class="form-control" id="student_number_input" placeholder="输入学生学号" v-model="form.studentNumber" disabled>
                             </div>
                         </div>
                     </div>
@@ -66,13 +66,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="student_class_input">班级</label>
-                                <input type="text" class="form-control" id="student_class_input" placeholder="输入学生班级" v-model="form.studentClass">
+                                <input type="text" class="form-control" id="student_class_input" placeholder="输入学生班级" v-model="form.studentClass" disabled>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="student_grade_select">年级</label>
-                                <select type="text" class="form-control select2" id="student_grade_select" data-placeholder="输入学生年级">
+                                <select type="text" class="form-control select2" id="student_grade_select" data-placeholder="输入学生年级" disabled>
                                     <option :selected="student.studentGrade === '2015'">2015</option>
                                     <option :selected="student.studentGrade === '2016'">2016</option>
                                     <option :selected="student.studentGrade === '2017'">2017</option>
@@ -87,7 +87,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="student_school_select">学院</label>
-                                <select id="student_school_select" class="form-control select2" data-placeholder="选择学生所属学院">
+                                <select id="student_school_select" class="form-control select2" data-placeholder="选择学生所属学院" disabled>
                                     <option value="1" :selected="student.studentSchool === 1">信息与安全工程学院</option>
                                     <option value="2" :selected="student.studentSchool === 2">马克思主义学院</option>
                                     <option value="3" :selected="student.studentSchool === 3">哲学院</option>
@@ -112,13 +112,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="student_password_input">登录初始密码</label>
-                                <input type="text" class="form-control" id="student_password_input" v-model="form.studentPassword">
+                                <input type="text" class="form-control" id="student_password_input" v-model="form.studentPassword" disabled>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="student_email_input">学生邮箱</label>
-                                <input type="email" class="form-control" id="student_email_input" v-model="form.studentEmail">
+                                <input type="email" class="form-control" id="student_email_input" v-model="form.studentEmail" disabled>
                             </div>
                         </div>
                     </div>
