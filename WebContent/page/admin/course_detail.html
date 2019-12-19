@@ -53,13 +53,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="course_name_input">课程名</label>
-                            <input type="text" class="form-control" id="course_name_input" placeholder="输入课程名" v-model="form.courseName" disabled>
+                            <input type="text" class="form-control" id="course_name_input" placeholder="输入课程名" v-model="form.courseName">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="course_number_input">课程号</label>
-                            <input type="text" class="form-control" id="course_number_input" placeholder="输入课程号" v-model="form.courseNumber" disabled>
+                            <input type="text" class="form-control" id="course_number_input" placeholder="输入课程号" v-model="form.courseNumber">
                         </div>
                     </div>
                 </div>
@@ -157,7 +157,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="course_description_input">课程介绍</label>
-                            <textarea type="text" class="form-control" id="course_description_input" placeholder="输入课介绍" v-model="form.courseDescription" disabled>
+                            <textarea type="text" class="form-control" id="course_description_input" placeholder="输入课介绍" v-model="form.courseDescription">
                             </textarea>
                         </div>
                     </div>
@@ -278,6 +278,7 @@
 <script src="../dist/js/jquerySession.js"></script>
 
 <script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -514,68 +515,99 @@
             on_modify_course: function () {
                 let self = this;
                 self.form.courseSemester = $("#course_semester_select option:selected").text();
-                self.form.courseSchool = $("#course_school_select option:selected").val();
-                self.form.courseType = $("#course_type_select option:selected").val();
-                self.form.teacherId = $("#course_teacher_select option:selected").val();
+                self.form.courseSchool = parseInt($("#course_school_select option:selected").val());
+                self.form.courseType = parseInt($("#course_type_select option:selected").val());
+                self.form.teacherId = parseInt($("#course_teacher_select option:selected").val());
 
-                var data = {
-                    courseId: self.course.id,
-                    courseCredit: self.course.courseCredit === self.form.courseCredit ? undefined : self.form.courseCredit,
-                    courseSchool: self.course.courseSchool === self.form.courseSchool ? undefined : self.form.courseSchool,
-                    teacherId: self.course.teacherId === self.form.teacherId ? undefined : self.form.teacherId,
-                    courseSemester: self.course.courseSemester === self.form.courseSemester ? undefined : self.form.courseSemester,
-                    courseType: self.course.courseType === self.form.courseType ? undefined : self.form.courseType
-                };
+                swal({
+                    title: "你确定要修改吗？",
+                    text: "这个操作是不可以撤销的！",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "post",
+                            url: "/blackboard/admin/modifyCourse",
+                            headers:{
+                                token: localStorage.getItem("token")
+                            },
+                            data: self.form,
+                            success: function (res) {
+                                console.log(res);
+                                if(res.code === "206") {
+                                    swal("课程已经被修改！", {
+                                        icon: "success"
+                                    }).then(() => {
+                                        window.location.href = "/blackboard/page/admin/course_detail.html?course_id = " + self.course.id;
+                                    });
 
-                $.ajax({
-                    type: "post",
-                    url: "/blackboard/admin/modifyCourse",
-                    headers:{
-                        token: localStorage.getItem("token")
-                    },
-                    data: data,
-                    success: function (res) {
-                        if(res.code === "202") {
-                            Toast.fire({
-                                type: 'info',
-                                title: '修改成功'
-                            });
-                            window.location.href = "/blackboard/page/admin/course_detail.html?course_id = " + self.course.id;
-                        } else {
-                            alert("修改失败！")
-                        }
-                    },
-                    error: function (res) {
-                        console.log(res);
-                        alert("修改失败！");
+                                } else {
+                                    swal("课程修改失败！", {
+                                        icon: "error",
+                                    });
+                                }
+                            },
+                            error: function (res) {
+                                console.log(res);
+                                swal("课程修改失败！", {
+                                    icon: "error",
+                                });
+                            }
+                        });
+                    } else {
+                        swal("操作已取消");
                     }
-                })
+                });
+
             },
             on_delete_course: function () {
                 let self = this;
                 var form = {
                     courseId: self.course.id
                 };
-                $.ajax({
-                    type:"post",
-                    url: "/blackboard/admin/deleteCourse",
-                    headers:{
-                        token: localStorage.getItem("token")
-                    },
-                    data: form,
-                    success: function (res) {
-                        if(res.code === "204") {
-                            alert("删除成功！");
-                            window.location.href = "/blackboard/page/admin/course_list.html";
-                        } else {
-                            alert("删除失败！")
-                        }
-                    },
-                    error: function (res) {
-                        console.log(res);
-                        alert("删除失败！");
+                swal({
+                    title: "你确定要删除吗？",
+                    text: "这个操作是不可以撤销的！",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type:"post",
+                            url: "/blackboard/admin/deleteCourse",
+                            headers:{
+                                token: localStorage.getItem("token")
+                            },
+                            data: {courseId: self.course.id},
+                            success: function (res) {
+                                console.log(res);
+                                if(res.code === "204") {
+                                    swal("删除成功！", {
+                                        icon: "success"
+                                    }).then(() => {
+                                        window.location.href = "/blackboard/page/admin/course_list.html";
+                                    });
+                                } else {
+                                    swal("删除失败！", {
+                                        icon: "error",
+                                    });
+                                }
+                            },
+                            error: function (res) {
+                                console.log(res);
+                                swal("删除失败！", {
+                                    icon: "error",
+                                });
+                            }
+                        })
+
+                    } else {
+                        swal("操作已取消");
                     }
-                })
+                });
             },
             on_delete_student: function () {
                 let self = this;
@@ -588,31 +620,52 @@
                 var form_data = new FormData();
                 form_data.append("courseId", self.course.id);
                 form_data.append("studentList", list);
-                $.ajax({
-                    type:"post",
-                    url: "/blackboard/admin/deleteCourseSchedule",
-                    headers:{
-                        token: localStorage.getItem("token")
-                    },
-                    contentType: false,
-                    processData: false,
-                    data: form_data,
-                    success: function (res) {
-                        if(res.code === "204") {
-                            alert("删除成功！");
-                            self.payload = [];
-                            self.payloads.clear();
-                            self.get_payload(1);
-                        } else {
-                            console.log(res);
-                            alert("删除失败！")
-                        }
-                    },
-                    error: function (res) {
-                        console.log(res);
-                        alert("删除失败！");
+
+
+                swal({
+                    title: "你确定要删除吗？",
+                    text: "这个操作是不可以撤销的！",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type:"post",
+                            url: "/blackboard/admin/deleteCourseSchedule",
+                            headers:{
+                                token: localStorage.getItem("token")
+                            },
+                            contentType: false,
+                            processData: false,
+                            data: form_data,
+                            success: function (res) {
+                                console.log(res);
+                                if(res.code === "204") {
+                                    swal("删除成功！", {
+                                        icon: "success",
+                                    });
+                                    self.payload = [];
+                                    self.payloads.clear();
+                                    self.get_payload(1);
+                                } else {
+                                    console.log(res);
+                                    swal("删除失败！", {
+                                        icon: "error",
+                                    });
+                                }
+                            },
+                            error: function (res) {
+                                console.log(res);
+                                swal("删除失败！", {
+                                    icon: "error",
+                                });
+                            }
+                        });
+                    } else {
+                        swal("操作已取消");
                     }
-                })
+                });
             },
             on_check_all: function () {
                 let self = this;
@@ -646,15 +699,24 @@
                             self.payloads.clear();
                             self.get_payload(1);
                             $("#for_course_student").empty();
-                            alert("添加选课学生成功！");
+                            Toast.fire({
+                                type: 'success',
+                                title: '添加选课学生成功',
+                            });
                         } else {
                             console.log(res);
-                            alert("添加选课学生失败！");
+                            Toast.fire({
+                                type: 'error',
+                                title: '添加选课学生失败',
+                            });
                         }
                     },
                     error: function (res) {
                         console.log(res);
-                        alert("添加选课学生失败！");
+                        Toast.fire({
+                            type: 'error',
+                            title: '添加选课学生失败',
+                        });
                     }
                 });
 
@@ -674,11 +736,16 @@
                     success: function (res) {
                         if(res.code === "208") {
                             self.course = res.data.data[0];
-                            self.form = res.data.data[0];
+                            self.form = JSON.parse(JSON.stringify(self.course));
                         } else {
                             console.log(res);
-                            alert("出问题了，请刷新重试！");
-                            window.location.href = "/blackboard/page/admin/course_list.html";
+                            Toast.fire({
+                                type: 'error',
+                                title: '出问题了，请刷新重试',
+                                onAfterClose: function () {
+                                    window.location.href = "/blackboard/page/admin/course_list.html";
+                                }
+                            });
                         }
                     },
                     error: function (res) {
@@ -711,12 +778,22 @@
                     self.load_course();
                     self.get_payload(1);
                 } else {
-                    alert("出问题了，请刷新重试！");
-                    window.location.href = "/blackboard/page/admin/course_list.html";
+                    Toast.fire({
+                        type: 'error',
+                        title: '出问题了，请刷新重试',
+                        onAfterClose: function () {
+                            window.location.href = "/blackboard/page/admin/course_list.html";
+                        }
+                    });
                 }
             } else {
-                alert("出问题了，请刷新重试！");
-                window.location.href = "/blackboard/page/admin/course_list.html";
+                Toast.fire({
+                    type: 'error',
+                    title: '出问题了，请刷新重试',
+                    onAfterClose: function () {
+                        window.location.href = "/blackboard/page/admin/course_list.html";
+                    }
+                });
             }
         }, filters: {
             typeFormat: function (value) {

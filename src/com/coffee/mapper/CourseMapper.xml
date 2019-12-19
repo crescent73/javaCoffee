@@ -45,7 +45,7 @@
                 course_name = #{courseName},
             </if>
             <if test="courseNumber != null">
-                course_number like #{couresNumber},
+                course_number = #{courseNumber},
             </if>
             <if test="courseSchool != null">
                 course_school = #{courseSchool},

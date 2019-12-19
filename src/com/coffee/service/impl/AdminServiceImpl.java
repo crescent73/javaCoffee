@@ -395,4 +395,38 @@ public class AdminServiceImpl implements AdminService {
         }
         return teachers != null && teachers.size() == 1;
     }
+
+    @Override
+    public ResultData modifyStudent(Student student) {
+        resultData = new ResultData<>();
+        if(student != null && student.getId() > 0) { //course不为空且id存在
+            int result = studentDao.update(student);
+            if(result > 0) {
+                resultData.setResult(ResultCodeEnum.DB_UPDATE_SUCCESS); //修改成功
+            } else {
+                resultData.setResult(ResultCodeEnum.DB_UPDATE_ERROR);  //修改失败
+            }
+        } else {
+            resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //id直接返回数据必要参数为空
+        }
+
+        return resultData;
+    }
+
+    @Override
+    public ResultData modifyTeacher(Teacher teacher) {
+        resultData = new ResultData<>();
+        if(teacher != null && teacher.getId() > 0) { //course不为空且id存在
+            int result = teacherDao.update(teacher);
+            if(result > 0) {
+                resultData.setResult(ResultCodeEnum.DB_UPDATE_SUCCESS); //修改成功
+            } else {
+                resultData.setResult(ResultCodeEnum.DB_UPDATE_ERROR);  //修改失败
+            }
+        } else {
+            resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //id直接返回数据必要参数为空
+        }
+
+        return resultData;
+    }
 }

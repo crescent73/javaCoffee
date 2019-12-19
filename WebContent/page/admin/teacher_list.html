@@ -14,6 +14,9 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- 引用vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
 </head>
 
 <body  style="background-color: #f4f6f9">
@@ -103,10 +106,20 @@
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
 
-<script src="/blackboard/page/dist/js/request.js"></script>
-<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+<script src="../dist/js/request.js"></script>
+<script src="../dist/js/jquerySession.js"></script>
+
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
 
 <script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        grow: 'row'
+    });
+
     vue = new Vue({
         el: "#content",
         data: {
@@ -142,10 +155,16 @@
             },
             nav_to: function (index) {
                 if(index > this.end_page) {
-                    alert("这是最后一页了！");
+                    Toast.fire({
+                        type: 'info',
+                        title: '这是最后页了'
+                    });
                     return;
                 } else if(index < this.start_page) {
-                    alert("这是以经第一页了！");
+                    Toast.fire({
+                        type: 'info',
+                        title: '这是第一页了'
+                    });
                     return;
                 }
 

@@ -109,9 +109,10 @@ public class SystemController {
 	@ResponseBody
 	public ResultData searchCourse(Long studentId, Long courseId, Course course, String searchKey, PageParam pageParam) {
 		System.out.println("studentId:"+studentId+",courseId:"+courseId+",course"+course);
-		if(courseId != null) {
-			course.setId(courseId);
+		if(course == null) {
+			course = new Course();
 		}
+		course.setId(courseId);
 		try{
 			resultData = systemService.searchCourse(studentId, course,searchKey, pageParam);
 		}catch(Exception e){
@@ -127,11 +128,12 @@ public class SystemController {
 	@ResponseBody
 	public ResultData searchStudent(Long courseId, Long studentId, Student student, String searchKey,PageParam pageParam) {
 		System.out.println("courseId:"+courseId+", studentId:"+studentId+",student:"+student);
-		if(studentId != null) {
-			student.setId(studentId);
+		if(student == null) {
+			student = new Student();
 		}
+		student.setId(studentId);
 		try{
-			resultData = systemService.searchStudent(courseId, student,searchKey, pageParam);
+			resultData = systemService.searchStudent(courseId, student, searchKey, pageParam);
 		}catch(Exception e){
 			e.printStackTrace();
 			resultData = new ResultData();

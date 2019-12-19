@@ -83,4 +83,8 @@ public interface AdminService {
 	 */
 	public ResultData deleteCourseSchedule(Long courseId,Long[] studentList);
 
+	public ResultData modifyStudent(Student student);
+
+	public ResultData modifyTeacher(Teacher teacher);
+
 }

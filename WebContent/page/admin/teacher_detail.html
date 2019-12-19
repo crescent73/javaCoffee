@@ -57,13 +57,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="teacher_name_input">教师名</label>
-                            <input type="text" class="form-control" id="teacher_name_input" placeholder="输入教师名" v-model="form.teacherName" disabled>
+                            <input type="text" class="form-control" id="teacher_name_input" placeholder="输入教师名" v-model="form.teacherName">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="teacher_number_input">教师工号</label>
-                            <input type="text" class="form-control" id="teacher_number_input" placeholder="输入教师工号" v-model="form.teacherNumber" disabled>
+                            <input type="text" class="form-control" id="teacher_number_input" placeholder="输入教师工号" v-model="form.teacherNumber">
                         </div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="teacher_school_select">学院</label>
-                            <select id="teacher_school_select" class="form-control select2" data-placeholder="选择教师所属学院" disabled>
+                            <select id="teacher_school_select" class="form-control select2" data-placeholder="选择教师所属学院">
                                 <option value="1" :selected="teacher.teacherSchool === 1">信息与安全工程学院</option>
                                 <option value="2" :selected="teacher.teacherSchool === 2">马克思主义学院</option>
                                 <option value="3" :selected="teacher.teacherSchool === 3">哲学院</option>
@@ -94,7 +94,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="teacher_title_select">教师职称</label>
-                            <select id="teacher_title_select" class="form-control select2" data-placeholder="选择教师职称" disabled>
+                            <select id="teacher_title_select" class="form-control select2" data-placeholder="选择教师职称">
                                 <option value="1" :selected="teacher.teacherTitle === '1'">助教</option>
                                 <option value="2" :selected="teacher.teacherTitle === '2'">讲师</option>
                                 <option value="3" :selected="teacher.teacherTitle === '3'">教授</option>
@@ -108,13 +108,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_password_input">登录初始密码</label>
-                            <input type="password" class="form-control" id="student_password_input" v-model="form.teacherPassword" disabled>
+                            <input type="password" class="form-control" id="student_password_input" v-model="form.teacherPassword">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="student_email_input">教师邮箱</label>
-                            <input type="email" class="form-control" id="student_email_input" v-model="form.teacherEmail" disabled>
+                            <input type="email" class="form-control" id="student_email_input" v-model="form.teacherEmail">
                         </div>
                     </div>
                 </div>
@@ -122,6 +122,8 @@
 
             <div class="card-footer">
                 <button type="button" class="btn btn-danger float-left" @click="on_delete_teacher()">删除教师</button>
+                <button type="button" class="btn btn-primary float-right" @click="on_modify_teacher()">修改教师</button>
+
             </div>
 
         </div>
@@ -204,14 +206,25 @@
 <!-- Select2 -->
 <script src="../plugins/select2/js/select2.full.min.js"></script>
 
-<script src="/blackboard/page/dist/js/request.js"></script>
-<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+<script src="../dist/js/request.js"></script>
+<script src="../dist/js/jquerySession.js"></script>
+
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
     $(document).ready(function() {
         $("#teacher_school_select").select2({
             theme: 'bootstrap4'
         });
+    });
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        grow: 'row'
     });
 
     var vue = new Vue({
@@ -240,29 +253,95 @@
             search_key: "",
         },
         methods: {
+            on_modify_teacher: function () {
+                let self = this;
+                self.form.teacherSchool = $("#teacher_school_select option:selected").val();
+                self.form.teacherTitle = $("#teacher_title_select option:selected").val();
+
+                swal({
+                    title: "你确定要修改吗？",
+                    text: "这个操作是不可以撤销的！",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "post",
+                            url: "/blackboard/admin/modifyTeacher",
+                            headers:{
+                                token: localStorage.getItem("token")
+                            },
+                            data: self.form,
+                            success: function (res) {
+                                console.log(res);
+                                if(res.code === "206") {
+                                    swal("学生信息已被修改！", {
+                                        icon: "success"
+                                    }).then(()=>{
+                                        window.location.href = "/blackboard/page/admin/teacher_detail.html?teacher_id = " + self.teacher.id;
+                                    });
+                                } else {
+                                    swal("修改失败！", {
+                                        icon: "error",
+                                    });
+                                }
+                            },
+                            error: function (res) {
+                                console.log(res);
+                                swal("修改失败！", {
+                                    icon: "error",
+                                });
+                            }
+                        });
+                    } else {
+                        swal("操作已取消");
+                    }
+                });
+            },
             on_delete_teacher: function () {
                 let self = this;
-                $.ajax({
-                    type:"post",
-                    url: "/blackboard/admin/deleteTeacher",
-                    headers:{
-                        token: localStorage.getItem("token")
-                    },
-                    data: {teacherId: self.teacher.id},
-                    success: function (res) {
-                        console.log(res);
-                        if(res.code === "204") {
-                            alert("删除成功！");
-                            window.location.href = "/blackboard/page/admin/teacher_list.html";
-                        } else {
-                            alert("删除失败！");
-                        }
-                    },
-                    error: function (res) {
-                        console.log(res);
-                        alert("出问题了，请稍后重试！");
+                swal({
+                    title: "你确定要删除吗？",
+                    text: "这个操作是不可以撤销的！",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type:"post",
+                            url: "/blackboard/admin/deleteTeacher",
+                            headers:{
+                                token: localStorage.getItem("token")
+                            },
+                            data: {teacherId: self.teacher.id},
+                            success: function (res) {
+                                console.log(res);
+                                if(res.code === "204") {
+                                    swal("删除成功！", {
+                                        icon: "success"
+                                    }).then(()=>{
+                                        window.location.href = "/blackboard/page/admin/teacher_list.html";
+                                    });
+                                } else {
+                                    swal("删除失败！", {
+                                        icon: "error",
+                                    });
+                                }
+                            },
+                            error: function (res) {
+                                console.log(res);
+                                swal("删除失败！", {
+                                    icon: "error",
+                                });
+                            }
+                        })
+
+                    } else {
+                        swal("操作已取消");
                     }
-                })
+                });
             },
             on_previous_page: function () {
                 this.nav_to(this.current_page - 1);
@@ -284,10 +363,16 @@
             },
             nav_to: function (index) {
                 if(index > this.end_page) {
-                    alert("这是最后一页了！");
+                    Toast.fire({
+                        type: 'info',
+                        title: '这是最后页了'
+                    });
                     return;
                 } else if(index < this.start_page) {
-                    alert("这是以经第一页了！");
+                    Toast.fire({
+                        type: 'info',
+                        title: '这是第一页了'
+                    });
                     return;
                 }
 
@@ -362,8 +447,8 @@
                     data: form,
                     success: function (res) {
                         if(res.code === "208") {
-                            self.form = res.data.data[0];
                             self.teacher = res.data.data[0];
+                            self.form = JSON.parse(JSON.stringify(self.teacher))
                         }
                     },
                     error: function (res) {
@@ -426,12 +511,22 @@
                     self.load_teacher();
                     self.get_payload(1);
                 } else {
-                    alert("出问题了，请刷新重试！");
-                    window.location.href = "/blackboard/page/admin/teacher_list.html";
+                    Toast.fire({
+                        type: 'info',
+                        title: '出问题了，请刷新重试！',
+                        onAfterClose: function () {
+                            window.location.href = "/blackboard/page/admin/teacher_list.html";
+                        }
+                    });
                 }
             } else {
-                alert("出问题了，请刷新重试！");
-                window.location.href = "/blackboard/page/admin/teacher_list.html";
+                Toast.fire({
+                    type: 'info',
+                    title: '出问题了，请刷新重试！',
+                    onAfterClose: function () {
+                        window.location.href = "/blackboard/page/admin/teacher_list.html";
+                    }
+                });
             }
         },
         watch: {
@@ -442,7 +537,6 @@
                 this.on_search();
             }
         }
-
     })
 </script>
 

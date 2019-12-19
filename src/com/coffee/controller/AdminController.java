@@ -86,8 +86,8 @@ public class AdminController {
 			//调用修改课程service
 			if(!(StringUtils.isBlank(course.getCourseSemester()) && course.getTeacherId() == null
 					&& course.getCourseType() == null && course.getCourseCredit() == null
-					&& course.getCourseSchool() == null&&StringUtils.isBlank(course.getCourseTeacherDescription())
-					&&StringUtils.isBlank(course.getCourseDescription()) )) {
+					&& course.getCourseSchool() == null && StringUtils.isBlank(course.getCourseTeacherDescription())
+					&& StringUtils.isBlank(course.getCourseDescription()) )) {
 				// 修改数据不都为空
 				System.out.println(course);
 				try{
@@ -151,21 +151,19 @@ public class AdminController {
 	
 	@RequestMapping("/searchTeacher")
 	@ResponseBody
-	public ResultData searchTeacher(Teacher teacher, String searchKey, PageParam pageParam) {
+	public ResultData searchTeacher(Teacher teacher, Long teacherId, String searchKey, PageParam pageParam) {
 		System.out.println(teacher);
-		if(teacher != null) {
-			try{
-				resultData = adminService.searchTeacher(teacher,searchKey,pageParam);
-			}catch(Exception e){
-				e.printStackTrace();
-				resultData = new ResultData();
-				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
-			}
-		} else {
-			resultData = new ResultData();
-			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);
+		if(teacher == null) {
+			teacher = new Teacher();
 		}
-		
+		teacher.setId(teacherId);
+		try{
+			resultData = adminService.searchTeacher(teacher,searchKey,pageParam);
+		}catch(Exception e){
+			e.printStackTrace();
+			resultData = new ResultData();
+			resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+		}
 		return resultData;
 	}
 	
@@ -290,4 +288,30 @@ public class AdminController {
         return resultData;
     }
 
+    @RequestMapping("modifyStudent")
+	@ResponseBody
+	public ResultData modifyStudent(Student student) {
+		System.out.println(student);
+		if(StringUtils.isNotBlank(student.getStudentNumber())
+				&& StringUtils.isNotBlank(student.getStudentName())
+				&& StringUtils.isNotBlank(student.getStudentClass())
+				&& student.getId() != null
+				&& StringUtils.isNotBlank(student.getStudentEmail())
+				&& StringUtils.isNotBlank(student.getStudentGrade())
+				&& StringUtils.isNotBlank(student.getStudentPassword())
+				&& student.getStudentSchool() != null) {
+			try{
+				resultData = adminService.modifyStudent(student);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
+		} else {
+			resultData = new ResultData();
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);//必要请求参数为空
+		}
+		System.out.println(resultData);
+		return resultData;
+	}
 }

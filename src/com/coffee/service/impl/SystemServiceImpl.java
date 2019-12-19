@@ -200,13 +200,8 @@ public class SystemServiceImpl implements SystemService {
 	@Override
 	public ResultData searchCourse(Long studentId, Course course, String searchKey, PageParam pageParam) {
 		resultData = new ResultData<Data>();
-		if(course == null && searchKey == null) {
-			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
-			return resultData;
-		}
 		System.out.println("studentId:"+studentId+",course:"+course+"searchKey:"+searchKey);
 		List<CourseDetail> courses;
-
 		if(StringUtils.isNotBlank(searchKey)) { // search
 			if(pageParam != null && pageParam.isPaginate()){//是否分页
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
@@ -244,12 +239,7 @@ public class SystemServiceImpl implements SystemService {
 	@Override
 	public ResultData searchStudent(Long courseId, Student student,String searchKey,  PageParam pageParam) {
 		resultData = new ResultData<Data>();
-		if(student == null && searchKey == null) {
-			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL); //必要请求参数为空
-			return resultData;
-		}
 		List<Student> students;
-
 		if(StringUtils.isNotBlank(searchKey)) { // search
 			if(pageParam != null && pageParam.isPaginate()){//是否分页
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
