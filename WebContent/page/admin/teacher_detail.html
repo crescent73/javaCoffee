@@ -122,6 +122,7 @@
 
             <div class="card-footer">
                 <button type="button" class="btn btn-danger float-left" @click="on_delete_teacher()">删除教师</button>
+                <button type="submit" class="btn btn-primary float-right" @click="on_reset_teacher()">重置</button>
                 <button type="button" class="btn btn-primary float-right" @click="on_modify_teacher()">修改教师</button>
 
             </div>
@@ -253,10 +254,52 @@
             search_key: "",
         },
         methods: {
+            do_check: function () {
+                if(this.form.teacherName === undefined || this.form.teacherName.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '教师姓名不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.teacherNumber === undefined || this.form.teacherNumber.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '教师工号不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.teacherTitle === undefined || this.form.teacherTitle.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '教师职称不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.teacherSchool === undefined || this.form.teacherSchool === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '教师学院不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.teacherPassword === undefined || this.form.teacherPassword.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '初始登录密码不能为空'
+                    });
+                    return false;
+                }
+                return true;
+            },
             on_modify_teacher: function () {
                 let self = this;
                 self.form.teacherSchool = $("#teacher_school_select option:selected").val();
                 self.form.teacherTitle = $("#teacher_title_select option:selected").val();
+
+                if(!self.do_check()) {
+                    return false;
+                }
 
                 swal({
                     title: "你确定要修改吗？",
@@ -342,6 +385,10 @@
                         swal("操作已取消");
                     }
                 });
+            },
+            on_reset_teacher: function () {
+                let self = this;
+                self.form = JSON.parse(JSON.stringify(self.teacher))
             },
             on_previous_page: function () {
                 this.nav_to(this.current_page - 1);

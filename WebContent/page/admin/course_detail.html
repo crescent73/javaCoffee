@@ -168,6 +168,7 @@
 
             <div class="card-footer">
                 <button type="button" class="btn btn-danger float-left" @click="on_delete_course()">删除课程</button>
+                <button type="submit" class="btn btn-primary float-right" @click="on_reset_course()">重置</button>
                 <button type="submit" class="btn btn-primary float-right" @click="on_modify_course()">提交修改</button>
             </div>
         </div>
@@ -512,13 +513,60 @@
                 self.set_nav();
                 return data;
             },
+            do_check: function () {
+                if(this.form.courseName === undefined || this.form.courseName.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '课程名不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.courseNumber === undefined || this.form.courseNumber.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '课程号不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.courseCredit === undefined || this.form.courseCredit.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '课程学分不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.courseSemester === undefined || this.form.courseSemester.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '课程学期不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.courseSchool === undefined || this.form.courseSchool === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '开课学院不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.teacherId === undefined || this.form.teacherId === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '授课教师不能为空'
+                    });
+                    return false;
+                }
+                return true;
+            },
             on_modify_course: function () {
                 let self = this;
                 self.form.courseSemester = $("#course_semester_select option:selected").text();
                 self.form.courseSchool = parseInt($("#course_school_select option:selected").val());
                 self.form.courseType = parseInt($("#course_type_select option:selected").val());
                 self.form.teacherId = parseInt($("#course_teacher_select option:selected").val());
-
+                if(!self.do_check()) {
+                    return;
+                }
                 swal({
                     title: "你确定要修改吗？",
                     text: "这个操作是不可以撤销的！",
@@ -645,6 +693,7 @@
                                     swal("删除成功！", {
                                         icon: "success",
                                     });
+                                    self.check_state = false;
                                     self.payload = [];
                                     self.payloads.clear();
                                     self.get_payload(1);
@@ -759,6 +808,10 @@
                 self.payloads.clear();
                 self.get_payload(1);
                 return false;
+            },
+            on_reset_course: function () {
+                let self = this;
+                self.form = JSON.parse(JSON.stringify(self.course));
             }
         },
         mounted: function () {

@@ -217,6 +217,20 @@
                     });
                     return false;
                 }
+                if(this.form.studentSchool === undefined || this.form.studentClass === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '学生学院不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.studentPassword === undefined || this.form.studentPassword.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '初始登录密码不能为空'
+                    });
+                    return false;
+                }
                 return true;
             },
             do_post: function () {

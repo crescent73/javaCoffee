@@ -128,6 +128,7 @@
                 </div>
                 <div class="card-footer">
                     <button type="button" class="btn btn-danger float-left" @click="on_delete_student()">删除学生</button>
+                    <button type="submit" class="btn btn-primary float-right" @click="on_reset_student()">重置</button>
                     <button type="button" class="btn btn-primary float-right" @click="on_modify_student()">确认修改</button>
 
                 </div>
@@ -317,10 +318,55 @@
             search_key: "",
         },
         methods: {
+            do_check: function () {
+                if(this.form.studentName === undefined || this.form.studentName.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '学生姓名不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.studentNumber === undefined || this.form.studentNumber.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '学号不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.studentClass === undefined || this.form.studentClass.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '班级不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.studentSchool === undefined || this.form.studentClass === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '学生学院不能为空'
+                    });
+                    return false;
+                }
+                if(this.form.studentPassword === undefined || this.form.studentPassword.replace("\\s") === "") {
+                    Toast.fire({
+                        type: 'error',
+                        title: '初始登录密码不能为空'
+                    });
+                    return false;
+                }
+                return true;
+            },
+            on_reset_student: function () {
+                let self = this;
+                self.form = JSON.parse(JSON.stringify(self.student));
+            },
             on_modify_student: function () {
                 let self = this;
                 self.form.studentSchool = $("#student_school_select option:selected").val();
 
+                if(!self.do_check()) {
+                    return false;
+                }
                 swal({
                     title: "你确定要修改吗？",
                     text: "这个操作是不可以撤销的！",
