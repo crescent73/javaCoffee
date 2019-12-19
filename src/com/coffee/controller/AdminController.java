@@ -86,7 +86,8 @@ public class AdminController {
 			//调用修改课程service
 			if(!(StringUtils.isBlank(course.getCourseSemester()) && course.getTeacherId() == null
 					&& course.getCourseType() == null && course.getCourseCredit() == null
-					&& course.getCourseSchool() == null)) {
+					&& course.getCourseSchool() == null&&StringUtils.isBlank(course.getCourseTeacherDescription())
+					&&StringUtils.isBlank(course.getCourseDescription()) )) {
 				// 修改数据不都为空
 				System.out.println(course);
 				try{
