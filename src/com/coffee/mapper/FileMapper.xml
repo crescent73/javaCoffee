@@ -17,17 +17,16 @@
             <result property="fileId" column="file_id"/>
             <result property="attachmentName" column="attachment_name"/>
             <result property="attachmentPath" column="attachment_path"/>
-            <result property="uploadDate" column="upload_date"/>
-            <result property="updateDate" column="update_date"/>
+            <result property="uploadDate" column="date1"/>
+            <result property="updateDate" column="date2"/>
         </collection>
     </resultMap>
 
     <select id="find" parameterType="File" resultMap="fileDetail">
-        select file.*,attachment.*,attachment.id as aid,teacher.teacher_name
-        from attachment,file,teacher
+        select file.*,attachment.*,attachment.id as aid,teacher.teacher_name,attachment.upload_date as date1,attachment.update_date as date2
+        from file LEFT JOIN attachment ON file.id = attachment.file_id,teacher
         <where>
-        and attachment.file_id = file.id
-        and file.uploader_id = teacher.id
+            file.uploader_id = teacher.id
             <if test="id != null">
                 and file.id = #{id}
             </if>

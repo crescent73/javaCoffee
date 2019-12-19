@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,9 +17,11 @@ import com.coffee.kit.ResultCodeEnum;
 import com.coffee.kit.ResultData;
 import com.coffee.service.SystemService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/system")
@@ -69,6 +72,7 @@ public class SystemController {
 			}else if(session.getAttribute("login").equals(1)){
 				//退出登陆成功
 				session.removeAttribute("login");
+				session.removeAttribute("user");  //记录用户
 				resultData.setResult(ResultCodeEnum.LOGOUT_SUCCESS);
 			} else {
 				resultData.setResult(ResultCodeEnum.UNKOWN_ERROE);
@@ -180,7 +184,12 @@ public class SystemController {
 	
 	@RequestMapping("/downloadAttachment")
 	@ResponseBody
-	public ResponseEntity downloadAttachment(Long attachmentId) {
+	public ResponseEntity downloadAttachment(Long attachmentId, @RequestBody Map<String,Object> map) {
+		if(attachmentId == null){
+			attachmentId = Integer.toUnsignedLong((Integer) map.get("attachmentId"));
+		}
+		System.out.println("attachmentId1"+attachmentId);
+		System.out.println("attachmentId2"+map.get("attachmentId"));
 		if (attachmentId != null) {
 			Attachment attachment = new Attachment();
 			attachment.setId(attachmentId);

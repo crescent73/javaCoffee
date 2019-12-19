@@ -36,10 +36,8 @@
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-
     <!-- Main content -->
     <div class="content">
-
         <div class="card">
             <div class="card-body" >
                 <div v-show="!isNoticeEmpty">
@@ -58,9 +56,11 @@
                                 <i class="far fa-trash-alt"></i>
                             </button>
                         </h4>
-                        <div>发布时间: {{notice.updateDate | formatDate}}</div>
-                        <div>发布者: {{ notice.teacherName }}</div>
-                        <p>公告内容：<br>{{notice.noticeContent}}</p>
+                        <dl>
+                            <dd class="text-muted">{{notice.updateDate | formatDate}} -- {{ notice.teacherName }}老师</dd>
+                            <dt>公告内容</dt>
+                            <dd>{{notice.noticeContent}}</dd>
+                        </dl>
                     </div>
                 </div>
                 <div v-show="isNoticeEmpty">
@@ -82,11 +82,11 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>公告标题</label>
-                            <input type="text" class="form-control" placeholder="公告标题" v-model="noticeForm.noticeTitle">
+                            <input type="text" class="form-control" placeholder="公告标题" v-model="noticeForm.noticeTitle" required>
                         </div>
                         <div class="form-group">
                             <label>公告内容</label>
-                            <textarea class="form-control" rows="3" placeholder="公告内容" v-model="noticeForm.noticeContent"></textarea>
+                            <textarea class="form-control" rows="3" placeholder="公告内容" v-model="noticeForm.noticeContent" required></textarea>
                         </div>
                         <div class="form-group form-check">
                             <input type="checkbox" class="form-check-input" id="exampleCheck1"

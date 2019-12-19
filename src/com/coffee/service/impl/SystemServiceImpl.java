@@ -320,6 +320,9 @@ public class SystemServiceImpl implements SystemService {
 				PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize());
 			}
 			List<FileDetail> files = fileDao.find(file);
+			for(FileDetail index:files){
+				System.out.println(index);
+			}
 			if(files.size() > 0) {
 				Data<List<FileDetail>> data = new Data<List<FileDetail>>();
 				if(pageParam != null && pageParam.isPaginate()){

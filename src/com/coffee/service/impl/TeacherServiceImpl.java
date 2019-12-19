@@ -178,10 +178,12 @@ public class TeacherServiceImpl implements TeacherService {
 					return resultData;
 				}
 				//将附件添加到数据库中
-				myAttachment.setAttachmentName(originalFileName);  //name存储的是原文件名
-				myAttachment.setAttachmentPath(filePath +"\\"+newFileName); //path存储的是路径和新文件名
-				System.out.println("myAttachmentPath:"+myAttachment.getAttachmentPath());
-				int result = attachmentDao.insert(myAttachment);
+				Attachment newAttachment = new Attachment();
+				newAttachment.setFileId(myAttachment.getFileId());
+				newAttachment.setAttachmentName(originalFileName);  //name存储的是原文件名
+				newAttachment.setAttachmentPath(filePath +"\\"+newFileName); //path存储的是路径和新文件名
+				System.out.println("newAttachmentPath:"+newAttachment.getAttachmentPath());
+				int result = attachmentDao.insert(newAttachment);
 				if(result > 0){
 					resultData.setResult(ResultCodeEnum.ATTACHMENT_UPLOAD_SUCCESS);//上传附件为空
 				} else {
@@ -234,24 +236,39 @@ public class TeacherServiceImpl implements TeacherService {
 			if(attachments.size() == 1) {
 				attachment = attachments.get(0);
 				//删除文件
-				java.io.File attachmentFile = new java.io.File(attachment.getAttachmentPath());
-				System.out.println(attachmentFile);
-				if (attachmentFile.exists() && attachmentFile.isFile()) {
-					if (attachmentFile.delete()) {
-						//删除表中字段
+				try{
+					java.io.File attachmentFile = new java.io.File(attachment.getAttachmentPath());
+					System.out.println(attachmentFile);
+					if (attachmentFile.exists() && attachmentFile.isFile()) {
+						if (attachmentFile.delete()) {
+							//删除表中字段
+							int result = attachmentDao.delete(attachment);
+							if(result > 0) {
+								resultData.setResult(ResultCodeEnum.DB_DELETE_SUCCESS); //删除成功
+							} else {
+								resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE); //删除失败
+							}
+						} else {
+							resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE); //下载失败
+							return resultData;
+						}
+					} else {
+//						resultData.setResult(ResultCodeEnum.FILE_EMPTY); //附件不存在
 						int result = attachmentDao.delete(attachment);
 						if(result > 0) {
 							resultData.setResult(ResultCodeEnum.DB_DELETE_SUCCESS); //删除成功
 						} else {
 							resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE); //删除失败
 						}
-					} else {
-						resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE); //下载失败
-						return resultData;
 					}
-				} else {
-					resultData.setResult(ResultCodeEnum.FILE_EMPTY); //附件不存在
-					return resultData;
+				} catch (Exception e){//文件不存在
+					e.printStackTrace();
+					int result = attachmentDao.delete(attachment);
+					if(result > 0) {
+						resultData.setResult(ResultCodeEnum.DB_DELETE_SUCCESS); //删除成功
+					} else {
+						resultData.setResult(ResultCodeEnum.DB_DELETE_FAILURE); //删除失败
+					}
 				}
 			} else {
 				resultData.setResult(ResultCodeEnum.FILE_EMPTY); //附件不存在

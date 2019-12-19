@@ -38,14 +38,16 @@
 		<!-- Main content -->
 		<div class="content">
 			<div class="card">
-				<div class="card-body">
+				<form class="card-body">
 					<div class="form-group">
 						<label>公告标题</label>
-						<input type="text" class="form-control" placeholder="公告标题" v-model="noticeForm.noticeTitle">
+						<input required oninvalid="setCustomValidity('请输入公告标题')" oninput="setCustomValidity('');"
+							   type="text" class="form-control" placeholder="公告标题" v-model="noticeForm.noticeTitle" />
 					</div>
 					<div class="form-group">
 						<label>公告内容</label>
-						<textarea class="form-control" rows="3" placeholder="公告内容" v-model="noticeForm.noticeContent"></textarea>
+						<textarea required oninvalid="setCustomValidity('请输入公告内容')" oninput="setCustomValidity('');"
+								  class="form-control" rows="3" placeholder="公告内容" v-model="noticeForm.noticeContent"></textarea>
 					</div>
 					<div class="form-group form-check">
 						<input type="checkbox" class="form-check-input" id="exampleCheck1"
@@ -56,7 +58,7 @@
 					<div class="form-group">
 						<button @click="addNotice" class="btn btn-primary">提交</button>
 					</div>
-				</div><!-- /.card-body -->
+				</form><!-- /.card-body -->
 			</div><!-- /.card -->
 
 		</div><!-- /.container-fluid -->
@@ -74,6 +76,7 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<script src="requestParam.js"></script>
 <script type="text/javascript">
 	var app = new Vue({
 		el: '#content',
@@ -90,23 +93,25 @@
 		},
 		methods:{
 			addNotice(){
+				if(this.noticeForm.noticeTitle === "" || this.noticeForm.noticeContent=== "")
+					return ;
 				request({
-					type:"post",
-					url:"/blackboard/teacher/addNotice",
+					type:requestType.post,
+					url:requestUrl.addNotice,
 					data:this.noticeForm,
 				}).then(
 						function success(res){
 							console.log(res);
+							console.log(res.code === "202");
+							if(res.code === "202"){//添加成功
+								window.location.href = requestHref.courseNotice;
+							}
 						},
 						function error(res){
 							console.log(res)
 						}
 				);
 			}
-		},
-		created(){
-		},
-		mounted(){
 		}
 	})
 
