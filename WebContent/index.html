@@ -1,385 +1,183 @@
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <title>欢迎使用</title>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>登录</title>
+    <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta charset="utf-8" content="text/html">
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="cache-control" content="no-cache">
-    <meta http-equiv="expires" content="0">
-    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-    <meta http-equiv="description" content="This is my page">
-    <meta content="text/html; charset=utf-8">
-
-    <style type="text/css">
-        /* 大标题属性 */
-        .title_style{
-            color:#A4D3EE;
-            font-family:Wawati SC;
-            font-size:20px;
-            font-weight:bold;
-            position:fixed;
-            right:230px;
-            top:100px;
-        }
-
-        /* 上方色块属性 */
-        .top_block{
-            background-color:#F0F8FF;
-            height:60px;
-            position:fixed;
-            left:0px;right:0px;top:0px;
-            border-style:none none solid none;
-            border-width:1.5px;
-            border-color:#D1EEEE;
-        }
-
-        /* 单词Blackboard属性 */
-        .bb{
-            color:#A4D3EE;
-            font-family:Ink Free;
-            font-size:35px;
-            font-weight:bold;
-            position:fixed;
-            left:25px;top:-25px;
-        }
-
-        /* "查看帮助"属性 */
-        .help{
-            color:#A4D3EE;
-            font-family:SimSun;
-            font-size:20px;
-            font-weight:bold;
-            position:fixed;
-            right:25px;
-            top:-5px;
-        }
-
-        /* 登录板块属性 */
-        .activityBox{
-            border-style:solid solid solid solid;
-            border-color:#D1EEEE;
-            border-radius: 5px;
-            position:fixed;
-            right:200px;
-            top:150px;
-            height:280px;
-
-        }
-
-
-        .switch{
-            height:30px;
-            width:110px;
-            text-align:center;
-            padding-top:10px;
-            display:inline-block;
-            vertical-align:top;
-        }
-
-        .num{
-            padding-left:60px;
-            padding-top:2px;
-            height:25px;
-            width:250px;
-        }
-
-        /*修改输入框颜色背景色等*/
-        input[type=text] {
-            height: 25px;
-            border: 1px solid #D1EEEE;
-            color: #202124;
-            font-size: 14px;
-            line-height: 48px;
-            border-radius: 3px;
-        }
-        input[type=password] {
-            height: 25px;
-            border: 1px solid #D1EEEE;
-            color: #202124;
-            font-size: 14px;
-            line-height: 48px;
-            border-radius: 3px;
-        }
-
-        #text{
-            border: 1px solid #D1EEEE;
-            color: #202124;
-            border-radius: 3px;
-            width:115px;
-            line-height: 48px;
-        }
-
-        .submit {
-            background-color: #66CCFF;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            border-radius: 2px;
-        }
-
-        .clear {
-            background-color: #33FF66;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            border-radius: 2px;
-        }
-
-        a:link {text-decoration: none}
-
-        .forget{
-            font-size:13px;
-            positon:fixed;
-            padding-left:280px;
-            padding-top:28px;
-        }
-
-    </style>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="page/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="page/dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- 引用vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script type="text/javascript">
-        function setTab(name,cursel,n){   //方法 setTab()及其三个参数
-            for(var i=1;i<=n;i++){              //循环变量 n是总共的切换数量
-                var menu=document.getElementById(name+i); //menu取出各个标题li的id值
-                var con=document.getElementById("con_"+name+"_"+i); //con是指内容里的id
-                con.style.display=i==cursel?"block":"none"; //判断对应关系,
-            }}
 
-        function change(id){
-            var stu=document.getElementById("Student");
-            var tea=document.getElementById("Teacher");
-            var adm=document.getElementById("Admin");
-
-            this.style.color="grey";
-
-            if(id==1){
-                tea.style.color="black";
-                adm.style.color="black";
-            }
-
-            else if(id==2){
-                stu.style.color="black";
-                adm.style.color="black";
-            }
-
-            else{
-                stu.style.color="black";
-                adm.style.color="black";
-            }
-            /*switch id{
-            case 1:
-                tea.style.color="black";
-                adm.style.color="black";
-                break;
-            case 2:
-                stu.style.color="black";
-                adm.style.color="black";
-                break;
-            case 3:
-                stu.style.color="black";
-                adm.style.color="black";
-                break;
-            }*/
-        }
-
-    </script>
+    <!-- Select2 -->
+    <link rel="stylesheet" href="page/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="page/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 
 </head>
 
-<body style="background-image:url('pictures/tj.jpg');background-position:10% 50%;background-size:450px 280px;background-repeat:no-repeat;">
-<div id="content">
-    <!-- 上方色块 -->
-    <div class="top_block">
-        <p class="bb">Blackboard</p>
-        <p class="help"><a href="http://www.baiu.com">查看帮助</a></p>
+<body class="hold-transition login-page">
+<div class="login-box" id="login">
+    <div class="login-logo">
+        <a href="#"><b>智慧</b>板</a>
     </div>
-    <br></br>
-    <!-- 登录块 -->
-    <div>
-        <div class="title_style">欢迎使用Blackboard智慧教学系统</div>
-        <div class="activityBox">
-            <div class="activityTab">
-                <div id="Student" class="switch" onmousemove="setTab('bb',1,3),this.style.color='grey'" onmouseout="this.style.color='black'">学生</div>
-                <div id="Teacher"class="switch" onmousemove="setTab('bb',2,3),this.style.color='grey'" onmouseout="this.style.color='black'" >教师</div>
-                <div id="Admin"  class="switch" onmousemove="setTab('bb',3,3),this.style.color='grey'" onmouseout="this.style.color='black'" >管理员</div>
-            </div>
 
-            <div style="display: block;border-style:solid none none  none;border-color:#D1EEEE;" id="con_bb_1">
-                <p style="padding-left:60px;font-size:13px;color:grey;">学生登录</p>
-                <form>
-                    <div class="num">
-                        <label>
-                            账号:
-                            <input type="text" name="num" placeholder="输入账号" v-model="name"/>
-                        </label>
-                    </div>
-                    <br>
-                    <div class="num">
-                        <label>
-                            密码:
-                            <input type="password" name="pass" placeholder="输入密码" v-model="password"/>
-                        </label>
-                    </div>
-                    <br>
-                    <br>
-                    <div class="num">
-                        <input type="button" class="submit" value='提交' @click="do_login('3')"/>
-                        &nbsp;&nbsp;
-                        <button type="button" class="clear">重置</button>
-                    </div>
-                </form>
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">请先登录</p>
 
-            </div>
-            <div style="display: none;border-style:solid none none  none;border-color:#D1EEEE;" id="con_bb_2">
-                <p style="padding-left:60px;font-size:13px;color:grey;">教师登录</p>
-                <form>
-                    <div class="num">
-                        <label>
-                            账号:
-                            <input type="text" name="num" placeholder="输入账号" v-model="name"/>
-                        </label>
+            <form id="login_form" style="width: 100%">
+                <div class="input-group mb-3">
+                    <label for="account_type">账户类型</label>
+                    <select id="account_type" class="form-control select2" data-placeholder="选择账户类型" style="width: 100%">
+                        <option value="2">教师</option>
+                        <option value="3" selected>学生</option>
+                        <option value="1">管理员</option>
+                    </select>
+                </div>
+                <div class="input-group mb-3">
+                    <input id="account" type="text" name="username" class="form-control" placeholder="学号或者工号或用户名" v-model="name">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
                     </div>
-                    <br>
-                    <div class="num">
-                        <label>
-                            密码:
-                            <input type="password" name="pass" placeholder="输入密码" v-model="password"/>
-                        </label>
+                </div>
+                <div class="input-group mb-3">
+                    <input id="password" type="password" name="password" class="form-control" placeholder="密码" v-model="password">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
                     </div>
-                    <br>
-                    <br>
-                    <div class="num">
-                        <input type="button" class="submit" value='提交' @click="do_login('2')"/>
-                        &nbsp;&nbsp;
-                        <button type="button" class="clear">重置</button>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="icheck-primary">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">
+                                记住我
+                            </label>
+                        </div>
                     </div>
-                </form>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-primary btn-block" @click="do_login()">登录</button>
+                    </div>
+                </div>
+            </form>
 
-            </div>
-
-            <div style="display: none;border-style:solid none none  none;border-color:#D1EEEE;" id="con_bb_3">
-                <p style="padding-left:60px;font-size:13px;color:grey;">管理员登录</p>
-                <form>
-                    <div class="num">
-                        <label>
-                            账号:
-                            <input type="text" name="num" placeholder="输入账号" v-model="name"/>
-                        </label>
-                    </div>
-                    <br>
-                    <div class="num">
-                        <label>
-                            密码:
-                            <input type="password" name="pass" placeholder="输入密码" v-model="password"/>
-                        </label>
-                    </div>
-                    <br>
-                    <br>
-                    <div class="num">
-                        <input type="button" class="submit" value='提交' @click="do_login('1')"/>
-                        &nbsp;&nbsp;
-                        <button type="button" class="clear">重置</button>
-                    </div>
-                </form>
-
-            </div>
-            <br>
-            <br>
-
+            <p class="mb-1">
+                <a href="#">我忘记密码了</a>
+            </p>
         </div>
-
+        <!-- /.login-card-body -->
     </div>
-    <div style="font-size:15px;color:grey;position:fixed;top:520px;left:450px;">Copyright © 2019 计科1701 wyz. All rights reserved. </div>
 </div>
+<!-- /.login-box -->
 
-</body>
-
-<!-- 引用vue -->
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<!-- JQuery-->
+<!-- jQuery -->
 <script src="page/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="page/dist/js/adminlte.min.js"></script>
+<!-- Select2 -->
+<script src="page/plugins/select2/js/select2.full.min.js"></script>
 
-<script src="page/dist/js/request.js"></script>
-<script src="page/dist/js/jquerySession.js"></script>
-<script type="text/javascript">
-    vue = new Vue({
-        el: "#content",
+<!-- login handler -->
+<script>
+    $(document).ready(function() {
+        $("#account_type").select2({
+            theme: 'bootstrap4'
+        });
+    });
+
+    var vue = new Vue({
+        el: "#login",
         data: {
             name: "",
             password: "",
+            userType: "",
         },
         methods: {
-            do_login: function (type) {
-                let that = this;
+
+            do_check: function () {
+                if(this.name === null || this.name === undefined || this.name === "") {
+                    alert("用户名不能为空！");
+                    return false;
+                }
+                if(this.password === null || this.password === undefined || this.password === "") {
+                    alert("密码不能为空！");
+                    return false;
+                }
+                return true;
+            },
+            do_login: function () {
+                let self = this;
+                self.userType = $("#account_type option:selected").val();
+                if(!self.do_check()) {
+                    return;
+                }
                 $.ajax({
                     type:"post",
                     url:"/blackboard/system/login",
                     data:{
-                        name: that.name,
-                        password: that.password,
-                        userType: type
+                        name: self.name,
+                        password: self.password,
+                        userType: self.userType
                     },
                     success:function(res){
                         console.log(res);
                         if(res.code === "400"){
                             localStorage.setItem("token",res.data.token);
                             localStorage.setItem("userType",type);
-                            switch (type) {
+                            localStorage.setItem("userId", res.data.data.id);
+                            localStorage.setItem("user", JSON.stringify(res.data.data));
+
+                            switch (self.userType) {
                                 case "1":
                                     console.log("1");
-                                    window.location.href ="/blackboard/page/admin/admin.html";
+                                    localStorage.setItem("userName", res.data.data.adminName);
+                                    window.location.href ="page/admin/admin.html";
                                     break;
                                 case "2":
-                                case "3":
                                     console.log("2");
-                                    window.location.href = "/blackboard/page/course/course.html";
+                                    localStorage.setItem("userName", res.data.data.teacherName);
+                                    localStorage.setItem("userNumber", res.data.data.teacherNumber);
+                                    window.location.href = "page/course/course.html";
+                                    break;
+
+                                case "3":
+                                    console.log("3");
+                                    localStorage.setItem("userName", res.data.data.studentName);
+                                    localStorage.setItem("userNumber", res.data.data.studentNumber);
+                                    window.location.href = "page/course/course.html";
                                     break;
                             }
                         } else {
-                            window.location.href = "/blackboard/";
+                            window.location.href = "";
                             alert("登录失败！请检查输入。")
                         }
                     },
                     error:function(res){
                         console.log(res);
-                        window.location.href = "/blackboard/";
+                        window.location.href = "";
                         alert("出问题了！请刷新重试。")
                     }
                 });
-                return false;
             }
-        },
-
-        mounted: function (){
-            // var token = localStorage.getItem("token");
-            // var userType = localStorage.getItem("userType");
-            // if(token === null || token === undefined) {
-            //     return;
-            // }
-            // switch (userType) {
-            //     case "1":
-            //         console.log("1");
-            //         window.location.href ="/blackboard/page/admin/admin.html";
-            //         break;
-            //     case "2":
-            //     case "3":
-            //         console.log("2");
-            //         window.location.href = "/blackboard/page/course/course.html";
-            //         break;
-            // }
         }
     })
 
 </script>
+
+</body>
 
 </html>

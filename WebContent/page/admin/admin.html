@@ -50,7 +50,7 @@
                 </div>
             </li>
             <li class="nav-item nav-sidebar">
-                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" onclick="logout()">
+                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="" onclick="logout()">
                     <i class="nav-icon fas fa-sign-out-alt"></i>
                 </a>
             </li>
@@ -194,16 +194,16 @@
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src="/blackboard/page/plugins/jquery/jquery.min.js"></script>
+<script src="../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="/blackboard/page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="/blackboard/page/dist/js/adminlte.min.js"></script>
-
+<script src="../dist/js/adminlte.min.js"></script>
+<script src="../dist/js/request.js"></script>
+<script src="../dist/js/jquerySession.js"></script>
 </body>
 <script type="text/javascript">
     function logout() {
-        console.log($.session.get("token"));
         request({
             type:"post",
             url:"/blackboard/system/logout",
@@ -211,6 +211,7 @@
         }).then(
             function success(res){
                 $.session.clear();
+                localStorage.clear();
                 console.log(res);
                 console.log(res.code);
                 window.location.href="/blackboard/";
