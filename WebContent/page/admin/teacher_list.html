@@ -182,7 +182,7 @@
                         type:"post",
                         url: "/blackboard/admin/searchTeacher",
                         headers:{
-                            token:$.session.get("token")
+                            token: localStorage.getItem("token")
                         },
                         data: form,
                         success: function (res) {

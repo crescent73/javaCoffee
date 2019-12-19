@@ -19,6 +19,10 @@
     <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
+
 </head>
 
 <body  style="background-color: #f4f6f9">
@@ -189,8 +193,9 @@
 <!-- Select2 -->
 <script src="../plugins/select2/js/select2.full.min.js"></script>
 
-<script src="/blackboard/page/dist/js/request.js"></script>
-<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+<script src="../dist/js/request.js"></script>
+<script src="../dist/js/jquerySession.js"></script>
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -210,7 +215,7 @@
                 type: 'post',
                 url: '/blackboard/admin/searchTeacherByKey',
                 headers:{
-                    token: $.session.get("token")
+                    token: localStorage.getItem("token")
                 },
                 data: function (params) {
                     return {
@@ -259,7 +264,7 @@
                 type: 'post',
                 url: '/blackboard/system/searchStudentByKey',
                 headers:{
-                    token:$.session.get("token")
+                    token: localStorage.getItem("token")
                 },
                 data: function (params) {
                     return {
@@ -300,6 +305,14 @@
         });
     });
 
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        grow: 'row'
+    });
+
     var vue = new Vue({
         el: "#content",
         data: {
@@ -334,7 +347,7 @@
                     type:"post",
                     url:"/blackboard/admin/addCourse",
                     headers:{
-                        token:$.session.get("token")
+                        token: localStorage.getItem("token")
                     },
                     data: self.form,
                     success:function(res){
@@ -344,25 +357,40 @@
                     },
                     error:function(res){
                         console.log(res);
-                        alert("出问题了，请稍后重试或者退出重新登录。");
+                        Toast.fire({
+                            type: 'error',
+                            title: '出问题了，请稍后重试或者退出重新登录。'
+                        });
                     }
                 })
             },
             do_check: function () {
                 if(this.form.courseName === undefined || this.form.courseName.replace("\\s") === "") {
-                    alert("课程名不能为空");
+                    Toast.fire({
+                        type: 'error',
+                        title: '课程名不能为空'
+                    });
                     return false;
                 }
                 if(this.form.courseNumber === undefined || this.form.courseNumber.replace("\\s") === "") {
-                    alert("课程号不能为空");
+                    Toast.fire({
+                        type: 'error',
+                        title: '课程号不能为空'
+                    });
                     return false;
                 }
                 if(this.form.courseCredit === undefined || this.form.courseCredit.replace("\\s") === "") {
-                    alert("课程学分不能为空");
+                    Toast.fire({
+                        type: 'error',
+                        title: '课程学分不能为空'
+                    });
                     return false;
                 }
                 if(this.form.courseSemester === undefined || this.form.courseSemester.replace("\\s") === "") {
-                    alert("课程学期不能为空");
+                    Toast.fire({
+                        type: 'error',
+                        title: '课程学期不能为空'
+                    });
                     return false;
                 }
                 return true;
@@ -370,70 +398,106 @@
             do_clean: function (data) {
                 let self = this;
                 if(data.code === "202") {
-                    alert("课程添加成功！");
-                    if(self.studentList.length === 0) {
-                        window.location.href="/blackboard/page/admin/add_course.html";
-                    } else {
-                        $.ajax({
-                            type:"post",
-                            url:"/blackboard/system/searchCourse",
-                            headers:{
-                                token: $.session.get("token")
-                            },
-                            data: {courseNumber: self.form.courseNumber},
-                            success:function(res){
-                                console.log(res);
-                                console.log(res.code);
-                                if(res.code === "208") {
-                                    var courseId = res.data.data[0].id;
-                                    var form = new FormData();
-                                    form.append("courseId", courseId);
-                                    form.append("studentList", self.studentList);
-                                    $.ajax({
-                                        type:"post",
-                                        url:"/blackboard/admin/addCourseSchedule",
-                                        contentType: false,
-                                        processData: false,
-                                        headers:{
-                                            token: $.session.get("token")
-                                        },
-                                        data: form,
-                                        success:function(res){
+                    Toast.fire({
+                        type: 'success',
+                        title: '课程添加成功',
+                        onAfterClose: function () {
+                            if(self.studentList.length === 0) {
+                                window.location.href = "/blackboard/page/admin/add_course.html";
+                            } else {
+                                $.ajax({
+                                    type:"post",
+                                    url:"/blackboard/system/searchCourse",
+                                    headers:{
+                                        token: localStorage.getItem("token")
+                                    },
+                                    data: {courseNumber: self.form.courseNumber},
+                                    success:function(res){
+                                        console.log(res);
+                                        console.log(res.code);
+                                        var courseId = res.data.data[0].id;
+                                        if(res.code === "208") {
+                                            var form = new FormData();
+                                            form.append("courseId", courseId);
+                                            form.append("studentList", self.studentList);
+                                            $.ajax({
+                                                type:"post",
+                                                url:"/blackboard/admin/addCourseSchedule",
+                                                contentType: false,
+                                                processData: false,
+                                                headers:{
+                                                    token: localStorage.getItem("token")
+                                                },
+                                                data: form,
+                                                success:function(res){
+                                                    console.log(res);
+                                                    console.log(res.code);
+                                                    if(res.code === "202") {
+                                                        Toast.fire({
+                                                            type: 'success',
+                                                            title: '选课学生添加成功',
+                                                            onAfterClose: function () {
+                                                                window.location.href = "/blackboard/page/admin/add_course.html";
+                                                            }
+                                                        });
+                                                    } else {
+                                                        console.log(res);
+                                                        Toast.fire({
+                                                            type: 'error',
+                                                            title: '出问题了，无法添加选课学生',
+                                                            onAfterClose: function () {
+                                                                window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
+                                                            }
+                                                        });
+                                                    }
+                                                },
+                                                error:function(res){
+                                                    console.log(res);
+                                                    Toast.fire({
+                                                        type: 'error',
+                                                        title: '出问题了，无法添加选课学生',
+                                                        onAfterClose: function () {
+                                                            window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        } else {
                                             console.log(res);
-                                            console.log(res.code);
-                                            if(res.code === "202") {
-                                                alert("选课学生添加成功！");
-                                                window.location.href = "/blackboard/page/admin/add_course.html"
-                                            } else {
-                                                console.log(res);
-                                                alert("出问题了，无法添加选课学生。");
-                                                window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
-                                            }
-                                        },
-                                        error:function(res){
-                                            console.log(res);
-                                            alert("出问题了，无法添加选课学生。");
-                                            window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
+                                            Toast.fire({
+                                                type: 'error',
+                                                title: '出问题了，无法添加选课学生',
+                                                onAfterClose: function () {
+                                                    window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
+                                                }
+                                            });
                                         }
-                                    });
-                                } else {
-                                    console.log(res);
-                                    alert("出问题了，无法添加选课学生。");
-                                    window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
-
-                                }
-                            },
-                            error:function(res){
-                                console.log(res);
-                                alert("出问题了，无法添加选课学生。");
-                                window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + courseId;
+                                    },
+                                    error:function(res){
+                                        console.log(res);
+                                        Toast.fire({
+                                            type: 'error',
+                                            title: '出问题了，无法添加选课学生',
+                                            onAfterClose: function () {
+                                                window.location.href = "/blackboard/page/admin/add_course";
+                                            }
+                                        });
+                                    }
+                                });
                             }
-                        });
-                    }
+                        }
+                    });
+
                 } else if(data.code === "203") {
-                    alert("课程添加失败！\n" + data.msg);
+                    Toast.fire({
+                        type: 'error',
+                        title: '无法添加课程'
+                    });
                 } else if(data.code === "301") {
-                    alert("课程添加失败！信息不完整！\n" + data.msg);
+                    Toast.fire({
+                        type: 'error',
+                        title: '课程信息不完整'
+                    });
                 }
             }
         }

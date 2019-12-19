@@ -17,7 +17,9 @@
     <!-- Select2 -->
     <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
-
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
 </head>
 
 <body  style="background-color: #f4f6f9">
@@ -272,8 +274,10 @@
 <!-- 引用vue -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-<script src="/blackboard/page/dist/js/request.js"></script>
-<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+<script src="../dist/js/request.js"></script>
+<script src="../dist/js/jquerySession.js"></script>
+
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -292,7 +296,7 @@
                 delay: 500,
                 type: 'post',
                 headers:{
-                    token: $.session.get("token")
+                    token: localStorage.getItem("token")
                 },
                 url: '/blackboard/admin/searchTeacherByKey',
                 data: function (params) {
@@ -342,7 +346,7 @@
                 type: 'post',
                 url: '/blackboard/system/searchStudentByKey',
                 headers:{
-                    token:$.session.get("token")
+                    token: localStorage.getItem("token")
                 },
                 data: function (params) {
                     return {
@@ -382,6 +386,14 @@
             }
         });
 
+    });
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        grow: 'row'
     });
 
     var vue = new Vue({
@@ -426,10 +438,16 @@
             },
             nav_to: function (index) {
                 if(index > this.end_page) {
-                    alert("这是最后一页了！");
+                    Toast.fire({
+                        type: 'info',
+                        title: '这是最后一页了'
+                    });
                     return;
                 } else if(index < this.start_page) {
-                    alert("这是以经第一页了！");
+                    Toast.fire({
+                        type: 'info',
+                        title: '这是第一页了'
+                    });
                     return;
                 }
 
@@ -467,7 +485,7 @@
                         type:"post",
                         url: "/blackboard/system/searchStudent",
                         headers:{
-                            token:$.session.get("token")
+                            token: localStorage.getItem("token")
                         },
                         data: form,
                         success: function (res) {
@@ -513,12 +531,15 @@
                     type: "post",
                     url: "/blackboard/admin/modifyCourse",
                     headers:{
-                        token:$.session.get("token")
+                        token: localStorage.getItem("token")
                     },
                     data: data,
                     success: function (res) {
                         if(res.code === "202") {
-                            alert("修改成功！");
+                            Toast.fire({
+                                type: 'info',
+                                title: '修改成功'
+                            });
                             window.location.href = "/blackboard/page/admin/course_detail.html?course_id = " + self.course.id;
                         } else {
                             alert("修改失败！")
@@ -539,7 +560,7 @@
                     type:"post",
                     url: "/blackboard/admin/deleteCourse",
                     headers:{
-                        token:$.session.get("token")
+                        token: localStorage.getItem("token")
                     },
                     data: form,
                     success: function (res) {
@@ -571,7 +592,7 @@
                     type:"post",
                     url: "/blackboard/admin/deleteCourseSchedule",
                     headers:{
-                        token:$.session.get("token")
+                        token: localStorage.getItem("token")
                     },
                     contentType: false,
                     processData: false,
@@ -613,7 +634,7 @@
                     type:"post",
                     url: "/blackboard/admin/addCourseSchedule",
                     headers:{
-                        token:$.session.get("token")
+                        token: localStorage.getItem("token")
                     },
                     cache: false,
                     processData: false,
@@ -647,7 +668,7 @@
                     type:"post",
                     url: "/blackboard/system/searchCourse",
                     headers:{
-                        token:$.session.get("token")
+                        token: localStorage.getItem("token")
                     },
                     data: form,
                     success: function (res) {

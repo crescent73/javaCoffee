@@ -17,6 +17,9 @@
     <!-- select2 -->
     <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
 </head>
 
 <body  style="background-color: #f4f6f9">
@@ -243,7 +246,7 @@
                     type:"post",
                     url: "/blackboard/admin/deleteTeacher",
                     headers:{
-                        token:$.session.get("token")
+                        token: localStorage.getItem("token")
                     },
                     data: {teacherId: self.teacher.id},
                     success: function (res) {
@@ -322,7 +325,7 @@
                         type:"post",
                         url: "/blackboard/system/searchCourse",
                         headers:{
-                            token:$.session.get("token")
+                            token: localStorage.getItem("token")
                         },
                         data: form,
                         success: function (res) {
@@ -354,7 +357,7 @@
                     type:"post",
                     url: "/blackboard/admin/searchTeacher",
                     headers:{
-                        token:$.session.get("token")
+                        token: localStorage.getItem("token")
                     },
                     data: form,
                     success: function (res) {

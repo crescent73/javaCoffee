@@ -17,6 +17,10 @@
     <!-- Select2 -->
     <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
 </head>
 
 <body  style="background-color: #f4f6f9">
@@ -135,11 +139,13 @@
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
 
-<script src="/blackboard/page/dist/js/request.js"></script>
-<script src="/blackboard/page/dist/js/jquerySession.js"></script>
+<script src="../dist/js/request.js"></script>
+<script src="../dist/js/jquerySession.js"></script>
 
 <!-- Select2 -->
 <script src="../plugins/select2/js/select2.full.min.js"></script>
+
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
 
 <script>
 
@@ -147,6 +153,14 @@
         $("#teacher_school_select").select2({
             theme: 'bootstrap4'
         });
+    });
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        grow: 'row'
     });
 
     var vue = new Vue({
@@ -172,15 +186,24 @@
             },
             do_check: function () {
                 if(this.form.teacherName === undefined || this.form.teacherName.replace("\\s") === "") {
-                    alert("教师姓名不能为空！");
+                    Toast.fire({
+                        type: 'error',
+                        title: '教师姓名不能为空'
+                    });
                     return false;
                 }
                 if(this.form.teacherNumber === undefined || this.form.teacherNumber.replace("\\s") === "") {
-                    alert("教师工号不能为空！");
+                    Toast.fire({
+                        type: 'error',
+                        title: '教师工号不能为空'
+                    });
                     return false;
                 }
                 if(this.form.teacherTitle === undefined || this.form.teacherTitle.replace("\\s") === "") {
-                    alert("教师职称不能为空！");
+                    Toast.fire({
+                        type: 'error',
+                        title: '教师职称不能为空'
+                    });
                     return false;
                 }
                 return true;
@@ -191,7 +214,7 @@
                     type:"post",
                     url:"/blackboard/admin/addTeacher",
                     headers:{
-                        token:$.session.get("token")
+                        token: localStorage.getItem("token")
                     },
                     data: self.form,
                     success:function(res){
@@ -200,19 +223,33 @@
                         console.log(res.code);
                     },
                     error:function(res){
-                        alert("出问题了，请稍后重试或者退出重新登录。");
+                        Toast.fire({
+                            type: 'error',
+                            title: '出问题了，请稍后重试或者退出重新登录。'
+                        });
                         console.log(res)
                     }
                 })
             },
             do_clean: function (data) {
                 if(data.code === "202") {
-                    window.location.href="/blackboard/page/admin/add_teacher.html";
-                    alert("添加成功！");
+                    Toast.fire({
+                        type: 'success',
+                        title: '添加成功！',
+                        onAfterClose: function () {
+                            window.location.href="/blackboard/page/admin/add_teacher.html";
+                        }
+                    });
                 } else if(data.code === "203") {
-                    alert("添加失败！\n" + data.msg);
+                    Toast.fire({
+                        type: 'error',
+                        title: '添加失败！',
+                    });
                 } else if(data.code === "301") {
-                    alert("添加失败！信息不完整！\n" + data.msg);
+                    Toast.fire({
+                        type: 'error',
+                        title: '添加失败！信息不完整！',
+                    });
                 }
             }
         }

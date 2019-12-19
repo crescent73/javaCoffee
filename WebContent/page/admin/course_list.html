@@ -189,7 +189,7 @@
                         type:"post",
                         url: "/blackboard/system/searchCourse",
                         headers:{
-                            token:$.session.get("token")
+                            token: localStorage.getItem("token")
                         },
                         data: form,
                         success: function (res) {
