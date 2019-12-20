@@ -15,6 +15,8 @@
     <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_1546252_v6mv4erx9zg.css">
     <!-- 引用vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
 </head>
 <body class="hold-transition layout-top-nav" >
 <div class="wrapper" id="mainpage">
@@ -124,12 +126,19 @@
                     </div>
                     <div class="card-footer">
                         <nav aria-label="Contacts Page Navigation">
+<!--                            <ul class="pagination justify-content-center m-0">-->
+<!--                                <li class="page-item"><a class="page-link" href="#">«</a></li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">»</a></li>-->
+<!--                            </ul>-->
                             <ul class="pagination justify-content-center m-0">
-                                <li class="page-item"><a class="page-link" href="#">«</a></li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">»</a></li>
+                                <li class="page-item"><a class="page-link" @click="on_previous_page()">«</a></li>
+                                <template v-for="page_nav in page_navs">
+                                    <li class="page-item" :class="{active: current_page === page_nav}"><a class="page-link" @click="on_nav_page(page_nav)">{{page_nav}}</a></li>
+                                </template>
+                                <li class="page-item"><a class="page-link" @click="on_next_page()">»</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -172,35 +181,61 @@
                 courses:[],
                 courseForm:{
                     "studentId":null,
-                    "teacherId":null
+                    "teacherId":null,
+                    pageNum: 1,
+                    pageSize: 6,
                 },
                 logoutData:{
                     id:null,
                     userType:null
-                }
+                },
+                payloads: new Map(),
+                // payload: [],
+                start_page: 1,
+                end_page: 1,
+                current_page: 1,
+                page_size: 6,
+                page_count: 0,
+                page_navs: [],
             }
         },
         methods: {
-            getCourseList() {
+            getCourseList(index) {
                 let that = this;
-                request({
-                    type:requestType.post,
-                    url:requestUrl.searchCourse,
-                    data:that.courseForm,
-                }).then(
-                    function success(res){
-                        if(res.code === "208") {//查询成功
-                            that.isShowCourseList = true;
-                            that.courses = res.data.data;
-                        }else {//查询失败
-                            that.isShowCourseList = false;
-                            that.courses = [];
+                this.courseForm.pageNum=index;
+                this.courseForm.pageSize = this.page_size;
+                let self = this;
+                var data = self.payloads.get(index);
+                if(data === undefined) {
+                    request({
+                        type:requestType.post,
+                        url:requestUrl.searchCourse,
+                        data:that.courseForm,
+                    }).then(
+                        function success(res){
+                            if(res.code === "208") {//查询成功
+                                that.isShowCourseList = true;
+                                self.current_page = res.data.pageNum;
+                                self.page_size = res.data.pageSize;
+                                self.page_count = res.data.pages;
+                                self.start_page = 1;
+                                self.end_page = self.page_count;
+                                self.payloads[res.data.pageNum] = res.data.data;
+                                that.courses = res.data.data;
+                                // self.payload = res.data.data;
+                                self.set_nav();
+                            }else {//查询失败
+                                that.isShowCourseList = false;
+                                that.courses = [];
+                            }
+                        },
+                        function error(res){
+                            console.log(res)
                         }
-                    },
-                    function error(res){
-                        console.log(res)
-                    }
-                );
+                    );
+                }
+                self.set_nav();
+                return data;
             },
             click(course) {
                 localStorage.setItem("courseId",course.id);
@@ -244,7 +279,93 @@
                     default:
                         window.location.href = requestHref.login;//跳转到登陆页面
                 }
-            }
+            },
+            on_previous_page: function () {
+                this.nav_to(this.current_page - 1);
+            },
+            on_next_page: function () {
+                this.nav_to(this.current_page + 1)
+            },
+            on_nav_page: function (index) {
+                this.nav_to(index);
+            },
+            is_end_page: function (index) {
+                return this.current_page === this.end_page;
+            },
+            is_start_page: function (index) {
+                return this.current_page === this.start_page;
+            },
+            nav_to: function (index) {
+                if(index > this.end_page) {
+                    Toast.fire({
+                        type: 'info',
+                        title: '这是最后页了'
+                    });
+                    return;
+                } else if(index < this.start_page) {
+                    Toast.fire({
+                        type: 'info',
+                        title: '这是第一页了'
+                    });
+                    return;
+                }
+
+                this.courses = this.getCourseList(index);
+                this.current_page = index;
+            },
+            set_nav: function () {
+                var start = this.current_page - 2;
+                var end = this.current_page + 2;
+                if(start < this.start_page) {
+                    start = this.start_page;
+                }
+                if(end > this.end_page) {
+                    end = this.end_page;
+                }
+
+                this.page_navs = [];
+                for(var i = start; i < end + 1; i++) {
+                    this.page_navs.push(i);
+                }
+            },
+            // get_payload: function (index) {
+            //     let self = this;
+            //     var data = self.payloads.get(index);
+            //
+            //     if(data === undefined) {
+            //         var form = {
+            //             pageNum: index,
+            //             pageSize: self.page_size,
+            //             searchKey: self.search_key,
+            //         };
+            //
+            //         $.ajax({
+            //             type:"post",
+            //             url: "/blackboard/system/searchCourse",
+            //             headers:{
+            //                 token: localStorage.getItem("token")
+            //             },
+            //             data: form,
+            //             success: function (res) {
+            //                 if(res.code === "208") {
+            //                     self.current_page = res.data.pageNum;
+            //                     self.page_size = res.data.pageSize;
+            //                     self.page_count = res.data.pages;
+            //                     self.start_page = 1;
+            //                     self.end_page = self.page_count;
+            //                     self.payloads[res.data.pageNum] = res.data.data;
+            //                     self.payload = res.data.data;
+            //                     self.set_nav();
+            //                 }
+            //             },
+            //             error: function (res) {
+            //                 console.log(res)
+            //             }
+            //         })
+            //     }
+            //     self.set_nav();
+            //     return data;
+            // }
         },
         filters: {
             schoolFormat(value){
@@ -271,7 +392,7 @@
         },
         mounted() {
             this.init(localStorage.getItem("userType"));
-            this.getCourseList();
+            this.getCourseList(1);
         }
     });
 </script>
