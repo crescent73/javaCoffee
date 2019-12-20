@@ -35,8 +35,8 @@
       <ul class="navbar-nav ml-auto">
         <li class="nav-item  nav-sidebar">
           <a class="nav-link" data-toggle="dropdown" href="#">
-            <span class="iconfont iconyonghu" ></span>
-            <p>用户名</p>
+              <i class="nav-icon fas fa-user"></i>
+            <p>{{userName}}</p>
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <a href="#" class="dropdown-item">
@@ -51,7 +51,7 @@
           </li>
           <li class="nav-item nav-sidebar">
             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
-              <span class="iconfont iconicon-out" @click="logout"></span>
+                <i class="nav-icon fas fa-sign-out-alt" @click="logout"></i>
             </a>
           </li>
         </ul>
@@ -183,32 +183,56 @@
     data() {
       return{
         logoutData:{
-          id:2,
-          userType:localStorage.getItem("userType")
-        }
+          id:null,
+          userType:null
+        },
+        isTeacher:false,
+        userName:null
       }
     },
     methods:{
-      logout(){
-          console.log(localStorage.getItem("token"));
-          request({
-              type:requestType.post,
-              url:requestUrl.logout,
-              data:this.logoutData,
-          }).then(
-              function success(res){
-                  localStorage.clear();
-                  console.log(res);
-                  console.log(res.code);
-                  window.location.href="/blackboard/";
-              },
-              function error(res){
-                  console.log(res)
-              }
-          );
-      }
+        init(type){
+            console.log(type,localStorage.getItem("userId"));
+            switch(type){
+                case 2://教师
+                    this.logoutData.id = localStorage.getItem("userId");
+                    this.logoutData.userType = localStorage.getItem("userType");
+                    this.isTeacher = true;
+                    break;
+                case 3://学生
+                    this.logoutData.id = localStorage.getItem("userId");
+                    this.logoutData.userType = localStorage.getItem("userType");
+                    this.isTeacher = false;
+                    break;
+                case 1:
+                    window.location.href = requestHref.login;//跳转到登陆页面
+                    break;
+                default:
+                    window.location.href = requestHref.login;//跳转到登陆页面
+            }
+        },
+        logout(){
+            console.log(localStorage.getItem("token"));
+            request({
+                type:requestType.post,
+                url:requestUrl.logout,
+                data:this.logoutData,
+            }).then(
+                function success(res){
+                    localStorage.clear();
+                    console.log(res);
+                    console.log(res.code);
+                    window.location.href="/blackboard/";
+                },
+                function error(res){
+                    console.log(res)
+                }
+            );
+        },
     },
     created(){
+        console.log(getUrlParam("courseId"));
+        this.init(localStorage.getItem("userType"));
       },
       mounted(){
       }
