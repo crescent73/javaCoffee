@@ -37,6 +37,11 @@
     <!-- 模态框插件 -->
     <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
 
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
+
+
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper" id="mainpage">
@@ -129,17 +134,15 @@
                     <div>
                         <form id="testForm">
                             &nbsp;&nbsp;请输入原密码：<input type="password" name="old" id="oldPass" placeholder="原密码"
-                                                      required/>
+                                                      required v-model="original_password"/>
                             <input type="hidden" name="userType" id='1' value="请输入原密码"/>
                             <br><br>
                             &nbsp;&nbsp;请输入新密码：<input type="password" name="new" id="newPass" placeholder="新密码"
-                                                      required/>
+                                                      required v-model="new_password"/>
                             <input type="hidden" name="userType" id='2' value="请输入原密码"/>
                             <br><br>
                             &nbsp;&nbsp;请确认新密码：<input type="password" name="new1" id="newPass1" placeholder="确认密码"
-                                                      required/>
-                            <input type="hidden" name="userType" id='3' value="请确认原密码"/>
-                            <input type="hidden" name="userType" id='4' value="前后密码不一致！"/>
+                                                      required v-model="retype_password"/>
                             <br><br>
                         </form>
                     </div>
@@ -148,7 +151,7 @@
                 <!-- 模态框底部 -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="check()">提交</button>
+                    <button type="button" class="btn btn-primary" @click="reset_password()">提交</button>
                 </div>
 
             </div>
@@ -223,11 +226,37 @@
 <script src="/blackboard/page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="/blackboard/page/dist/js/adminlte.min.js"></script>
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 <script type="text/javascript">
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        grow: 'row'
+    });
+
     var app = new Vue({
-        el: '#content',
+        el: '#mainpage',
         data() {
             return {
+                user: {
+                    userName: "",
+                    userEmail: "",
+                    userNumber: "",
+                    userSchool: "",
+                    userClass: "",
+                    userGrade: "",
+                    userTitle: "",
+                    userType: "",
+                    userId: ""
+                },
+                original_password: "",
+                new_password: "",
+                retype_password: "",
+
                 notices: [
                     {
                         id: 1,
@@ -269,6 +298,76 @@
             }
         },
         methods: {
+            reset_password: function () {
+                let self = this;
+
+                if(self.original_password === "" || self.original_password === undefined || self.original_password === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '请输入原始密码'
+                    });
+                    return;
+                }
+                if(self.new_password === "" || self.new_password === undefined || self.new_password === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '请输入新密码'
+                    });
+                    return;
+                }
+                if(self.retype_password === "" || self.retype_password === undefined || self.retype_password === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '请确认新密码'
+                    });
+                    return;
+                }
+                if(self.retype_password !== self.new_password) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '两次输入的密码不匹配！'
+                    });
+                    return;
+                }
+                if(self.new_password === self.original_password) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '新密码与原始密码相同！'
+                    });
+                    return;
+                }
+
+                request({
+                    type:"post",
+                    url:"/blackboard/system/modifyInfo",
+                    data: {
+                        id: localStorage.getItem("userId"),
+                        userType: localStorage.getItem("userType"),
+                        password: self.new_password
+                    },
+                }).then(
+                    function success(res){
+                        console.log(res);
+                        if(res.code === "206") {
+                            Toast.fire({
+                                timer: 5000,
+                                type: 'success',
+                                title: '修改密码成功！',
+                                onAfterClose: function () {
+                                    window.location.href = "/blackboard/"
+                                }
+                            });
+                        }
+                    },
+                    function error(res){
+                        console.log(res);
+                        Toast.fire({
+                            type: 'error',
+                            title: '出问题了，修改失败！'
+                        });
+                    }
+                );
+            },
             init() {
                 let that = this;
                 $.ajax({
@@ -313,49 +412,21 @@
             }
         },
         created() {
+
         },
         mounted() {
-            // console.log("this is mounted");
-            // this.init();
+            this.userName = localStorage.getItem("userName");
+            this.userEmail = localStorage.getItem("userEmail");
+            this.userNumber = localStorage.getItem("userNumber");
+            this.userSchool = localStorage.getItem("userSchool");
+            this.userClass = localStorage.getItem("userClass");
+            this.userGrade = localStorage.getItem("userTitle");
+            this.userType = localStorage.getItem("userType");
+            this.userId = localStorage.getItem("userId");
         }
 
     });
 
-    // var x = document.getElementById("oldPass");
-    // var y = document.getElementById("newPass");
-    // var z = document.getElementById("newPass1");
-    // var x1 = document.getElementById("1");
-    // var y1 = document.getElementById("2");
-    // var z1 = document.getElementById("3");
-    // var z2 = document.getElementById("4");
-    // function check(){
-    // 		if(x.value==""){
-    // 			alert("请输入原密码！");
-    // 			x.value=y.value=z.value="";
-    // 		}
-    //
-    // 		else if(y.value==""){
-    // 			alert("请输入新密码！");
-    // 			x.value=y.value=z.value="";
-    // 		}
-    // 		else if(z.value==""){
-    // 			alert("请确认密码！");
-    // 			x.value=y.value=z.value="";
-    // 		}
-    // 		else if(y.value!=z.value){
-    // 			alert("前后密码输入不一致！");
-    // 			x.value=y.value=z.value="";
-    // 		}
-    //
-    // 	}
-    // function checkInput(input){
-    // 	if (input.value=="") {
-    //         input.setCustomValidity("请输入原密码！");
-    //     } else {
-    //         input.setCustomValidity("");
-    //     }
-    //
-    // }
 </script>
 </body>
 </html>

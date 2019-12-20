@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
+
 
 @Service
 @Transactional
@@ -153,7 +155,7 @@ public class SystemServiceImpl implements SystemService {
 	}
 
 	@Override
-	public ResultData modifyInfo(Long id, String password, String userType) {
+	public ResultData modifyInfo(Long id, String password, String userType, HttpSession httpSession) {
 		resultData = new ResultData<Data>();
 		if(id!=null &&StringUtils.isNotBlank(password)&&StringUtils.isNotBlank(userType)) {
 			int result;
@@ -187,6 +189,8 @@ public class SystemServiceImpl implements SystemService {
 			}
 			if(result > 0) {
 				resultData.setResult(ResultCodeEnum.DB_UPDATE_SUCCESS); //更新成功
+				httpSession.removeAttribute("login");
+				httpSession.removeAttribute("user");
 			} else {
 				resultData.setResult(ResultCodeEnum.DB_UPDATE_ERROR); // 更新失败
 			}

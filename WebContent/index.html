@@ -123,17 +123,30 @@
                             localStorage.setItem("userType",self.userType);
                             localStorage.setItem("userId", res.data.data.id);
                             localStorage.setItem("user", JSON.stringify(res.data.data));
-
                             switch (self.userType) {
                                 case "1":
                                     console.log("1");
                                     localStorage.setItem("userName", res.data.data.adminName);
+                                    localStorage.setItem("userEmail", res.data.data.adminEmail);
+                                    localStorage.setItem("userNumber", "");
+                                    localStorage.setItem("userSchool", "");
+                                    localStorage.setItem("userTitle", "");
+                                    localStorage.setItem("userClass", "");
+                                    localStorage.setItem("userGrade", "");
+
                                     window.location.href ="page/admin/admin.html";
                                     break;
                                 case "2":
                                     console.log("2");
                                     localStorage.setItem("userName", res.data.data.teacherName);
                                     localStorage.setItem("userNumber", res.data.data.teacherNumber);
+                                    localStorage.setItem("userEmail", res.data.data.teacherEmail);
+                                    localStorage.setItem("userNumber", res.data.data.teacherNumber);
+                                    localStorage.setItem("userSchool", res.data.data.teacherSchool);
+                                    localStorage.setItem("userTitle", res.data.data.teacherTitle);
+                                    localStorage.setItem("userClass", "");
+                                    localStorage.setItem("userGrade", "");
+
                                     window.location.href = "page/course/course.html";
                                     break;
 
@@ -141,6 +154,13 @@
                                     console.log("3");
                                     localStorage.setItem("userName", res.data.data.studentName);
                                     localStorage.setItem("userNumber", res.data.data.studentNumber);
+                                    localStorage.setItem("userEmail", res.data.data.studentEmail);
+                                    localStorage.setItem("userNumber", res.data.data.studentNumber);
+                                    localStorage.setItem("userSchool", res.data.data.studentSchool);
+                                    localStorage.setItem("userTitle", "");
+                                    localStorage.setItem("userClass", res.data.data.studentClass);
+                                    localStorage.setItem("userGrade", res.data.data.studentGrade);
+
                                     window.location.href = "page/course/course.html";
                                     break;
                             }

@@ -16,6 +16,10 @@
     <!-- 引用vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
+
 </head>
 <body class="hold-transition sidebar-mini" >
 <div class="wrapper" id="mainpage">
@@ -35,18 +39,18 @@
                 <a class="nav-link" data-toggle="dropdown" href="#">
                     <i class="nav-icon fas fa-user"></i>
                     <p>
-                        用户名
+                        {{userName}}
                     </p>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                    <a href="#" class="dropdown-item">
+                    <button class="dropdown-item" data-toggle="modal" data-target=".myModal">
                         <span class="iconfont iconchakanxinxi  mr-2" ></span>查看信息
-                    </a>
+                    </button>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
+                    <button class="dropdown-item" data-toggle="modal" data-target=".myModal1">
                         <span class="iconfont iconxiugaixinxi  mr-2" ></span>
                         修改信息
-                    </a>
+                    </button>
                 </div>
             </li>
             <li class="nav-item nav-sidebar">
@@ -57,17 +61,70 @@
         </ul>
 
     </nav>
-    <!-- /.navbar -->
 
-    <!-- Main Sidebar Container -->
+    <div class="modal fade myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">详细信息</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    用户名: {{userName}}
+                    <br>
+                    邮箱: {{userEmail}}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade myModal1" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">修改密码</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div>
+                        <form id="testForm">
+                            &nbsp;&nbsp;请输入原密码：<input type="password" name="old" id="oldPass" placeholder="原密码"
+                                                      required v-model="original_password"/>
+                            <input type="hidden" name="userType" id='1' value="请输入原密码"/>
+                            <br><br>
+                            &nbsp;&nbsp;请输入新密码：<input type="password" name="new" id="newPass" placeholder="新密码"
+                                                      required v-model="password"/>
+                            <input type="hidden" name="userType" id='2' value="请输入原密码"/>
+                            <br><br>
+                            &nbsp;&nbsp;请确认新密码：<input type="password" name="new1" id="newPass1" placeholder="确认密码"
+                                                      required v-model="retype_password"/>
+                            <br><br>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" @click="reset_password()">提交</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <aside class="main-sidebar sidebar-light-danger elevation-0 sidebar-collapse">
-        <!-- Brand Logo -->
         <a href="#" class="brand-link">
             <span class="iconfont iconxiaoheiban" style="font-size: 30px;margin-left: 10px;"></span>
             <span class="brand-text" style="font-family:Ink Free;font-size: 30px;margin-left: 10px;">blackboard</span>
         </a>
 
-        <!-- Sidebar -->
         <div class="sidebar">
             <!-- Sidebar Menu -->
             <nav class="mt-2">
@@ -201,8 +258,19 @@
 <script src="../dist/js/adminlte.min.js"></script>
 <script src="../dist/js/request.js"></script>
 <script src="../dist/js/jquerySession.js"></script>
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 </body>
 <script type="text/javascript">
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        grow: 'row'
+    });
 
     function logout() {
         request({
@@ -225,5 +293,92 @@
             }
         );
     }
+
+    var vue = new Vue({
+        el: "#mainpage",
+        data: {
+            userName: "",
+            userEmail: "",
+            original_password: "",
+            retype_password: "",
+            password: ""
+        },
+        methods: {
+            reset_password: function () {
+                let self = this;
+
+                if(self.original_password === "" || self.original_password === undefined || self.original_password === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '请输入原始密码'
+                    });
+                    return;
+                }
+                if(self.password === "" || self.password === undefined || self.password === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '请输入新密码'
+                    });
+                    return;
+                }
+                if(self.retype_password === "" || self.retype_password === undefined || self.retype_password === null) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '请确认新密码'
+                    });
+                    return;
+                }
+                if(self.retype_password !== self.password) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '两次输入的密码不匹配！'
+                    });
+                    return;
+                }
+                if(self.password === self.original_password) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '新密码与原始密码相同！'
+                    });
+                    return;
+                }
+
+                request({
+                    type:"post",
+                    url:"/blackboard/system/modifyInfo",
+                    data: {
+                        id: localStorage.getItem("userId"),
+                        userType: localStorage.getItem("userType"),
+                        password: self.password
+                    },
+                }).then(
+                    function success(res){
+                        console.log(res);
+                        if(res.code === "206") {
+                            Toast.fire({
+                                timer: 5000,
+                                type: 'success',
+                                title: '修改密码成功！',
+                                onAfterClose: function () {
+                                    window.location.href = "/blackboard/"
+                                }
+                            });
+                        }
+                    },
+                    function error(res){
+                        console.log(res);
+                        Toast.fire({
+                            type: 'error',
+                            title: '出问题了，修改失败！'
+                        });
+                    }
+                );
+            }
+        },
+        mounted: function () {
+            this.userName = localStorage.getItem("userName");
+            this.userEmail = localStorage.getItem("userEmail")
+        }
+    });
 </script>
 </html>

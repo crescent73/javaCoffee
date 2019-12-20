@@ -88,10 +88,10 @@ public class SystemController {
 	
 	@RequestMapping("/modifyInfo")
 	@ResponseBody
-	public ResultData modifyInfo(Long id, String password, String userType) {
+	public ResultData modifyInfo(Long id, String password, String userType, HttpSession session) {
 		if(id != null && StringUtils.isNotBlank(password) && StringUtils.isNotBlank(userType)) {
 			try{
-				resultData = systemService.modifyInfo(id, password, userType);
+				resultData = systemService.modifyInfo(id, password, userType, session);
 			}catch(Exception e){
 				e.printStackTrace();
 				resultData = new ResultData();

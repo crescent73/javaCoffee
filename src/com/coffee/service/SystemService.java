@@ -5,6 +5,8 @@ import com.coffee.po.PageParam;
 import com.coffee.kit.ResultData;
 import com.coffee.po.*;
 
+import javax.servlet.http.HttpSession;
+
 public interface SystemService {
 	
 	/**
@@ -30,7 +32,7 @@ public interface SystemService {
 	 * @param userType 用户类型：1：管理员；2：教师；3：学生 
 	 * @return
 	 */
-	public ResultData modifyInfo(Long id, String password, String userType);
+	public ResultData modifyInfo(Long id, String password, String userType, HttpSession httpSession);
 	
 	/**
 	 * 查询课程列表
