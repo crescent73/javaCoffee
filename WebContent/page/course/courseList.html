@@ -160,6 +160,7 @@
 <script src="/blackboard/page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script><!-- Bootstrap 4 -->
 <script src="/blackboard/page/dist/js/adminlte.min.js"></script><!-- AdminLTE App -->
 <script src="/blackboard/page/dist/js/request.js"></script>
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
 <script src="requestParam.js"></script>
 <script>
     var app = new Vue({
@@ -168,47 +169,7 @@
             return {
                 isTeacher:false,
                 isShowCourseList:false,
-                courses:[
-                    // {
-                    //     "id": 1,
-                    //     "courseName": "english",
-                    //     "courseNumber": "C1234",
-                    //     "courseSchool": 1,
-                    //     "courseSemester": "2018-2019-2",
-                    //     "courseType": 0,
-                    //     "courseCredit": 5,
-                    //     "teacherId": 1,
-                    //     "teacherName":"name",
-                    //     "courseDescription":"这是一门很有意思的学科",
-                    //     "courseTeacherDescription":"这是一个很有意思的老师",
-                    // },
-                    // {
-                    //     "id": 3,
-                    //     "courseName": "english",
-                    //     "courseNumber": "C1234",
-                    //     "courseSchool": 1,
-                    //     "courseSemester": "2018-2019-2",
-                    //     "courseType": 0,
-                    //     "courseCredit": 5,
-                    //     "teacherId": 1,
-                    //     "teacherName":"name",
-                    //     "courseDescription":"这是一门很有意思的学科",
-                    //     "courseTeacherDescription":"这是一个很有意思的老师",
-                    // },
-                    // {
-                    //     "id": 2,
-                    //     "courseName": "english",
-                    //     "courseNumber": "C1234",
-                    //     "courseSchool": 1,
-                    //     "courseSemester": "2018-2019-2",
-                    //     "courseType": 0,
-                    //     "courseCredit": 5,
-                    //     "teacherId": 1,
-                    //     "teacherName":"name",
-                    //     "courseDescription":"这是一门很有意思的学科",
-                    //     "courseTeacherDescription":"这是一个很有意思的老师",
-                    // }
-                ],
+                courses:[],
                 courseForm:{
                     "studentId":null,
                     "teacherId":null
@@ -228,7 +189,6 @@
                     data:that.courseForm,
                 }).then(
                     function success(res){
-                        console.log(res);
                         if(res.code === "208") {//查询成功
                             that.isShowCourseList = true;
                             that.courses = res.data.data;
@@ -243,8 +203,9 @@
                 );
             },
             click(course) {
-                console.log(course.id);
-                window.location.href = requestHref.course + "? courseId=" + course.id;
+                localStorage.setItem("courseId",course.id);
+                localStorage.setItem("courseName",course.courseName);
+                window.location.href = requestHref.course;
             },
             logout(){
                 request({
@@ -264,30 +225,25 @@
                 );
             },
             init(type){
-                console.log(type,localStorage.getItem("userId"));
                 switch(type){
-                    case 2://教师
+                    case "2"://教师
                         this.courseForm.teacherId = localStorage.getItem("userId");
                         this.logoutData.id = localStorage.getItem("userId");
                         this.logoutData.userType = localStorage.getItem("userType");
                         this.isTeacher = true;
                         break;
-                    case 3://学生
+                    case "3"://学生
                         this.courseForm.studentId = localStorage.getItem("userId");
                         this.logoutData.id = localStorage.getItem("userId");
                         this.logoutData.userType = localStorage.getItem("userType");
                         this.isTeacher = false;
                         break;
-                    case 1:
+                    case "1":
                         window.location.href = requestHref.login;//跳转到登陆页面
                         break;
                     default:
                         window.location.href = requestHref.login;//跳转到登陆页面
                 }
-            },
-            clearFormData() {
-                // this.courseForm.studentId = null;
-                // this.courseForm.teacherId = null;
             }
         },
         filters: {

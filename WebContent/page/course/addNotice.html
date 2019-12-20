@@ -11,8 +11,9 @@
 	<link rel="stylesheet" href="../dist/css/adminlte.min.css">
 	<!-- Google Font: Source Sans Pro -->
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-	<!-- 引用vue -->
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+	<link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
+
 </head>
 <body  style="background-color: #f4f6f9">
 	<!-- Content Wrapper. Contains page content -->
@@ -26,8 +27,9 @@
 					</div><!-- /.col -->
 					<div class="col-sm-6">
 						<ol class="breadcrumb float-sm-right">
-							<li class="breadcrumb-item"><a href="#">主页</a></li>
-							<li class="breadcrumb-item"><a href="#">课程公告</a></li>
+							<li class="breadcrumb-item"><a href="courseList.html" target="top">主页</a></li>
+							<li class="breadcrumb-item"><a href="course.html" target="top">{{courseName}}课程</a></li>
+							<li class="breadcrumb-item"><a href="courseNotice.html" >课程公告</a></li>
 							<li class="breadcrumb-item active">添加公告</li>
 						</ol>
 					</div><!-- /.col -->
@@ -38,7 +40,7 @@
 		<!-- Main content -->
 		<div class="content">
 			<div class="card">
-				<form class="card-body">
+				<form class="card-body" @submit.prevent="addNotice">
 					<div class="form-group">
 						<label>公告标题</label>
 						<input required oninvalid="setCustomValidity('请输入公告标题')" oninput="setCustomValidity('');"
@@ -56,7 +58,7 @@
 						<label class="form-check-label" for="exampleCheck1">是否置顶</label>
 					</div>
 					<div class="form-group">
-						<button @click="addNotice" class="btn btn-primary">提交</button>
+						<button class="btn btn-primary">提交</button>
 					</div>
 				</form><!-- /.card-body -->
 			</div><!-- /.card -->
@@ -72,27 +74,31 @@
 <script src="../plugins/jquery/jquery.min.js"></script>
 <script src="/blackboard/page/dist/js/request.js"></script>
 <script src="/blackboard/page/dist/js/jquerySession.js"></script>
-<!-- Bootstrap 4 -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script><!-- Bootstrap 4 -->
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="../dist/js/adminlte.min.js"></script><!-- AdminLTE App -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script><!-- 引用vue -->
 <script src="requestParam.js"></script>
+
 <script type="text/javascript">
+
 	var app = new Vue({
 		el: '#content',
 		data() {
 			return{
 				noticeForm:{
-					courseId:5,
-					publisherId:2,
+					courseId:null,
+					publisherId:null,
 					noticeTitle:"",
 					noticeContent:"",
 					noticeLevel:"2"
-				}
+				},
+				courseName:null
 			}
 		},
 		methods:{
 			addNotice(){
+				// e.preventDefault();
 				if(this.noticeForm.noticeTitle === "" || this.noticeForm.noticeContent=== "")
 					return ;
 				request({
@@ -101,17 +107,48 @@
 					data:this.noticeForm,
 				}).then(
 						function success(res){
-							console.log(res);
-							console.log(res.code === "202");
 							if(res.code === "202"){//添加成功
-								window.location.href = requestHref.courseNotice;
+								Toast.fire({
+									type: 'success',
+									title: '公告添加成功',
+									onAfterClose: function () {
+										window.location.href = requestHref.courseNotice;
+									}
+								});
+							} else {
+								Toast.fire({
+									type: 'error',
+									title: '出问题了，课程添加失败',
+									onAfterClose: function () {
+
+									}
+								});
 							}
 						},
 						function error(res){
 							console.log(res)
 						}
 				);
-			}
+				return false;
+			},
+			init(type){
+				switch(type){
+					case "2"://教师
+						this.noticeForm.courseId = localStorage.getItem("courseId");
+						this.noticeForm.publisherId = localStorage.getItem("userId");
+						this.courseName = localStorage.getItem("courseName");
+						break;
+					case "3"://学生
+					case "1":
+						window.location.href = requestHref.login;//跳转到登陆页面
+						break;
+					default:
+						window.location.href = requestHref.login;//跳转到登陆页面
+				}
+			},
+		},
+		created(){
+			this.init(localStorage.getItem("userType"));
 		}
 	})
 

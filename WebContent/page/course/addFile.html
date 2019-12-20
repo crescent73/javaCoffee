@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
 	<!-- Theme style -->
 	<link rel="stylesheet" href="../dist/css/adminlte.min.css">
+	<link rel="stylesheet" href="/blackboard/page/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 	<!-- Google Font: Source Sans Pro -->
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 	<!-- 引用vue -->
@@ -26,8 +27,9 @@
 					</div><!-- /.col -->
 					<div class="col-sm-6">
 						<ol class="breadcrumb float-sm-right">
-							<li class="breadcrumb-item"><a href="#">主页</a></li>
-							<li class="breadcrumb-item"><a href="#">课程文档</a></li>
+							<li class="breadcrumb-item"><a href="courseList.html" target="top">主页</a></li>
+							<li class="breadcrumb-item"><a href="course.html" target="top">{{courseName}}课程</a></li>
+							<li class="breadcrumb-item"><a href="courseFile.html">课程文档</a></li>
 							<li class="breadcrumb-item active">添加文档</li>
 						</ol>
 					</div><!-- /.col -->
@@ -38,7 +40,7 @@
 		<!-- Main content -->
 		<div class="content">
 			<div class="card">
-				<form>
+				<form  @submit.prevent="addFile($event)" ref="realFile">
 					<div class="card-body">
 						<div class="form-group row-md-12">
 							<label>文档标题</label>
@@ -59,10 +61,9 @@
 								</div>
 							</div>
 						</div>
-
 					</div>
 					<div class="card-footer">
-						<button  @click="addFile($event)" ref="realFile" class="btn btn-primary">提交</button>
+						<button  class="btn btn-primary">提交</button>
 					</div>
 				</form>
 			</div><!-- /.card -->
@@ -74,22 +75,22 @@
 <script src="../plugins/jquery/jquery.min.js"></script>
 <script src="/blackboard/page/dist/js/request.js"></script>
 <script src="/blackboard/page/dist/js/jquerySession.js"></script>
-<!-- Bootstrap 4 -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
-<!-- bs-custom-file-input -->
-<script src="../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script><!-- Bootstrap 4 -->
+<script src="../dist/js/adminlte.min.js"></script><!-- AdminLTE App -->
+<script src="../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script><!-- bs-custom-file-input -->
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="requestParam.js"></script>
 
 <script type="text/javascript">
 	var app = new Vue({
 		el: '#content',
 		data() {
 			return{
+				courseName:null,
 				fileForm: {
-					courseId: 4,
-					uploaderId: 2,
-					fileName: "",
+					courseId: null,
+					uploaderId: null,
+					fileName: null,
 					fileDescription: null,
 					file: null
 				}
@@ -100,7 +101,14 @@
 				this.fileForm.file = event.target.files;
 			},
 			addFile(event){
-				if(this.fileForm.file == null || this.fileForm.fileDescription == null){
+				if(this.fileForm.fileName == null || this.fileForm.fileDescription == null){
+					return ;
+				}
+				if(this.fileForm.file == null) {
+					Toast.fire({
+						type: 'error',
+						title: '附件不能为空'
+					});
 					return ;
 				}
 				let formData = new FormData();
@@ -108,12 +116,14 @@
 				formData.append("uploaderId",this.fileForm.uploaderId);
 				formData.append("fileName",this.fileForm.fileName);
 				formData.append("fileDescription",this.fileForm.fileDescription);
-				for(i=0;i<this.fileForm.file.length;i++){
-					formData.append("file",this.fileForm.file[i]);
+				if(this.fileForm.file != null){
+					for(let i=0; i<this.fileForm.file.length; i++){
+						formData.append("file",this.fileForm.file[i]);
+					}
 				}
 				request({
-					type:"post",
-					url:"/blackboard/teacher/addFile",
+					type:requestType.post,
+					url:requestUrl.addFile,
 					data:formData,
 					processData: false,
 					contentType : false,
@@ -121,20 +131,49 @@
 				}).then(
 						function success(res){
 							console.log(res);
+							if(res.code === "406"){
+								Toast.fire({
+									type: 'success',
+									title: '文档上传成功',
+									onAfterClose: function () {
+										window.location.href = requestHref.courseFile;
+									}
+								});
+							} else {
+								Toast.fire({
+									type: 'error',
+									title: '文档上传失败，请稍后重试'
+								});
+							}
 						},
 						function error(res){
 							console.log(res)
-
 						}
 				);
-			}
+				return false;
+			},
+			init(type){
+				switch(type){
+					case "2"://教师
+						this.fileForm.courseId = localStorage.getItem("courseId");
+						this.fileForm.uploaderId = localStorage.getItem("userId");
+						this.courseName = localStorage.getItem("courseName");
+						break;
+					case "3"://学生
+					case "1":
+						window.location.href = requestHref.login;//跳转到登陆页面
+						break;
+					default:
+						window.location.href = requestHref.login;//跳转到登陆页面
+				}
+			},
 		},
 		created(){
+			this.init(localStorage.getItem("userType"));
 		},
 		mounted(){
 		}
 	});
-
 
 	$(document).ready(function () {
 		bsCustomFileInput.init();

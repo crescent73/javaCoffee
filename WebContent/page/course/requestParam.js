@@ -6,6 +6,7 @@ const requestUrl = {
     modifyNotice: "/blackboard/teacher/modifyNotice",
     searchCourse: "/blackboard/system/searchCourse",
     modifyCourse: "/blackboard/admin/modifyCourse",
+    addFile:"/blackboard/teacher/addFile",
     searchFile:"/blackboard/system/searchFile",
     deleteFile:"/blackboard/teacher/deleteFile",
     downloadAttachment:"/blackboard/system/downloadAttachment",
@@ -19,6 +20,7 @@ const requestType = {
 
 const requestHref = {
     courseNotice: "/blackboard/page/course/courseNotice.html",
+    courseFile:"/blackboard/page/course/courseFile.html",
     login:"/blackboard/",
     course:"/blackboard/page/course/course.html"
 };
@@ -34,3 +36,12 @@ function getUrlParam(name) {
     if (r != null) { return decodeURIComponent(r[2]); }
     return null; //返回参数值
 }
+
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 1500,
+    grow: 'row'
+});
+

@@ -28,7 +28,7 @@
           <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-          <a href="#" class="nav-link">Home</a>
+          <a href="courseList.html" class="nav-link">Home</a>
         </li>
       </ul>
       <!-- Right navbar links -->
@@ -50,21 +50,18 @@
         </div>
           </li>
           <li class="nav-item nav-sidebar">
-            <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
+            <a class="nav-link" data-widget="control-sidebar" data-slide="true">
                 <i class="nav-icon fas fa-sign-out-alt" @click="logout"></i>
             </a>
           </li>
         </ul>
-
     </nav>
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-light-dark elevation-5 sidebar-collapse">
       <!-- Brand Logo -->
-      <a  class="brand-link">
-        <!--      <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"-->
-        <!--           style="opacity: .8">-->
+      <a class="brand-link">
         <span class="iconfont iconxiaoheiban" style="font-size: 30px;margin-left: 10px;"></span>
         <span class="brand-text" style="font-family:Ink Free;font-size: 30px;margin-left: 10px;">blackboard</span>
       </a>
@@ -74,9 +71,6 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-           with font-awesome or any other icon font library -->
-
            <li class="nav-item  has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-user-astronaut"></i>
@@ -92,13 +86,10 @@
                   <p>公告列表</p>
                 </a>
               </li>
-              <li class="nav-item has-treeview">
+              <li v-show="isTeacher" class="nav-item has-treeview">
                 <a href="addNotice.html" class="nav-link" target="main">
-<!--                  <ion-icon name="arrow-forward"></ion-icon>-->
                   <span class="iconfont icontianjiakecheng" ></span>
-                  <p>
-                    添加公告
-                  </p>
+                  <p>添加公告</p>
                 </a>
                 </li>
               </ul>
@@ -106,18 +97,14 @@
           <li class="nav-item">
             <a href="courseDetail.html" class="nav-link" target="main">
               <i class="nav-icon fas fa-rocket"></i>
-              <p>
-                课程详情
-              </p>
+              <p>课程详情</p>
             </a>
           </li>
 
           <li class="nav-item">
             <a href="courseFile.html" class="nav-link" target="main">
               <i class="nav-icon fas fa-space-shuttle"></i>
-              <p>
-                课程文档
-                <i class="right fas fa-angle-left"></i>
+              <p>课程文档<i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview" style="display: none;">
@@ -127,12 +114,10 @@
                   <p>文档列表</p>
                 </a>
               </li>
-              <li class="nav-item has-treeview">
+              <li v-show="isTeacher" class="nav-item has-treeview">
                 <a href="addFile.html" class="nav-link" target="main">
                   <span class="iconfont iconwendang" ></span>
-                  <p>
-                    添加文档
-                  </p>
+                  <p>添加文档</p>
                 </a>
                 </li>
               </ul>
@@ -164,17 +149,12 @@
 
 </div>
 <!-- ./wrapper -->
-
-<!-- REQUIRED SCRIPTS -->
-
-<!-- jQuery -->
-<script src="/blackboard/page/plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="/blackboard/page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="/blackboard/page/dist/js/adminlte.min.js"></script>
+<script src="/blackboard/page/plugins/jquery/jquery.min.js"></script><!-- jQuery -->
+<script src="/blackboard/page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script><!-- Bootstrap 4 -->
+<script src="/blackboard/page/dist/js/adminlte.min.js"></script><!-- AdminLTE App -->
   <script src="/blackboard/page/dist/js/request.js"></script>
   <script src="/blackboard/page/dist/js/jquerySession.js"></script>
+  <script src="../plugins/sweetalert2/sweetalert2.min.js"></script><!-- SweetAlert2 -->
   <script src="requestParam.js"></script>
 </body>
 <script type="text/javascript">
@@ -187,24 +167,28 @@
           userType:null
         },
         isTeacher:false,
-        userName:null
+        userName:null,
+        courseName:null
       }
     },
     methods:{
         init(type){
-            console.log(type,localStorage.getItem("userId"));
             switch(type){
-                case 2://教师
+                case "2"://教师
+                    this.userName = localStorage.getItem("userName");
                     this.logoutData.id = localStorage.getItem("userId");
                     this.logoutData.userType = localStorage.getItem("userType");
+                    this.courseName = localStorage.getItem("courseName");
                     this.isTeacher = true;
                     break;
-                case 3://学生
+                case "3"://学生
+                    this.userName = localStorage.getItem("userName");
                     this.logoutData.id = localStorage.getItem("userId");
+                    this.courseName = localStorage.getItem("courseName");
                     this.logoutData.userType = localStorage.getItem("userType");
                     this.isTeacher = false;
                     break;
-                case 1:
+                case "1":
                     window.location.href = requestHref.login;//跳转到登陆页面
                     break;
                 default:
@@ -231,7 +215,6 @@
         },
     },
     created(){
-        console.log(getUrlParam("courseId"));
         this.init(localStorage.getItem("userType"));
       },
       mounted(){
