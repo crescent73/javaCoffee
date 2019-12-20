@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>BlackBoard</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="/blackboard/page/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/blackboard/page/dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- 引用阿里的字体图标库 -->
+    <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_1546252_v6mv4erx9zg.css">
+    <!-- 引用vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body class="hold-transition layout-top-nav" >
+<div class="wrapper" id="mainpage">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+        <div class="container">
+            <span class="iconfont iconxiaoheiban" style="font-size: 30px;margin-left: 10px;"></span>
+            <span class="brand-text" style="font-family:Ink Free;font-size: 30px;margin-left: 10px;">blackboard</span>
+            <ul class="navbar-nav">
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="courseList.html" class="nav-link">&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Home</a>
+                </li>
+            </ul>
+            <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Right navbar links -->
+            <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+                <!-- Messages Dropdown Menu -->
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item  nav-sidebar">
+                        <a class="nav-link" data-toggle="dropdown" href="#">
+                            <i class="nav-icon fas fa-user"></i>
+                            <p>用户名</p>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                            <button class="dropdown-item" data-toggle="modal" data-target=".myModal">
+                                <span class="iconfont iconchakanxinxi  mr-2"></span>查看信息
+                            </button>
+
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" data-toggle="modal" data-target=".myModal1">
+                                <span class="iconfont iconxiugaixinxi  mr-2"></span>修改密码
+                            </button>
+                        </div>
+                    </li>
+                    <li class="nav-item nav-sidebar">
+                        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
+                            <i class="nav-icon fas fa-sign-out-alt" @click="logout"></i>
+                        </a>
+                    </li>
+                </ul>
+            </ul>
+        </div>
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">主页</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">课程列表</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+        <!-- Main content -->
+        <div class="content">
+            <div class="container">
+                <div class="card card-info card-outline card-solid">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fa fa-list"></i>
+                            课程列表
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div v-show="isShowCourseList" class="row d-flex align-items-stretch">
+                            <div v-for="course in courses" v-bind:key="course.id" @click="click(course)" class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch" >
+                                <div class="container">
+                                    <div class=" card bg-light">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <h2 class="lead text-center"><b>{{course.courseName}}</b></h2>
+                                                    <div class="text-muted text-sm text-center">
+                                                        <div>{{course.courseNumber}}-{{course.teacherName}}老师</div>
+                                                        <div>{{course.courseSchool | schoolFormat}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-center ">
+                                            <div class="small-box-foote">
+                                                More info
+                                                <i class="fas fa-arrow-circle-right"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-show="!isShowCourseList">
+                            当前还没有课程哦~
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <nav aria-label="Contacts Page Navigation">
+                            <ul class="pagination justify-content-center m-0">
+                                <li class="page-item"><a class="page-link" href="#">«</a></li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">»</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- Main Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <!-- To the right -->
+            <div class="float-right d-none d-sm-inline">
+                Anything you want
+            </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+        </div>
+
+    </footer>
+</div>
+<!-- ./wrapper -->
+
+</body>
+<script src="/blackboard/page/plugins/jquery/jquery.min.js"></script><!-- jQuery -->
+<script src="/blackboard/page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script><!-- Bootstrap 4 -->
+<script src="/blackboard/page/dist/js/adminlte.min.js"></script><!-- AdminLTE App -->
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="requestParam.js"></script>
+<script>
+    var app = new Vue({
+        el: '#mainpage',
+        data() {
+            return {
+                isTeacher:false,
+                isShowCourseList:false,
+                courses:[
+                    // {
+                    //     "id": 1,
+                    //     "courseName": "english",
+                    //     "courseNumber": "C1234",
+                    //     "courseSchool": 1,
+                    //     "courseSemester": "2018-2019-2",
+                    //     "courseType": 0,
+                    //     "courseCredit": 5,
+                    //     "teacherId": 1,
+                    //     "teacherName":"name",
+                    //     "courseDescription":"这是一门很有意思的学科",
+                    //     "courseTeacherDescription":"这是一个很有意思的老师",
+                    // },
+                    // {
+                    //     "id": 3,
+                    //     "courseName": "english",
+                    //     "courseNumber": "C1234",
+                    //     "courseSchool": 1,
+                    //     "courseSemester": "2018-2019-2",
+                    //     "courseType": 0,
+                    //     "courseCredit": 5,
+                    //     "teacherId": 1,
+                    //     "teacherName":"name",
+                    //     "courseDescription":"这是一门很有意思的学科",
+                    //     "courseTeacherDescription":"这是一个很有意思的老师",
+                    // },
+                    // {
+                    //     "id": 2,
+                    //     "courseName": "english",
+                    //     "courseNumber": "C1234",
+                    //     "courseSchool": 1,
+                    //     "courseSemester": "2018-2019-2",
+                    //     "courseType": 0,
+                    //     "courseCredit": 5,
+                    //     "teacherId": 1,
+                    //     "teacherName":"name",
+                    //     "courseDescription":"这是一门很有意思的学科",
+                    //     "courseTeacherDescription":"这是一个很有意思的老师",
+                    // }
+                ],
+                courseForm:{
+                    "studentId":null,
+                    "teacherId":null
+                },
+                logoutData:{
+                    id:null,
+                    userType:null
+                }
+            }
+        },
+        methods: {
+            getCourseList() {
+                let that = this;
+                request({
+                    type:requestType.post,
+                    url:requestUrl.searchCourse,
+                    data:that.courseForm,
+                }).then(
+                    function success(res){
+                        console.log(res);
+                        if(res.code === "208") {//查询成功
+                            that.isShowCourseList = true;
+                            that.courses = res.data.data;
+                        }else {//查询失败
+                            that.isShowCourseList = false;
+                            that.courses = [];
+                        }
+                    },
+                    function error(res){
+                        console.log(res)
+                    }
+                );
+            },
+            click(course) {
+                console.log(course.id);
+                window.location.href = requestHref.course + "? courseId=" + course.id;
+            },
+            logout(){
+                request({
+                    type:requestType.post,
+                    url:requestUrl.logout,
+                    data:this.logoutData,
+                }).then(
+                    function success(res){
+                        localStorage.clear();
+                        console.log(res);
+                        console.log(res.code);
+                        window.location.href=requestHref.login;//退回登陆界面
+                    },
+                    function error(res){
+                        console.log(res)
+                    }
+                );
+            },
+            init(type){
+                console.log(type,localStorage.getItem("userId"));
+                switch(type){
+                    case 2://教师
+                        this.courseForm.teacherId = localStorage.getItem("userId");
+                        this.logoutData.id = localStorage.getItem("userId");
+                        this.logoutData.userType = localStorage.getItem("userType");
+                        this.isTeacher = true;
+                        break;
+                    case 3://学生
+                        this.courseForm.studentId = localStorage.getItem("userId");
+                        this.logoutData.id = localStorage.getItem("userId");
+                        this.logoutData.userType = localStorage.getItem("userType");
+                        this.isTeacher = false;
+                        break;
+                    case 1:
+                        window.location.href = requestHref.login;//跳转到登陆页面
+                        break;
+                    default:
+                        window.location.href = requestHref.login;//跳转到登陆页面
+                }
+            },
+            clearFormData() {
+                // this.courseForm.studentId = null;
+                // this.courseForm.teacherId = null;
+            }
+        },
+        filters: {
+            schoolFormat(value){
+                // console.log(value);
+                switch (value) {
+                    case 1: return "信息与安全工程学院";
+                    case 2: return "马克思主义学院";
+                    case 3: return "哲学院";
+                    case 4: return "经济学院";
+                    case 5: return "财政税务学院";
+                    case 6: return "金融学院";
+                    case 7: return "法学院";
+                    case 8: return "刑事司法学院";
+                    case 9: return "外国语学院";
+                    case 10: return "新闻与文化传播学院";
+                    case 11: return "工商管理学院";
+                    case 12: return "文澜学院";
+                    case 13: return "会计学院";
+                    case 14: return "统计与数学学院";
+                    case 15: return "中韩新媒体学院";
+                    default: return "未知";
+                }
+            }
+        },
+        mounted() {
+            this.init(localStorage.getItem("userType"));
+            this.getCourseList();
+        }
+    });
+</script>
+</html>

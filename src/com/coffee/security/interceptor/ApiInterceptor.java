@@ -29,6 +29,7 @@ public class ApiInterceptor implements HandlerInterceptor {
         if (url.indexOf("/page") <= 0 && url.indexOf(".html") <= 0 &&//不是页面请求
                 (url.indexOf("/admin") > 0|| url.indexOf("/system") > 0 || url.indexOf("/teacher") >0)) {
             //用户未登录
+            System.out.println(session.getAttribute("login"));
             if(session.getAttribute("login")==null){
                 //只有申请登陆的请求会被执行
                 if (url.indexOf("/login") > 0) {
