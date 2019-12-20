@@ -31,7 +31,6 @@
 
     <div class="card">
         <div class="card-body login-card-body">
-            <p class="login-box-msg">请先登录</p>
 
             <form id="login_form" style="width: 100%">
                 <div class="input-group mb-3">
@@ -58,24 +57,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                            <input type="checkbox" id="remember">
-                            <label for="remember">
-                                记住我
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <button type="button" class="btn btn-primary btn-block" @click="do_login()">登录</button>
-                    </div>
-                </div>
+                <button type="button" class="btn btn-primary btn-block float-right" @click="do_login()">登录</button>
             </form>
 
-            <p class="mb-1">
-                <a href="#">我忘记密码了</a>
-            </p>
         </div>
         <!-- /.login-card-body -->
     </div>
@@ -107,7 +91,6 @@
             userType: "",
         },
         methods: {
-
             do_check: function () {
                 if(this.name === null || this.name === undefined || this.name === "") {
                     alert("用户名不能为空！");
@@ -137,7 +120,7 @@
                         console.log(res);
                         if(res.code === "400"){
                             localStorage.setItem("token",res.data.token);
-                            localStorage.setItem("userType",type);
+                            localStorage.setItem("userType",self.userType);
                             localStorage.setItem("userId", res.data.data.id);
                             localStorage.setItem("user", JSON.stringify(res.data.data));
 

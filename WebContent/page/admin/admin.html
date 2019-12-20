@@ -203,11 +203,15 @@
 <script src="../dist/js/jquerySession.js"></script>
 </body>
 <script type="text/javascript">
+
     function logout() {
         request({
             type:"post",
             url:"/blackboard/system/logout",
-            data:this.logoutData,
+            data: {
+                id:2,
+                userType: localStorage.getItem("userType")
+            },
         }).then(
             function success(res){
                 $.session.clear();
