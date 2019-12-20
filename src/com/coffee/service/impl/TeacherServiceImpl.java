@@ -38,6 +38,7 @@ public class TeacherServiceImpl implements TeacherService {
 	@Autowired
 	private AttachmentMapper attachmentDao;
 
+	@Transactional
 	@Override
 	public ResultData addNotice(Notice notice) {
 		resultData = new ResultData<Data>();
@@ -65,6 +66,7 @@ public class TeacherServiceImpl implements TeacherService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData deleteNotice(Long id) {
 		resultData = new ResultData<Data>();
@@ -83,6 +85,7 @@ public class TeacherServiceImpl implements TeacherService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData modifyNotice(Notice notice) {
 		resultData = new ResultData<Data>();
@@ -115,6 +118,7 @@ public class TeacherServiceImpl implements TeacherService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData addFile(File file,String dirPath,List<MultipartFile> attachments) {
 		resultData = new ResultData<Data>();
@@ -152,6 +156,7 @@ public class TeacherServiceImpl implements TeacherService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData addAttachment(Attachment myAttachment, List<MultipartFile> attachments) {
 		resultData = new ResultData<Data>();
@@ -197,6 +202,7 @@ public class TeacherServiceImpl implements TeacherService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData deleteFile(Long id) {
 		resultData = new ResultData<Data>();
@@ -227,6 +233,7 @@ public class TeacherServiceImpl implements TeacherService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData deleteAttachment(Attachment attachment) {
 		resultData = new ResultData<Data>();
@@ -287,10 +294,7 @@ public class TeacherServiceImpl implements TeacherService {
 			notice.setId(noticeId);
 			notices = noticeDao.find(notice);
 		}
-		if(notices != null && notices.size() >0)
-			return true;
-		else 
-			return false;
+		return notices != null && notices.size() > 0;
 	}
 	
 	/**
@@ -306,10 +310,7 @@ public class TeacherServiceImpl implements TeacherService {
         	teacher.setId(teacherId);
             teachers = teacherDao.find(teacher);
         }
-        if(teacherId!= null && teachers.size() > 0) 
-        	return true;
-        else 
-        	return false;
+		return teacherId != null && teachers.size() > 0;
     }
     
     /**
@@ -325,10 +326,7 @@ public class TeacherServiceImpl implements TeacherService {
         	course.setId(courseId);
             courses = courseDao.find(course);
         }
-        if(courseId!= null && courses.size() == 1) 
-        	return true;
-        else 
-        	return false;
+		return courseId != null && courses.size() == 1;
     }
 
 }

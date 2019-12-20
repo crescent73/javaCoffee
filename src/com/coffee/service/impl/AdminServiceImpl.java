@@ -37,6 +37,7 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private CourseScheduleMapper courseScheduleDao;
 
+    @Transactional
     @Override
     public ResultData addCourse(Course course) {
         resultData = new ResultData<Data>();
@@ -79,6 +80,7 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
+    @Transactional
     @Override
     public ResultData deleteCourse(Long id) {
         resultData = new ResultData<Data>();
@@ -98,6 +100,7 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
+    @Transactional
     @Override
     public ResultData modifyCourse(Course course) {
         resultData = new ResultData<Data>();
@@ -122,7 +125,7 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
-
+    @Transactional
     @Override
     public ResultData addTeacher(Teacher teacher) {
         resultData = new ResultData<Data>();
@@ -148,6 +151,7 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
+    @Transactional
     @Override
     public ResultData deleteTeacher(Long id) {
         resultData = new ResultData<Data>();
@@ -167,6 +171,7 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
+    @Transactional
     @Override
     public ResultData searchTeacher(Teacher teacher, String searchKey, PageParam pageParam) {
         resultData = new ResultData<Data>();
@@ -196,6 +201,7 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
+    @Transactional
     @Override
     public ResultData addStudent(Student student) {
         resultData = new ResultData<Data>();
@@ -218,6 +224,7 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
+    @Transactional
     @Override
     public ResultData deleteStudent(Long id) {
         resultData = new ResultData<Data>();
@@ -236,9 +243,8 @@ public class AdminServiceImpl implements AdminService {
         }
         return resultData;
     }
-    
 
-
+    @Transactional
     @Override
     public ResultData searchTeacherByKey(String searchKey) {
         resultData = new ResultData<Data>();
@@ -254,6 +260,7 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
+    @Transactional
     @Override
     public ResultData addCourseSchedule(List<Long> studentId, List<Long> courseId) {
         resultData = new ResultData<Data>();
@@ -310,6 +317,7 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
+    @Transactional
     @Override
     public ResultData deleteCourseSchedule(Long courseId,Long[] studentList) {
         resultData = new ResultData<Data>();
@@ -396,6 +404,8 @@ public class AdminServiceImpl implements AdminService {
         return teachers != null && teachers.size() == 1;
     }
 
+
+    @Transactional
     @Override
     public ResultData modifyStudent(Student student) {
         resultData = new ResultData<>();
@@ -413,6 +423,8 @@ public class AdminServiceImpl implements AdminService {
         return resultData;
     }
 
+
+    @Transactional
     @Override
     public ResultData modifyTeacher(Teacher teacher) {
         resultData = new ResultData<>();

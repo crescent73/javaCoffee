@@ -97,16 +97,30 @@
                 </div>
 
                 <!-- 模态框主体 -->
-                <div class="modal-body">
-                    姓名:
+                <div class="modal-body" v-show="userType === '2'">
+                    姓名: {{userName}}
                     <br>
-                    工号:
+                    工号: {{userNumber}}
                     <br>
-                    邮箱:
+                    邮箱: {{userEmail}}
                     <br>
-                    职称:
+                    职称: {{userTitle}}
                     <br>
-                    学院:
+                    学院: {{userSchool}}
+                </div>
+                <!-- 模态框主体 -->
+                <div class="modal-body" v-show="userType === '3'">
+                    姓名: {{userName}}
+                    <br>
+                    学号号: {{userNumber}}
+                    <br>
+                    邮箱: {{userEmail}}
+                    <br>
+                    班级: {{userClass}}
+                    <br>
+                    年级: {{userGrade}}
+                    <br>
+                    学院: {{userSchool}}
                 </div>
 
                 <!-- 模态框底部 -->
@@ -227,7 +241,7 @@
 <!-- AdminLTE App -->
 <script src="/blackboard/page/dist/js/adminlte.min.js"></script>
 <script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 
 <script type="text/javascript">
     const Toast = Swal.mixin({
@@ -420,7 +434,7 @@
             this.userNumber = localStorage.getItem("userNumber");
             this.userSchool = localStorage.getItem("userSchool");
             this.userClass = localStorage.getItem("userClass");
-            this.userGrade = localStorage.getItem("userTitle");
+            this.userGrade = localStorage.getItem("userGrade");
             this.userType = localStorage.getItem("userType");
             this.userId = localStorage.getItem("userId");
         }

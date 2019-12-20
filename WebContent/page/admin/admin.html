@@ -6,9 +6,9 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>BlackBoard Admin</title>
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="/blackboard/page/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="/blackboard/page/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- 引用阿里的字体图标库 -->
@@ -94,19 +94,18 @@
 
                 <div class="modal-body">
                     <div>
-                        <form id="testForm">
-                            &nbsp;&nbsp;请输入原密码：<input type="password" name="old" id="oldPass" placeholder="原密码"
-                                                      required v-model="original_password"/>
-                            <input type="hidden" name="userType" id='1' value="请输入原密码"/>
-                            <br><br>
-                            &nbsp;&nbsp;请输入新密码：<input type="password" name="new" id="newPass" placeholder="新密码"
-                                                      required v-model="password"/>
-                            <input type="hidden" name="userType" id='2' value="请输入原密码"/>
-                            <br><br>
-                            &nbsp;&nbsp;请确认新密码：<input type="password" name="new1" id="newPass1" placeholder="确认密码"
-                                                      required v-model="retype_password"/>
-                            <br><br>
-                        </form>
+                        <div class="form-group">
+                            <label for="old_password">旧密码</label>
+                            <input type="password" class="form-control" :class="{'is-invalid': !is_old_valid}" id="old_password" placeholder="输入旧密码" required v-model="original_password">
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">新密码</label>
+                            <input type="password" class="form-control" :class="{'is-invalid': !is_password_valid}" id="new_password" placeholder="输入新密码" required v-model="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="retype_password">确认新密码</label>
+                            <input type="password" class="form-control" :class="{'is-invalid': !is_retype_valid}" id="retype_password" placeholder="确认新密码" required v-model="retype_password">
+                        </div>
                     </div>
                 </div>
 
@@ -300,8 +299,11 @@
             userName: "",
             userEmail: "",
             original_password: "",
+            is_old_valid: true,
             retype_password: "",
-            password: ""
+            is_retype_valid: true,
+            password: "",
+            is_password_valid: true,
         },
         methods: {
             reset_password: function () {
@@ -309,34 +311,44 @@
 
                 if(self.original_password === "" || self.original_password === undefined || self.original_password === null) {
                     Toast.fire({
+                        position: 'center',
                         type: 'error',
                         title: '请输入原始密码'
                     });
+                    self.is_old_valid = false;
                     return;
                 }
                 if(self.password === "" || self.password === undefined || self.password === null) {
                     Toast.fire({
+                        position: 'center',
                         type: 'error',
                         title: '请输入新密码'
                     });
+                    self.is_password_valid = false;
                     return;
                 }
                 if(self.retype_password === "" || self.retype_password === undefined || self.retype_password === null) {
                     Toast.fire({
+                        position: 'center',
                         type: 'error',
                         title: '请确认新密码'
                     });
+                    self.is_password_valid = false;
                     return;
                 }
                 if(self.retype_password !== self.password) {
                     Toast.fire({
+                        position: 'center',
                         type: 'error',
                         title: '两次输入的密码不匹配！'
                     });
+                    self.is_retype_valid = false;
                     return;
                 }
                 if(self.password === self.original_password) {
+                    self.is_password_valid = false;
                     Toast.fire({
+                        position: 'center',
                         type: 'error',
                         title: '新密码与原始密码相同！'
                     });
@@ -356,6 +368,7 @@
                         console.log(res);
                         if(res.code === "206") {
                             Toast.fire({
+                                position: 'center',
                                 timer: 5000,
                                 type: 'success',
                                 title: '修改密码成功！',
@@ -378,6 +391,17 @@
         mounted: function () {
             this.userName = localStorage.getItem("userName");
             this.userEmail = localStorage.getItem("userEmail")
+        },
+        watch: {
+            original_password: function (value, old) {
+                this.is_old_valid = !(this.original_password === "" || this.original_password === undefined || this.original_password === null);
+            },
+            password: function (value, old) {
+                this.is_password_valid = !(this.password === "" || this.password === undefined || this.password === null);
+            },
+            retype_password: function (value, old) {
+                this.is_retype_valid = !(this.retype_password === "" || this.retype_password === undefined || this.retype_password === null)
+            }
         }
     });
 </script>

@@ -6,9 +6,9 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>BlackBoard</title>
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="/blackboard/page/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="/blackboard/page/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- 引用阿里的字体图标库 -->
@@ -27,7 +27,7 @@
             <span class="brand-text" style="font-family:Ink Free;font-size: 30px;margin-left: 10px;">blackboard</span>
             <ul class="navbar-nav">
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="courseList.html" class="nav-link">&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Home</a>
+                    <a href="courseList.html" class="nav-link">&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;主页</a>
                 </li>
             </ul>
             <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,7 @@
                     <li class="nav-item  nav-sidebar">
                         <a class="nav-link" data-toggle="dropdown" href="#">
                             <i class="nav-icon fas fa-user"></i>
-                            <p>用户名</p>
+                            <p>{{userName}}</p>
                         </a>
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                             <button class="dropdown-item" data-toggle="modal" data-target=".myModal">
@@ -63,7 +63,84 @@
             </ul>
         </div>
     </nav>
-    <!-- /.navbar -->
+
+
+    <div class="modal fade myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">详细信息</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body" v-show="userType === '2'">
+                    姓名: {{userName}}
+                    <br>
+                    工号: {{userNumber}}
+                    <br>
+                    邮箱: {{userEmail}}
+                    <br>
+                    职称: {{userTitle | titleFormat}}
+                    <br>
+                    学院: {{userSchool | schoolFormat}}
+                </div>
+                <!-- 模态框主体 -->
+                <div class="modal-body" v-show="userType === '3'">
+                    姓名: {{userName}}
+                    <br>
+                    学号号: {{userNumber}}
+                    <br>
+                    邮箱: {{userEmail}}
+                    <br>
+                    班级: {{userClass}}
+                    <br>
+                    年级: {{userGrade}}
+                    <br>
+                    学院: {{userSchool | schoolFormat}}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade myModal1" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">修改密码</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div>
+                        <div class="form-group">
+                            <label for="old_password">旧密码</label>
+                            <input type="password" class="form-control" :class="{'is-invalid': !is_old_valid}" id="old_password" placeholder="输入旧密码" required v-model="original_password">
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">新密码</label>
+                            <input type="password" class="form-control" :class="{'is-invalid': !is_password_valid}" id="new_password" placeholder="输入新密码" required v-model="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="retype_password">确认新密码</label>
+                            <input type="password" class="form-control" :class="{'is-invalid': !is_retype_valid}" id="retype_password" placeholder="确认新密码" required v-model="retype_password">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" @click="reset_password()">提交</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -76,7 +153,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a href="#">主页</a></li>
                             <li class="breadcrumb-item active">课程列表</li>
                         </ol>
                     </div><!-- /.col -->
@@ -112,7 +189,7 @@
                                         </div>
                                         <div class="card-footer text-center ">
                                             <div class="small-box-foote">
-                                                More info
+                                                欲知后事如何...
                                                 <i class="fas fa-arrow-circle-right"></i>
                                             </div>
                                         </div>
@@ -126,13 +203,6 @@
                     </div>
                     <div class="card-footer">
                         <nav aria-label="Contacts Page Navigation">
-<!--                            <ul class="pagination justify-content-center m-0">-->
-<!--                                <li class="page-item"><a class="page-link" href="#">«</a></li>-->
-<!--                                <li class="page-item"><a class="page-link" href="#">1</a></li>-->
-<!--                                <li class="page-item"><a class="page-link" href="#">2</a></li>-->
-<!--                                <li class="page-item"><a class="page-link" href="#">3</a></li>-->
-<!--                                <li class="page-item"><a class="page-link" href="#">»</a></li>-->
-<!--                            </ul>-->
                             <ul class="pagination justify-content-center m-0">
                                 <li class="page-item"><a class="page-link" @click="on_previous_page()">«</a></li>
                                 <template v-for="page_nav in page_navs">
@@ -142,33 +212,28 @@
                             </ul>
                         </nav>
                     </div>
-                    <!-- /.card-footer -->
                 </div>
-            </div><!-- /.container-fluid -->
+            </div>
         </div>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
-    <!-- Main Footer -->
+
     <footer class="main-footer">
         <div class="container">
             <!-- To the right -->
             <div class="float-right d-none d-sm-inline">
-                Anything you want
+                Make dreams come true.
             </div>
             <!-- Default to the left -->
-            <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; 2019 <a href="https://adminlte.io"></a>Crescent.</strong> All rights reserved.
         </div>
 
     </footer>
 </div>
-<!-- ./wrapper -->
 
-</body>
-<script src="/blackboard/page/plugins/jquery/jquery.min.js"></script><!-- jQuery -->
-<script src="/blackboard/page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script><!-- Bootstrap 4 -->
-<script src="/blackboard/page/dist/js/adminlte.min.js"></script><!-- AdminLTE App -->
-<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="../plugins/jquery/jquery.min.js"></script><!-- jQuery -->
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script><!-- Bootstrap 4 -->
+<script src="../dist/js/adminlte.min.js"></script><!-- AdminLTE App -->
+<script src="../dist/js/request.js"></script>
 <script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
 <script src="requestParam.js"></script>
 <script>
@@ -190,16 +255,113 @@
                     userType:null
                 },
                 payloads: new Map(),
-                // payload: [],
                 start_page: 1,
                 end_page: 1,
                 current_page: 1,
                 page_size: 6,
                 page_count: 0,
                 page_navs: [],
+                // for profile
+                userName: "",
+                userEmail: "",
+                userNumber: "",
+                userSchool: "",
+                userClass: "",
+                userGrade: "",
+                userTitle: "",
+                userType: "",
+                userId: "",
+                // for password
+                original_password: "",
+                is_old_valid: true,
+                retype_password: "",
+                is_retype_valid: true,
+                password: "",
+                is_password_valid: true,
             }
         },
         methods: {
+            reset_password: function () {
+                let self = this;
+
+                if(self.original_password === "" || self.original_password === undefined || self.original_password === null) {
+                    Toast.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: '请输入原始密码'
+                    });
+                    self.is_old_valid = false;
+                    return;
+                }
+                if(self.password === "" || self.password === undefined || self.password === null) {
+                    Toast.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: '请输入新密码'
+                    });
+                    self.is_password_valid = false;
+                    return;
+                }
+                if(self.retype_password === "" || self.retype_password === undefined || self.retype_password === null) {
+                    Toast.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: '请确认新密码'
+                    });
+                    self.is_password_valid = false;
+                    return;
+                }
+                if(self.retype_password !== self.password) {
+                    Toast.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: '两次输入的密码不匹配！'
+                    });
+                    self.is_retype_valid = false;
+                    return;
+                }
+                if(self.password === self.original_password) {
+                    self.is_password_valid = false;
+                    Toast.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: '新密码与原始密码相同！'
+                    });
+                    return;
+                }
+
+                request({
+                    type:"post",
+                    url:"/blackboard/system/modifyInfo",
+                    data: {
+                        id: localStorage.getItem("userId"),
+                        userType: localStorage.getItem("userType"),
+                        password: self.password
+                    },
+                }).then(
+                    function success(res){
+                        console.log(res);
+                        if(res.code === "206") {
+                            Toast.fire({
+                                position: 'center',
+                                timer: 5000,
+                                type: 'success',
+                                title: '修改密码成功！',
+                                onAfterClose: function () {
+                                    window.location.href = "/blackboard/"
+                                }
+                            });
+                        }
+                    },
+                    function error(res){
+                        console.log(res);
+                        Toast.fire({
+                            type: 'error',
+                            title: '出问题了，修改失败！'
+                        });
+                    }
+                );
+            },
             getCourseList(index) {
                 let that = this;
                 this.courseForm.pageNum=index;
@@ -328,48 +490,9 @@
                     this.page_navs.push(i);
                 }
             },
-            // get_payload: function (index) {
-            //     let self = this;
-            //     var data = self.payloads.get(index);
-            //
-            //     if(data === undefined) {
-            //         var form = {
-            //             pageNum: index,
-            //             pageSize: self.page_size,
-            //             searchKey: self.search_key,
-            //         };
-            //
-            //         $.ajax({
-            //             type:"post",
-            //             url: "/blackboard/system/searchCourse",
-            //             headers:{
-            //                 token: localStorage.getItem("token")
-            //             },
-            //             data: form,
-            //             success: function (res) {
-            //                 if(res.code === "208") {
-            //                     self.current_page = res.data.pageNum;
-            //                     self.page_size = res.data.pageSize;
-            //                     self.page_count = res.data.pages;
-            //                     self.start_page = 1;
-            //                     self.end_page = self.page_count;
-            //                     self.payloads[res.data.pageNum] = res.data.data;
-            //                     self.payload = res.data.data;
-            //                     self.set_nav();
-            //                 }
-            //             },
-            //             error: function (res) {
-            //                 console.log(res)
-            //             }
-            //         })
-            //     }
-            //     self.set_nav();
-            //     return data;
-            // }
         },
         filters: {
             schoolFormat(value){
-                // console.log(value);
                 switch (value) {
                     case 1: return "信息与安全工程学院";
                     case 2: return "马克思主义学院";
@@ -388,12 +511,42 @@
                     case 15: return "中韩新媒体学院";
                     default: return "未知";
                 }
+            },
+            titleFormat(value){
+                switch (value) {
+                    case "1": return '助教';
+                    case "2": return '讲师';
+                    case "3": return '教授';
+                    case "4": return '副教授';
+                    default: return "未知";
+                }
             }
         },
         mounted() {
             this.init(localStorage.getItem("userType"));
             this.getCourseList(1);
+            this.userName = localStorage.getItem("userName");
+            this.userEmail = localStorage.getItem("userEmail");
+            this.userNumber = localStorage.getItem("userNumber");
+            this.userSchool = parseInt(localStorage.getItem("userSchool"));
+            this.userClass = localStorage.getItem("userClass");
+            this.userGrade = localStorage.getItem("userGrade");
+            this.userTitle = localStorage.getItem("userTitle");
+            this.userType = localStorage.getItem("userType");
+            this.userId = parseInt(localStorage.getItem("userId"));
+        },
+        watch: {
+            original_password: function (value, old) {
+                this.is_old_valid = !(this.original_password === "" || this.original_password === undefined || this.original_password === null);
+            },
+            password: function (value, old) {
+                this.is_password_valid = !(this.password === "" || this.password === undefined || this.password === null);
+            },
+            retype_password: function (value, old) {
+                this.is_retype_valid = !(this.retype_password === "" || this.retype_password === undefined || this.retype_password === null)
+            }
         }
     });
 </script>
+</body>
 </html>

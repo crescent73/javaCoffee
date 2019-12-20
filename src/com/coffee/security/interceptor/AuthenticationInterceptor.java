@@ -46,7 +46,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     case "3"://学生
                         if(url.indexOf("/index.html") > 0 || url.equals("/blackboard/")) {//如果再次进入登陆页面
 //                            System.out.println("redirect");
-                            resp.sendRedirect("/blackboard/page/course/course.html");//直接进入主页
+                            resp.sendRedirect("/blackboard/page/course/courseList.html");//直接进入主页
                             return false;
                         }
                         if(url.indexOf("/page/course")>0){ //只能访问教师的界面

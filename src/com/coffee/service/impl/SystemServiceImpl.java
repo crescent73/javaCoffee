@@ -50,7 +50,7 @@ public class SystemServiceImpl implements SystemService {
 	@Autowired
 	private AttachmentMapper attachmentDao;
 
-
+	@Transactional
 	@Override
 	public ResultData login(User user) {
 		resultData = new ResultData<Data>();
@@ -132,6 +132,7 @@ public class SystemServiceImpl implements SystemService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData logout(Long id, String userType) {
 		resultData = new ResultData<Data>();
@@ -154,6 +155,7 @@ public class SystemServiceImpl implements SystemService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData modifyInfo(Long id, String password, String userType, HttpSession httpSession) {
 		resultData = new ResultData<Data>();
@@ -201,6 +203,7 @@ public class SystemServiceImpl implements SystemService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData searchCourse(Long studentId, Course course, String searchKey, PageParam pageParam) {
 		resultData = new ResultData<Data>();
@@ -240,6 +243,7 @@ public class SystemServiceImpl implements SystemService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData searchStudent(Long courseId, Student student,String searchKey,  PageParam pageParam) {
 		resultData = new ResultData<Data>();
@@ -277,6 +281,7 @@ public class SystemServiceImpl implements SystemService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData searchNotice(Notice notice, PageParam pageParam) {
 		resultData = new ResultData<Data>();
@@ -306,6 +311,7 @@ public class SystemServiceImpl implements SystemService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData searchFile(File file, PageParam pageParam) {
 		resultData = new ResultData<Data>();
@@ -343,6 +349,7 @@ public class SystemServiceImpl implements SystemService {
 	 * @return 如果查询到了附件，则会返回AttachmentDetail
 	 *         如果没有查询到附件，则会返回null
 	 */
+	@Transactional
 	@Override
 	public AttachmentDetail downloadAttachment(Attachment attachment) {
 		resultData = new ResultData<Data>();
@@ -364,6 +371,7 @@ public class SystemServiceImpl implements SystemService {
 		return null; //确实必要参数返回为空
 	}
 
+	@Transactional
 	@Override
 	public ResultData searchAttachment(Attachment attachment, PageParam pageParam) {
 		resultData = new ResultData<Data>();
@@ -393,6 +401,7 @@ public class SystemServiceImpl implements SystemService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData searchStudentByKey(String key) {
 		resultData = new ResultData<Data>();
@@ -408,6 +417,7 @@ public class SystemServiceImpl implements SystemService {
 		return resultData;
 	}
 
+	@Transactional
 	@Override
 	public ResultData searchCourseByKey(String key) {
 		resultData = new ResultData<Data>();
