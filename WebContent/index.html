@@ -64,7 +64,30 @@
         <!-- /.login-card-body -->
     </div>
 </div>
-<!-- /.login-box -->
+
+<div>
+    <canvas id="live2dcanvas" width="300" height="400"></canvas>
+</div>
+
+<!-- LIVE 2D Related -->
+<script type="text/javascript" src="./page/assets/device.min.js"></script>
+<script type="text/javascript">
+    function load_live2d (){
+        var modelName = "tororo";
+        var headPos = 0.5;
+        var scaling = 2;
+        var opacityDefault = 1;
+        var opacityHover = 1;
+        var modelUrl="./page/assets/name/name.model.json";
+        modelUrl = modelUrl.replace(/name/g, modelName);
+        console.log(modelUrl);
+        // 传入id, 模型path, 重心， 缩放， 默认透明， hover透明度
+        loadlive2d("live2dcanvas", modelUrl, headPos, scaling, opacityDefault, opacityHover);
+    }
+</script>
+<script type="text/javascript" src="./page/assets/bundle.js"></script>
+<script type="text/javascript" src="./page/assets/live2d.js"></script>
+<!-- LIVE 2D Related -->
 
 <!-- jQuery -->
 <script src="page/plugins/jquery/jquery.min.js"></script>
@@ -81,6 +104,7 @@
         $("#account_type").select2({
             theme: 'bootstrap4'
         });
+        load_live2d();
     });
 
     var vue = new Vue({
