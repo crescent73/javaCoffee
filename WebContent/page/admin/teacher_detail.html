@@ -73,21 +73,21 @@
                         <div class="form-group">
                             <label for="teacher_school_select">学院</label>
                             <select id="teacher_school_select" class="form-control select2" data-placeholder="选择教师所属学院">
-                                <option value="1" :selected="teacher.teacherSchool === 1">信息与安全工程学院</option>
-                                <option value="2" :selected="teacher.teacherSchool === 2">马克思主义学院</option>
-                                <option value="3" :selected="teacher.teacherSchool === 3">哲学院</option>
-                                <option value="4" :selected="teacher.teacherSchool === 4">经济学院</option>
-                                <option value="5" :selected="teacher.teacherSchool === 5">财政税务学院</option>
-                                <option value="6" :selected="teacher.teacherSchool === 6">金融学院</option>
-                                <option value="7" :selected="teacher.teacherSchool === 7">法学院</option>
-                                <option value="8" :selected="teacher.teacherSchool === 8">刑事司法学院</option>
-                                <option value="9" :selected="teacher.teacherSchool === 9">外国语学院</option>
-                                <option value="10" :selected="teacher.teacherSchool === 10">新闻与文化传播学院</option>
-                                <option value="11" :selected="teacher.teacherSchool === 11">工商管理学院</option>
-                                <option value="12" :selected="teacher.teacherSchool === 12">文澜学院</option>
-                                <option value="13" :selected="teacher.teacherSchool === 13">会计学院</option>
-                                <option value="14" :selected="teacher.teacherSchool === 14">统计与数学学院</option>
-                                <option value="15" :selected="teacher.teacherSchool === 15">中韩新媒体学院</option>
+                                <option value="1">信息与安全工程学院</option>
+                                <option value="2">马克思主义学院</option>
+                                <option value="3">哲学院</option>
+                                <option value="4">经济学院</option>
+                                <option value="5">财政税务学院</option>
+                                <option value="6">金融学院</option>
+                                <option value="7">法学院</option>
+                                <option value="8">刑事司法学院</option>
+                                <option value="9">外国语学院</option>
+                                <option value="10">新闻与文化传播学院</option>
+                                <option value="11">工商管理学院</option>
+                                <option value="12">文澜学院</option>
+                                <option value="13">会计学院</option>
+                                <option value="14">统计与数学学院</option>
+                                <option value="15">中韩新媒体学院</option>
                             </select>
                         </div>
                     </div>
@@ -95,10 +95,10 @@
                         <div class="form-group">
                             <label for="teacher_title_select">教师职称</label>
                             <select id="teacher_title_select" class="form-control select2" data-placeholder="选择教师职称">
-                                <option value="1" :selected="teacher.teacherTitle === '1'">助教</option>
-                                <option value="2" :selected="teacher.teacherTitle === '2'">讲师</option>
-                                <option value="3" :selected="teacher.teacherTitle === '3'">教授</option>
-                                <option value="4" :selected="teacher.teacherTitle === '4'">副教授</option>
+                                <option value="1">助教</option>
+                                <option value="2">讲师</option>
+                                <option value="3">教授</option>
+                                <option value="4">副教授</option>
                             </select>
                         </div>
                     </div>
@@ -122,8 +122,10 @@
 
             <div class="card-footer">
                 <button type="button" class="btn btn-danger float-left" @click="on_delete_teacher()">删除教师</button>
-                <button type="submit" class="btn btn-primary float-right" @click="on_reset_teacher()">重置</button>
-                <button type="button" class="btn btn-primary float-right" @click="on_modify_teacher()">修改教师</button>
+                <div class="float-right">
+                    <button type="button" class="btn btn-warning" @click="on_reset_teacher()">重置</button>
+                    <button type="button" class="btn btn-primary" @click="on_modify_teacher()">修改教师</button>
+                </div>
 
             </div>
 
@@ -216,6 +218,9 @@
 <script>
     $(document).ready(function() {
         $("#teacher_school_select").select2({
+            theme: 'bootstrap4'
+        });
+        $("#teacher_title_select").select2({
             theme: 'bootstrap4'
         });
     });
@@ -322,7 +327,7 @@
                                     swal("教师信息已被修改！", {
                                         icon: "success"
                                     }).then(()=>{
-                                        window.location.href = "/blackboard/page/admin/teacher_detail.html?teacher_id = " + self.teacher.id;
+                                        window.location.href = "/blackboard/page/admin/teacher_detail.html?teacher_id=" + self.teacher.id;
                                     });
                                 } else {
                                     swal("修改失败！", {
@@ -388,7 +393,9 @@
             },
             on_reset_teacher: function () {
                 let self = this;
-                self.form = JSON.parse(JSON.stringify(self.teacher))
+                self.form = JSON.parse(JSON.stringify(self.teacher));
+                $("#teacher_school_select").val(self.form.teacherSchool).trigger("change");
+                $("#teacher_title_select").val(self.form.teacherTitle).trigger("change");
             },
             on_previous_page: function () {
                 this.nav_to(this.current_page - 1);
@@ -495,7 +502,9 @@
                     success: function (res) {
                         if(res.code === "208") {
                             self.teacher = res.data.data[0];
-                            self.form = JSON.parse(JSON.stringify(self.teacher))
+                            self.form = JSON.parse(JSON.stringify(self.teacher));
+                            $("#teacher_school_select").val(self.form.teacherSchool).trigger("change");
+                            $("#teacher_title_select").val(self.form.teacherTitle).trigger("change");
                         }
                     },
                     error: function (res) {
@@ -559,7 +568,7 @@
                     self.get_payload(1);
                 } else {
                     Toast.fire({
-                        type: 'info',
+                        type: 'error',
                         title: '出问题了，请刷新重试！',
                         onAfterClose: function () {
                             window.location.href = "/blackboard/page/admin/teacher_list.html";
@@ -568,7 +577,7 @@
                 }
             } else {
                 Toast.fire({
-                    type: 'info',
+                    type: 'error',
                     title: '出问题了，请刷新重试！',
                     onAfterClose: function () {
                         window.location.href = "/blackboard/page/admin/teacher_list.html";

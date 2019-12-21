@@ -168,8 +168,10 @@
 
             <div class="card-footer">
                 <button type="button" class="btn btn-danger float-left" @click="on_delete_course()">删除课程</button>
-                <button type="submit" class="btn btn-primary float-right" @click="on_reset_course()">重置</button>
-                <button type="submit" class="btn btn-primary float-right" @click="on_modify_course()">提交修改</button>
+                <div class="float-right">
+                    <button type="button" class="btn btn-warning" @click="on_reset_course()">重置</button>
+                    <button type="button" class="btn btn-primary" @click="on_modify_course()">提交修改</button>
+                </div>
             </div>
         </div>
 
@@ -254,6 +256,7 @@
                 </div>
             </div>
             <div class="card-footer">
+                <button type="button" class="btn btn-warning float-left" @click="on_rest_course_student()">重置</button>
                 <button type="submit" class="btn btn-primary float-right" @click="on_add_student()">提交修改</button>
             </div>
         </div>
@@ -387,7 +390,9 @@
                 }
             }
         });
-
+        $("#for_course_student").on("select2:select", function (e) {
+            console.log(e.params.data);
+        });
     });
 
     const Toast = Swal.mixin({
@@ -786,6 +791,10 @@
                         if(res.code === "208") {
                             self.course = res.data.data[0];
                             self.form = JSON.parse(JSON.stringify(self.course));
+                            $("#course_school_select").val(self.form.courseSchool).trigger("change");
+                            $("#course_semester_select").val(self.form.courseSemester).trigger("change");
+                            $("#course_teacher_select").val(self.form.teacherId).trigger("change");
+                            $("#course_type_select").val(self.form.courseType).trigger("change");
                         } else {
                             console.log(res);
                             Toast.fire({
@@ -812,6 +821,13 @@
             on_reset_course: function () {
                 let self = this;
                 self.form = JSON.parse(JSON.stringify(self.course));
+                $("#course_school_select").val(self.form.courseSchool).trigger("change");
+                $("#course_semester_select").val(self.form.courseSemester).trigger("change");
+                $("#course_teacher_select").val(self.form.teacherId).trigger("change");
+                $("#course_type_select").val(self.form.courseType).trigger("change");
+            },
+            on_reset_course_student: function () {
+                $('#for_course_student').clear();
             }
         },
         mounted: function () {

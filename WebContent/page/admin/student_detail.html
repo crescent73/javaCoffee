@@ -76,11 +76,11 @@
                             <div class="form-group">
                                 <label for="student_grade_select">年级</label>
                                 <select type="text" class="form-control select2" id="student_grade_select" data-placeholder="输入学生年级">
-                                    <option :selected="student.studentGrade === '2015'">2015</option>
-                                    <option :selected="student.studentGrade === '2016'">2016</option>
-                                    <option :selected="student.studentGrade === '2017'">2017</option>
-                                    <option :selected="student.studentGrade === '2018'">2018</option>
-                                    <option :selected="student.studentGrade === '2019'">2019</option>
+                                    <option>2015</option>
+                                    <option>2016</option>
+                                    <option>2017</option>
+                                    <option>2018</option>
+                                    <option>2019</option>
                                 </select>
                             </div>
                         </div>
@@ -91,21 +91,21 @@
                             <div class="form-group">
                                 <label for="student_school_select">学院</label>
                                 <select id="student_school_select" class="form-control select2" data-placeholder="选择学生所属学院">
-                                    <option value="1" :selected="student.studentSchool === 1">信息与安全工程学院</option>
-                                    <option value="2" :selected="student.studentSchool === 2">马克思主义学院</option>
-                                    <option value="3" :selected="student.studentSchool === 3">哲学院</option>
-                                    <option value="4" :selected="student.studentSchool === 4">经济学院</option>
-                                    <option value="5" :selected="student.studentSchool === 5">财政税务学院</option>
-                                    <option value="6" :selected="student.studentSchool === 6">金融学院</option>
-                                    <option value="7" :selected="student.studentSchool === 7">法学院</option>
-                                    <option value="8" :selected="student.studentSchool === 8">刑事司法学院</option>
-                                    <option value="9" :selected="student.studentSchool === 9">外国语学院</option>
-                                    <option value="10" :selected="student.studentSchool === 10">新闻与文化传播学院</option>
-                                    <option value="11" :selected="student.studentSchool === 11">工商管理学院</option>
-                                    <option value="12" :selected="student.studentSchool === 12">文澜学院</option>
-                                    <option value="13" :selected="student.studentSchool === 13">会计学院</option>
-                                    <option value="14" :selected="student.studentSchool === 14">统计与数学学院</option>
-                                    <option value="15" :selected="student.studentSchool === 15">中韩新媒体学院</option>
+                                    <option value="1">信息与安全工程学院</option>
+                                    <option value="2">马克思主义学院</option>
+                                    <option value="3">哲学院</option>
+                                    <option value="4">经济学院</option>
+                                    <option value="5">财政税务学院</option>
+                                    <option value="6">金融学院</option>
+                                    <option value="7">法学院</option>
+                                    <option value="8">刑事司法学院</option>
+                                    <option value="9">外国语学院</option>
+                                    <option value="10">新闻与文化传播学院</option>
+                                    <option value="11">工商管理学院</option>
+                                    <option value="12">文澜学院</option>
+                                    <option value="13">会计学院</option>
+                                    <option value="14">统计与数学学院</option>
+                                    <option value="15">中韩新媒体学院</option>
                                 </select>
                             </div>
                         </div>
@@ -128,9 +128,10 @@
                 </div>
                 <div class="card-footer">
                     <button type="button" class="btn btn-danger float-left" @click="on_delete_student()">删除学生</button>
-                    <button type="submit" class="btn btn-primary float-right" @click="on_reset_student()">重置</button>
-                    <button type="button" class="btn btn-primary float-right" @click="on_modify_student()">确认修改</button>
-
+                    <div class="float-right">
+                        <button type="button" class="btn btn-warning" @click="on_reset_student()">重置</button>
+                        <button type="button" class="btn btn-primary" @click="on_modify_student()">确认修改</button>
+                    </div>
                 </div>
             </div>
 
@@ -316,6 +317,8 @@
             on_reset_student: function () {
                 let self = this;
                 self.form = JSON.parse(JSON.stringify(self.student));
+                $("#student_school_select").val(self.form.studentSchool).trigger("change");
+                $("#student_grade_select").val(self.form.studentGrade).trigger("change");
             },
             on_modify_student: function () {
                 let self = this;
@@ -520,7 +523,10 @@
                     success: function (res) {
                         if(res.code === "208") {
                             self.student = res.data.data[0];
-                            self.form = JSON.parse(JSON.stringify(self.student))
+                            self.form = JSON.parse(JSON.stringify(self.student));
+                            $("#student_school_select").val(self.form.studentSchool).trigger("change");
+                            $("#student_grade_select").val(self.form.studentGrade).trigger("change");
+
                         }
                     },
                     error: function (res) {
