@@ -224,52 +224,6 @@
 <script>
 
     $(document).ready(function() {
-        $("#for_student_course").select2({
-            theme: 'bootstrap4',
-            ajax: {
-                delay: 500,
-                type: 'post',
-                url: '/blackboard/system/searchCourseByKey',
-                headers:{
-                    token: localStorage.getItem("token")
-                },
-                data: function (params) {
-                    return {
-                        key: params.term
-                    };
-                },
-                processResults: function (data, params) {
-                    if(data.code === "208") {
-                        var courses = data.data.data;
-                        var list = [];
-                        courses.forEach(function (course) {
-                            var option = {
-                                id: "",
-                                text: "",
-                            };
-                            option.id = course.id;
-                            option.text = course.courseNumber + " " + course.courseName;
-                            list.push(option);
-                        });
-                        return {
-                            results: list
-                        }
-                    }
-                    return {
-                        results: []
-                    };
-                },
-                cache: true
-            },
-            language: {
-                noResults: function (params) {
-                    return "没有找到，请确认课程名或课程号。"
-                },
-                searching: function () {
-                    return '搜索中...';
-                }
-            }
-        });
         $("#student_school_select").select2({
             theme: 'bootstrap4',
             language: {
@@ -280,6 +234,9 @@
                     return '搜索中...';
                 }
             }
+        });
+        $("#student_grade_select").select2({
+            theme: 'bootstrap4',
         });
 
     });
@@ -363,7 +320,7 @@
             on_modify_student: function () {
                 let self = this;
                 self.form.studentSchool = $("#student_school_select option:selected").val();
-
+                self.form.studentGrade = $("#student_grade_select option:selected").val();
                 if(!self.do_check()) {
                     return false;
                 }
@@ -388,7 +345,7 @@
                                     swal("学生信息已被修改！", {
                                         icon: "success",
                                     }).then(()=>{
-                                        window.location.href = "/blackboard/page/admin/student_detail.html?student_id = " + self.student.id;
+                                        window.location.href = "/blackboard/page/admin/student_detail.html?student_id=" + self.student.id;
                                     });
                                 } else {
                                     swal("修改失败！", {

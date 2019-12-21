@@ -35,7 +35,7 @@
         <set>
             <if test="teacherNumber != null">
                 <if test="teacherNumber != ''">
-                    teacher_number = #{teacherNumber}
+                    teacher_number = #{teacherNumber},
                 </if>
             </if>
             <if test="teacherName != null">

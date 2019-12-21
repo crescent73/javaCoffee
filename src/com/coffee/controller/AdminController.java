@@ -314,4 +314,30 @@ public class AdminController {
 		System.out.println(resultData);
 		return resultData;
 	}
+
+	@RequestMapping("modifyTeacher")
+	@ResponseBody
+	public ResultData modifyTeacher(Teacher teacher) {
+		System.out.println(teacher);
+		if(StringUtils.isNotBlank(teacher.getTeacherNumber())
+				&& StringUtils.isNotBlank(teacher.getTeacherName())
+				&& StringUtils.isNotBlank(teacher.getTeacherTitle())
+				&& teacher.getId() != null
+				&& StringUtils.isNotBlank(teacher.getTeacherEmail())
+				&& StringUtils.isNotBlank(teacher.getTeacherPassword())
+				&& teacher.getTeacherSchool() != null) {
+			try{
+				resultData = adminService.modifyTeacher(teacher);
+			}catch(Exception e){
+				e.printStackTrace();
+				resultData = new ResultData();
+				resultData.setResult(ResultCodeEnum.SERVER_ERROR);
+			}
+		} else {
+			resultData = new ResultData();
+			resultData.setResult(ResultCodeEnum.PARA_WORNING_NULL);//必要请求参数为空
+		}
+		System.out.println(resultData);
+		return resultData;
+	}
 }
