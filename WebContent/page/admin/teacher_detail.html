@@ -319,7 +319,7 @@
                             success: function (res) {
                                 console.log(res);
                                 if(res.code === "206") {
-                                    swal("学生信息已被修改！", {
+                                    swal("教师信息已被修改！", {
                                         icon: "success"
                                     }).then(()=>{
                                         window.location.href = "/blackboard/page/admin/teacher_detail.html?teacher_id = " + self.teacher.id;

@@ -55,7 +55,7 @@
                 notice_content = #{noticeContent},
             </if>
             <if test="publishDate != null">
-                publish_date = #{publisDate},
+                update_date = #{updateDate},
             </if>
             <if test="noticeTitle != null">
                 notice_title = #{noticeTitle},
@@ -73,8 +73,8 @@
     </update>
 
     <insert id="insert" parameterType="Notice">
-        insert into notice(course_id, publisher_id, notice_level, notice_content, publish_date, notice_title)
-        values (#{courseId}, #{publisherId}, #{noticeLevel}, #{noticeContent}, #{publishDate}, #{noticeTitle})
+        insert into notice(course_id, publisher_id, notice_level, notice_content, notice_title)
+        values (#{courseId}, #{publisherId}, #{noticeLevel}, #{noticeContent}, #{noticeTitle})
     </insert>
 
     <delete id="delete" parameterType="Notice">
