@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>BlackBoard</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="/blackboard/page/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/blackboard/page/dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- 引用阿里的字体图标库 -->
+    <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_1546252_v6mv4erx9zg.css">
+    <!-- 引用vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../plugins/sweetalert2/sweetalert2.min.css">
+    <style>
+        /* 上方色块属性 */
+        .top_block{
+            background-color:#F0F8FF;
+            /*height:60px;*/
+            /*position:fixed;*/
+            /*left:0px;*/
+            /*right:0px;*/
+            /*top:0px;*/
+            border-style:none none solid none;
+            border-width:1.5px;
+            border-color:#D1EEEE;
+        }
+        /* 单词Blackboard属性 */
+        .bb{
+            color:#A4D3EE;
+            font-family:Ink Free;
+            font-size:35px;
+            font-weight:bold;
+            /*position:fixed;*/
+            /*left:25px;top:-25px;*/
+        }
+        /* "查看帮助"属性 */
+        .help{
+            color:#A4D3EE;
+            font-family:SimSun;
+            font-size:20px;
+            font-weight:bold;
+            /*position:fixed;*/
+            /*right:25px;*/
+            /*top:-5px;*/
+        }
+        /* 登录板块属性 */
+        .activityBox{
+            border-style:solid solid solid solid;
+            border-color:#D1EEEE;
+            border-radius: 5px;
+            /*position:fixed;*/
+            /*right:200px;*/
+            /*top:150px;*/
+            /*height:280px;*/
+
+        }
+        /* 大标题属性 */
+        .title_style{
+            color:#A4D3EE;
+            font-family:Wawati SC;
+            font-size:20px;
+            font-weight:bold;
+            /*position:fixed;*/
+            /*right:230px;*/
+            /*top:100px;*/
+        }
+
+        .submit {
+            background-color: #66CCFF;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            /*display: inline-block;*/
+            font-size: 16px;
+            border-radius: 2px;
+        }
+
+        .clear {
+            background-color: #33FF66;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 2px;
+        }
+        /* 登录板块属性 */
+        .activityBox{
+            border-style:solid solid solid solid;
+            border-color:#D1EEEE;
+            border-radius: 5px;
+            /*position:fixed;*/
+            /*right:200px;*/
+            /*top:150px;*/
+            /*height:280px;*/
+
+        }
+
+
+
+
+    </style>
+</head>
+<body class="hold-transition layout-top-nav" style="background-image:url('../dist/css/tj.jpg');background-position:10% 50%;background-size:450px 280px;background-repeat:no-repeat;" >
+<div class="wrapper" id="mainpage">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand-md navbar-light navbar-white top_block">
+        <div class="container">
+            <span class="iconfont iconxiaoheiban bb" style="font-size: 30px;margin-left: 10px;"></span>
+            <span class="brand-text bb" style="font-family:Ink Free;font-size: 30px;margin-left: 10px;">blackboard</span>
+            <!-- Right navbar links -->
+            <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+                <!-- Messages Dropdown Menu -->
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item  nav-sidebar">
+                        <a class="nav-link help" data-toggle="dropdown" href="#">
+<!--                            <i class="nav-icon fas fa-user"></i>-->
+                            <p class="help">查看帮助</p>
+                        </a>
+                    </li>
+                </ul>
+            </ul>
+        </div>
+    </nav>
+    <!-- /.navbar -->
+    <div class="content-wrapper" style="background-color: white">
+        <!-- Main content -->
+        <div class="content">
+            <div class="container">
+                <div class="login-box float-right " id="login" style="margin-top: 10%">
+                    <div class="login-logo">
+                        <div class="title_style"><b>智慧</b>板</div>
+                    </div>
+
+                    <div class="activityBox">
+                        <div class="card-body login-card-body">
+
+                            <form id="login_form" style="width: 100%">
+                                <div class="input-group mb-3">
+                                    <label for="account_type">账户类型</label>
+                                    <select id="account_type" class="form-control select2" data-placeholder="选择账户类型" style="width: 100%">
+                                        <option value="2">教师</option>
+                                        <option value="3" selected>学生</option>
+                                        <option value="1">管理员</option>
+                                    </select>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input id="account" type="text" name="username" class="form-control" placeholder="学号或者工号或用户名" v-model="name">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input id="password" type="password" name="password" class="form-control" placeholder="密码" v-model="password">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-block float-right" @click="do_login()">登录</button>
+                            </form>
+
+                        </div>
+                        <!-- /.login-card-body -->
+                    </div>
+                </div>
+
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- Main Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <!-- To the right -->
+            <div class="float-right d-none d-sm-inline">
+                Anything you want
+            </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+        </div>
+
+    </footer>
+</div>
+<!-- ./wrapper -->
+
+</body>
+<script src="/blackboard/page/plugins/jquery/jquery.min.js"></script><!-- jQuery -->
+<script src="/blackboard/page/plugins/bootstrap/js/bootstrap.bundle.min.js"></script><!-- Bootstrap 4 -->
+<script src="/blackboard/page/dist/js/adminlte.min.js"></script><!-- AdminLTE App -->
+<script src="/blackboard/page/dist/js/request.js"></script>
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="requestParam.js"></script>
+<script>
+    $('#myTabs a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    })
+</script>
+</html>

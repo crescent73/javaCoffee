@@ -337,22 +337,22 @@
                             switch (type) {
                                 case "1":
                                     console.log("1");
-                                    window.location.href ="/blackboard/page/admin/admin.html";
+                                    window.location.href ="../admin/admin.html";
                                     break;
                                 case "2":
                                 case "3":
                                     console.log("2");
-                                    window.location.href = "/blackboard/page/course/course.html";
+                                    window.location.href = "course.html";
                                     break;
                             }
                         } else {
-                            window.location.href = "/blackboard/";
+                            window.location.href = "../..";
                             alert("登录失败！请检查输入。")
                         }
                     },
                     error:function(res){
                         console.log(res);
-                        window.location.href = "/blackboard/";
+                        window.location.href = "../..";
                         alert("出问题了！请刷新重试。")
                     }
                 });
