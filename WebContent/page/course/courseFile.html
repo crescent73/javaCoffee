@@ -250,10 +250,14 @@
 						} catch (err) {
 							let fileName = res.headers['content-disposition'];
 							if (fileName && fileName.length >= 2) {// 获取文件名
+								console.log(fileName);
+								console.log(decodeURI(fileName));
 								fileName = fileName.split('=')[2];
 								fileName = fileName.substring(1,fileName.length-1);
+								console.log(fileName);
 							}
 							fileName = decodeURIComponent(fileName);
+							console.log(fileName);
 							if (window.navigator.msSaveOrOpenBlob) {// 兼容ie11
 								try {
 									const blobObject = new Blob([data]);
@@ -321,9 +325,10 @@
 		},
 		created(){
 			this.init(localStorage.getItem("userType"));
+			this.fileList();
 		},
 		mounted(){
-			this.fileList();
+
 		}
 
 	})

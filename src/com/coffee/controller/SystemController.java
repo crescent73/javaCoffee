@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 @Controller
@@ -186,7 +188,7 @@ public class SystemController {
 	
 	@RequestMapping("/downloadAttachment")
 	@ResponseBody
-	public ResponseEntity downloadAttachment(Long attachmentId, @RequestBody Map<String,Object> map) {
+	public ResponseEntity downloadAttachment(Long attachmentId, @RequestBody Map<String,Object> map) throws UnsupportedEncodingException {
 		if(attachmentId == null){
 			attachmentId = Integer.toUnsignedLong((Integer) map.get("attachmentId"));
 		}
@@ -215,7 +217,10 @@ public class SystemController {
 					return ResponseEntity.ok().body(resultData);
 				}
 				HttpHeaders headers = new HttpHeaders();
-				headers.setContentDispositionFormData("attachment", attachmentDetail.getAttachmentName());
+//				System.out.println(attachmentDetail.getAttachmentName());
+				String encodedFileName = URLEncoder.encode(attachmentDetail.getAttachmentName(),"utf-8");
+//				System.out.println(encodedFileName);
+				headers.setContentDispositionFormData("attachment",encodedFileName);
 				headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 				return ResponseEntity.ok().headers(headers).body(resource);
 			} else {
