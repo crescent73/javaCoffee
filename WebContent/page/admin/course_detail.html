@@ -533,7 +533,7 @@
                     });
                     return false;
                 }
-                if(this.form.courseCredit === undefined || this.form.courseCredit.replace("\\s") === "") {
+                if(this.form.courseCredit === undefined || this.form.courseCredit === null) {
                     Toast.fire({
                         type: 'error',
                         title: '课程学分不能为空'
@@ -593,7 +593,7 @@
                                     swal("课程已经被修改！", {
                                         icon: "success"
                                     }).then(() => {
-                                        window.location.href = "/blackboard/page/admin/course_detail.html?course_id = " + self.course.id;
+                                        window.location.href = "/blackboard/page/admin/course_detail.html?course_id=" + self.course.id;
                                     });
 
                                 } else {
@@ -793,7 +793,6 @@
                             self.form = JSON.parse(JSON.stringify(self.course));
                             $("#course_school_select").val(self.form.courseSchool).trigger("change");
                             $("#course_semester_select").val(self.form.courseSemester).trigger("change");
-                            $("#course_teacher_select").val(self.form.teacherId).trigger("change");
                             $("#course_type_select").val(self.form.courseType).trigger("change");
                         } else {
                             console.log(res);
@@ -847,6 +846,7 @@
                     self.load_course();
                     self.get_payload(1);
                 } else {
+                    console.log("unspecified course id", params);
                     Toast.fire({
                         type: 'error',
                         title: '出问题了，请刷新重试',
@@ -856,6 +856,7 @@
                     });
                 }
             } else {
+                console.log("unspecified course id");
                 Toast.fire({
                     type: 'error',
                     title: '出问题了，请刷新重试',
