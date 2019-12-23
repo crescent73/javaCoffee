@@ -43,7 +43,7 @@
 		<div class="content">
 			<div class="card">
 				<div class="card-body">
-					<ul v-show="!isFileEmpty" class="list-group">
+					<ul v-if="!isFileEmpty" class="list-group">
 						<li v-for="file in files" v-bind:key="file.id"  class="list-group-item">
 							<div class="media">
 								<div class="media-body">

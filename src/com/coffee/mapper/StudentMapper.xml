@@ -47,6 +47,9 @@
             <if test="studentName != null">
                 student_name = #{studentName},
             </if>
+            <if test="studentNumber != null">
+                student_number = #{studentNumber},
+            </if>
             <if test="studentEmail != null">
                 student_email = #{studentEmail},
             </if>

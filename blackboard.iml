@@ -58,7 +58,7 @@
       <sourceFolder url="file://$MODULE_DIR$/config" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="10" jdkType="JavaSDK" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="sweetalert" level="application" />
     <orderEntry type="library" name="font_1546252_v6mv4erx9zg" level="application" />
